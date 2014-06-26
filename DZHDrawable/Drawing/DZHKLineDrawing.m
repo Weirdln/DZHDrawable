@@ -76,10 +76,10 @@
     {
         DZHKLineEntity *entity  = [_kLineDatas objectAtIndex:i];
         
-        open                    = [CommonFormatFunc mappingAsixYValue:max min:min v:entity.open top:topY bottom:bottomY];
-        close                   = [CommonFormatFunc mappingAsixYValue:max min:min v:entity.close top:topY bottom:bottomY];
-        high                    = [CommonFormatFunc mappingAsixYValue:max min:min v:entity.high top:topY bottom:bottomY];
-        low                     = [CommonFormatFunc mappingAsixYValue:max min:min v:entity.low top:topY bottom:bottomY];
+        open                    = [self mappingAsixYValue:max min:min v:entity.open top:topY bottom:bottomY];
+        close                   = [self mappingAsixYValue:max min:min v:entity.close top:topY bottom:bottomY];
+        high                    = [self mappingAsixYValue:max min:min v:entity.high top:topY bottom:bottomY];
+        low                     = [self mappingAsixYValue:max min:min v:entity.low top:topY bottom:bottomY];
         
         KLineType type          = [entity type];
         
@@ -123,6 +123,20 @@
     }
     
     CGContextRestoreGState(context);
+}
+
+- (float)mappingAsixYValue:(float)max min:(float)min v:(float)v top:(float)top bottom:(float)bottom
+{
+	float y;
+	
+	if (max == min)
+		y = bottom;
+	else if (v <= max && v >= min)
+		y = bottom - (v - min)/(max - min)*(bottom - top);
+	else
+		y = (v < min) ? bottom : top;
+	
+	return y;
 }
 
 @end

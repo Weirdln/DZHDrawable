@@ -73,7 +73,7 @@
             
             NSString *date      = [_formatter stringForObjectValue:@(group.date)];
             CGContextSaveGState(context);
-            [CommonDrawFunc drawStrInRect:date
+            [self drawStrInRect:date
                                      rect:tickRect
                                      font:_labelFont
                                     color:_labelColor
@@ -83,6 +83,12 @@
     }
     CGContextStrokePath(context);
     CGContextRestoreGState(context);
+}
+
+- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font color:(UIColor *)color alignment:(NSTextAlignment)alignment
+{
+	[color set];
+	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
 }
 
 @end

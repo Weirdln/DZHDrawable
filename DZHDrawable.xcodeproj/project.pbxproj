@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F974888195BAE3D0067EF19 /* UIColor+RGB.m */; };
 		4FD46E85195BAA56006BD33D /* klines.data in Resources */ = {isa = PBXBuildFile; fileRef = 4FD46E84195BAA56006BD33D /* klines.data */; };
 		4FD46EA0195BAB19006BD33D /* DZHKLineDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD46E8C195BAB19006BD33D /* DZHKLineDateFormatter.m */; };
 		4FD46EA1195BAB19006BD33D /* DZHKLineValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD46E8E195BAB19006BD33D /* DZHKLineValueFormatter.m */; };
@@ -42,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F974887195BAE3D0067EF19 /* UIColor+RGB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RGB.h"; sourceTree = "<group>"; };
+		4F974888195BAE3D0067EF19 /* UIColor+RGB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RGB.m"; sourceTree = "<group>"; };
 		4FD46E84195BAA56006BD33D /* klines.data */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = klines.data; sourceTree = "<group>"; };
 		4FD46E8B195BAB19006BD33D /* DZHKLineDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineDateFormatter.h; sourceTree = "<group>"; };
 		4FD46E8C195BAB19006BD33D /* DZHKLineDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKLineDateFormatter.m; sourceTree = "<group>"; };
@@ -104,6 +107,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F974886195BADC70067EF19 /* Addition */ = {
+			isa = PBXGroup;
+			children = (
+				4F974887195BAE3D0067EF19 /* UIColor+RGB.h */,
+				4F974888195BAE3D0067EF19 /* UIColor+RGB.m */,
+			);
+			path = Addition;
+			sourceTree = "<group>";
+		};
 		4FD46E83195BAA43006BD33D /* Resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -198,6 +210,7 @@
 		4FF972A9195BA1B100FB0940 /* DZHDrawable */ = {
 			isa = PBXGroup;
 			children = (
+				4F974886195BADC70067EF19 /* Addition */,
 				4FD46E8A195BAB19006BD33D /* DataFormatter */,
 				4FD46E8F195BAB19006BD33D /* Drawing */,
 				4FD46E98195BAB19006BD33D /* DrawingContainer */,
@@ -346,6 +359,7 @@
 				4FD46EA7195BAB19006BD33D /* DZHKLineEntity.m in Sources */,
 				4FD46EA2195BAB19006BD33D /* DZHAxisXDrawing.m in Sources */,
 				4FD46EA6195BAB19006BD33D /* DZHKLineView.m in Sources */,
+				4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */,
 				4FD46EA5195BAB19006BD33D /* DZHRectangleDrawing.m in Sources */,
 				4FF972B4195BA1B100FB0940 /* AppDelegate.m in Sources */,
 				4FF972B0195BA1B100FB0940 /* main.m in Sources */,
@@ -399,7 +413,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -438,7 +452,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;

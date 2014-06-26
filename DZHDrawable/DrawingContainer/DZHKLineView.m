@@ -10,6 +10,7 @@
 #import "DZHKLineDateFormatter.h"
 #import "DZHKLineValueFormatter.h"
 #import "DZHAxisYDrawing.h"
+#import "UIColor+RGB.h"
 
 #define kStrokeColorKey @"strokeColor"
 #define kFillColorKey   @"fillColor"
@@ -56,8 +57,8 @@
         self.scale                      = 1.0;
         self.yLabelWidth                = 20.;
         
-        UIColor *lineColor              = UIColorFromRGB(0x1e2630);
-        UIColor *labelColor             = UIColorFromRGB(0x707880);
+        UIColor *lineColor              = [UIColor colorFromRGB:0x1e2630];
+        UIColor *labelColor             = [UIColor colorFromRGB:0x707880];
         
         _kLineDrawing                   = [[DZHKLineDrawing alloc] init];
         _kLineDrawing.dataSource        = self;
@@ -112,8 +113,6 @@
     [_typeAttributes release];
     [_kLineDrawing release];
     [_groups release];
-    
-    [_kLineDrawing release];
     [_axisXDrawing release];
     [_axisYDrawing release];
     [super dealloc];
@@ -245,7 +244,7 @@
     CGRect region               = CGRectMake(rect.origin.x + _yLabelWidth, .0, rect.size.width - _yLabelWidth, 210.);
     
     CGContextSaveGState(context);
-    CGContextSetStrokeColorWithColor(context, UIColorFromRGB(0x1e2630).CGColor);
+    CGContextSetStrokeColorWithColor(context, [UIColor colorFromRGB:0x1e2630].CGColor);
     CGContextSetLineWidth(context, 1.);
     CGContextStrokeRect(context, region);
     CGContextRestoreGState(context);

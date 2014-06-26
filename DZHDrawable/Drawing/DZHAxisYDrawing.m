@@ -90,7 +90,7 @@
     {
         int value                   = _min + strip * i;
         
-        CGFloat y                   = [CommonFormatFunc mappingAsixYValue:_max min:_min v:value top:topY bottom:bottomY];
+        CGFloat y                   = [self mappingAsixYValue:_max min:_min v:value top:topY bottom:bottomY];
         
         CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + _tickLabelWidth, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
         CGContextStrokePath(context);
@@ -107,7 +107,7 @@
         NSString *str               = [_formatter stringForObjectValue:@(value)];
 
         CGContextSaveGState(context);
-        [CommonDrawFunc drawStrInRect:str
+        [self drawStrInRect:str
                                  rect:tickRect
                                  font:_labelFont
                                 color:_labelColor
@@ -116,6 +116,26 @@
     }
     
     CGContextRestoreGState(context);
+}
+
+- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font color:(UIColor *)color alignment:(NSTextAlignment)alignment
+{
+	[color set];
+	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
+}
+
+- (float)mappingAsixYValue:(float)max min:(float)min v:(float)v top:(float)top bottom:(float)bottom
+{
+	float y;
+	
+	if (max == min)
+		y = bottom;
+	else if (v <= max && v >= min)
+		y = bottom - (v - min)/(max - min)*(bottom - top);
+	else
+		y = (v < min) ? bottom : top;
+	
+	return y;
 }
 
 @end

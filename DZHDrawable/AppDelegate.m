@@ -13,15 +13,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    UIWindow *window    = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    
-    ViewController *controler   = [[ViewController alloc] init];
-    window.rootViewController   = controler;
-    [controler release];
-    
-    [window makeKeyAndVisible];
+    UIWindow *window                = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window                     = window;
     [window release];
     
+    application.statusBarHidden     = NO;
+    application.statusBarStyle      = UIStatusBarStyleDefault;
+    
+    ViewController *controller      = [[ViewController alloc] init];
+    
+    UINavigationController *nav     = [[UINavigationController alloc] initWithRootViewController:controller];
+    window.rootViewController       = nav;
+    
+    [controller release];
+    [nav release];
+    
+    [window makeKeyAndVisible];
     return YES;
 }
 							
