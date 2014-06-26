@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F974888195BAE3D0067EF19 /* UIColor+RGB.m */; };
+		4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F97488F195BF4650067EF19 /* DZHDrawingWrapper.m */; };
 		4FD46E85195BAA56006BD33D /* klines.data in Resources */ = {isa = PBXBuildFile; fileRef = 4FD46E84195BAA56006BD33D /* klines.data */; };
 		4FD46EA0195BAB19006BD33D /* DZHKLineDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD46E8C195BAB19006BD33D /* DZHKLineDateFormatter.m */; };
 		4FD46EA1195BAB19006BD33D /* DZHKLineValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD46E8E195BAB19006BD33D /* DZHKLineValueFormatter.m */; };
@@ -45,6 +46,11 @@
 /* Begin PBXFileReference section */
 		4F974887195BAE3D0067EF19 /* UIColor+RGB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RGB.h"; sourceTree = "<group>"; };
 		4F974888195BAE3D0067EF19 /* UIColor+RGB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RGB.m"; sourceTree = "<group>"; };
+		4F97488A195BBBC00067EF19 /* DZHDrawingContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingContainer.h; sourceTree = "<group>"; };
+		4F97488B195BBD2F0067EF19 /* DZHDrawingCoordinateProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingCoordinateProvider.h; sourceTree = "<group>"; };
+		4F97488D195BE0E80067EF19 /* DZHAxisDrawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHAxisDrawing.h; sourceTree = "<group>"; };
+		4F97488E195BF4650067EF19 /* DZHDrawingWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDrawingWrapper.h; sourceTree = "<group>"; };
+		4F97488F195BF4650067EF19 /* DZHDrawingWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDrawingWrapper.m; sourceTree = "<group>"; };
 		4FD46E84195BAA56006BD33D /* klines.data */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = klines.data; sourceTree = "<group>"; };
 		4FD46E8B195BAB19006BD33D /* DZHKLineDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineDateFormatter.h; sourceTree = "<group>"; };
 		4FD46E8C195BAB19006BD33D /* DZHKLineDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKLineDateFormatter.m; sourceTree = "<group>"; };
@@ -164,6 +170,8 @@
 			children = (
 				4FD46E9C195BAB19006BD33D /* DZHKLineEntity.h */,
 				4FD46E9D195BAB19006BD33D /* DZHKLineEntity.m */,
+				4F97488E195BF4650067EF19 /* DZHDrawingWrapper.h */,
+				4F97488F195BF4650067EF19 /* DZHDrawingWrapper.m */,
 			);
 			path = DrawingEntity;
 			sourceTree = "<group>";
@@ -172,6 +180,9 @@
 			isa = PBXGroup;
 			children = (
 				4FD46E9F195BAB19006BD33D /* DZHDrawing.h */,
+				4F97488D195BE0E80067EF19 /* DZHAxisDrawing.h */,
+				4F97488A195BBBC00067EF19 /* DZHDrawingContainer.h */,
+				4F97488B195BBD2F0067EF19 /* DZHDrawingCoordinateProvider.h */,
 			);
 			path = DrawingProtocol;
 			sourceTree = "<group>";
@@ -363,6 +374,7 @@
 				4FD46EA5195BAB19006BD33D /* DZHRectangleDrawing.m in Sources */,
 				4FF972B4195BA1B100FB0940 /* AppDelegate.m in Sources */,
 				4FF972B0195BA1B100FB0940 /* main.m in Sources */,
+				4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */,
 				4FD46EA3195BAB19006BD33D /* DZHAxisYDrawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

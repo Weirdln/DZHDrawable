@@ -8,14 +8,18 @@
 
 #import "DZHKLineDrawing.h"
 #import "DZHAxisXDrawing.h"
+#import "DZHDrawingContainer.h"
 
 @class DZHAxisYDrawing;
+@class DZHRectangleDrawing;
 
-@interface DZHKLineView : UIScrollView<DZHKLineDrawingDataSource,DZHAxisXDrawingDataSource>
+@interface DZHKLineView : UIScrollView<DZHKLineDrawingDataSource,DZHAxisXDrawingDataSource,DZHDrawingContainer>
 {
     DZHKLineDrawing                 *_kLineDrawing;
     DZHAxisXDrawing                 *_axisXDrawing;
     DZHAxisYDrawing                 *_axisYDrawing;
+    DZHRectangleDrawing             *_rectDrawing;
+    
     UILabel                         *_tipLable;
 }
 

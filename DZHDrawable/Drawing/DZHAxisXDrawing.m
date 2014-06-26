@@ -53,12 +53,16 @@
     NSString *date              = [_formatter stringForObjectValue:@(group.date)];
     CGSize size                 = [date sizeWithFont:_labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
     
+    CGFloat lastX               = CGFLOAT_MIN;
     for (DZHDrawingGroup *group in _groups)
     {
         int index               = group.endIndex;
         CGFloat x               = [_dataSource axisXDrawing:self locationForIndex:index];
         CGRect tickRect         = CGRectMake(x - size.width * .5, y, size.width, size.height);
         CGFloat centerX         = CGRectGetMidX(tickRect);
+        
+        if (tickRect.origin.x - lastX < size.width)
+            continue;
         
         NSLog(@"x轴日期:%d",group.date);
         
@@ -70,7 +74,6 @@
         if (centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
         {
             NSLog(@"显示   x轴日期:%d",group.date);
-            
             NSString *date      = [_formatter stringForObjectValue:@(group.date)];
             CGContextSaveGState(context);
             [self drawStrInRect:date
@@ -79,6 +82,7 @@
                                     color:_labelColor
                                 alignment:NSTextAlignmentLeft];
             CGContextRestoreGState(context);
+            lastX               = tickRect.origin.x;
         }
     }
     CGContextStrokePath(context);

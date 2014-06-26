@@ -76,6 +76,10 @@
     NSParameterAssert(_formatter != nil);
     NSParameterAssert(_tickLabelWidth != 0);
     
+    int max                         = self.max;
+    int min                         = self.min;
+    [self prepareAndAdjustMaxIfNeedWithMax:&max min:&min];
+    
     int strip                       = self.strip;
     int tickCount                   = self.tickCount;
     CGFloat topY                    = rect.origin.y;

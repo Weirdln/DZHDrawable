@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DZHDrawing.h"
+#import "DZHAxisDrawing.h"
 
 @class DZHAxisXDrawing;
 

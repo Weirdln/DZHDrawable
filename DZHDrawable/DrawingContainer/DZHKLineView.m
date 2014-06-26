@@ -11,6 +11,8 @@
 #import "DZHKLineValueFormatter.h"
 #import "DZHAxisYDrawing.h"
 #import "UIColor+RGB.h"
+#import "DZHRectangleDrawing.h"
+#import "DZHDrawingWrapper.h"
 
 #define kStrokeColorKey @"strokeColor"
 #define kFillColorKey   @"fillColor"
@@ -20,6 +22,8 @@
 @property (nonatomic, retain) NSMutableDictionary *typeAttributes;//阳线、阴线、十字线相关属性设置
 
 @property (nonatomic, retain) NSMutableArray *groups;// {索引:DZHDrawingGroup}
+
+@property (nonatomic, retain) NSMutableArray *drawings;
 
 @property (nonatomic) int groupStartIndex;
 
@@ -48,9 +52,10 @@
     {
         self.backgroundColor            = [UIColor clearColor];
         self.typeAttributes             = [NSMutableDictionary dictionary];
-        self.groups                     = [NSMutableArray array
-                                           ];
-        self.kLineWidth                 = 5.;
+        self.groups                     = [NSMutableArray array];
+        self.drawings                   = [NSMutableArray array];
+        
+        self.kLineWidth                 = 2.;
         self.kLinePadding               = 2.;
         self.decelerationRate           = .4;
         self.showsHorizontalScrollIndicator = NO;
@@ -62,8 +67,8 @@
         
         _kLineDrawing                   = [[DZHKLineDrawing alloc] init];
         _kLineDrawing.dataSource        = self;
-        [_kLineDrawing setColor:[UIColor redColor] forType:KLineTypePositive];
-        [_kLineDrawing setColor:[UIColor greenColor] forType:KLineTypeNegative];
+        [_kLineDrawing setColor:[UIColor colorFromRGB:0xf92a27] forType:KLineTypePositive];
+        [_kLineDrawing setColor:[UIColor colorFromRGB:0x2b9826] forType:KLineTypeNegative];
         [_kLineDrawing setColor:[UIColor grayColor] forType:KLineTypeCross];
         
         _axisYDrawing                   = [[DZHAxisYDrawing alloc] init];
@@ -72,8 +77,8 @@
         _axisYDrawing.labelColor        = labelColor;
         _axisYDrawing.lineColor         = lineColor;
         _axisYDrawing.tickLabelWidth    = self.yLabelWidth;
-        _axisYDrawing.minTickCount      = 3;
-        _axisYDrawing.maxTickCount      = 6;
+        _axisYDrawing.minTickCount      = 4;
+        _axisYDrawing.maxTickCount      = 4;
         
         _axisXDrawing                   = [[DZHAxisXDrawing alloc] init];
         _axisXDrawing.dataSource        = self;
@@ -82,6 +87,9 @@
         _axisXDrawing.lineColor         = lineColor;
         _axisXDrawing.labelFont         = [UIFont systemFontOfSize:10.];
         _axisXDrawing.labelHeight       = 20.;
+        
+        _rectDrawing                    = [[DZHRectangleDrawing alloc] init];
+        _rectDrawing.lineColor          = lineColor;
         
         UILabel *label                  = [[UILabel alloc] initWithFrame:CGRectMake(- 50., 95., 40., 20.)];
         label.font                      = [UIFont systemFontOfSize:10.];
@@ -115,6 +123,7 @@
     [_groups release];
     [_axisXDrawing release];
     [_axisYDrawing release];
+    [_rectDrawing release];
     [super dealloc];
 }
 
@@ -241,17 +250,17 @@
     CGContextRef context        = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     
+    [self drawRect:rect withContext:context];
+}
+
+- (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
+{
     CGRect region               = CGRectMake(rect.origin.x + _yLabelWidth, .0, rect.size.width - _yLabelWidth, 210.);
-    
-    CGContextSaveGState(context);
-    CGContextSetStrokeColorWithColor(context, [UIColor colorFromRGB:0x1e2630].CGColor);
-    CGContextSetLineWidth(context, 1.);
-    CGContextStrokeRect(context, region);
-    CGContextRestoreGState(context);
-    
     CGRect axisXRect            = CGRectMake(rect.origin.x + _yLabelWidth, 0., rect.size.width - _yLabelWidth, 230.);
     CGRect axisYRect            = CGRectMake(rect.origin.x, 5., rect.size.width, 200.);
     CGRect kLineRect            = CGRectMake(rect.origin.x + _yLabelWidth, 5., rect.size.width - _yLabelWidth, 200.);
+    
+    [_rectDrawing drawRect:region withContext:context];
     
     int drawStartIndex,drawEndIndex;
     [self needDrawKLinesInRect:kLineRect startIndex:&drawStartIndex endIndex:&drawEndIndex];
@@ -339,20 +348,21 @@
     NSParameterAssert(groupEndIndex != NSIntegerMax);
     
     /*计算最大值最小值，将需要显示组的左边组和右边组也包括进来，用于防止太频繁变动坐标*/
-    groupStartIndex             = MAX(0, groupStartIndex - 1);
-    groupEndIndex               = MIN(groupEndIndex + 1, [_groups count] - 1);
+    groupStartIndex             = MAX(0, groupStartIndex);
+    groupEndIndex               = MIN(groupEndIndex, [_groups count] - 1);
     
     int max                     = NSIntegerMin;
     int min                     = NSIntegerMax;
-    for (int i = groupStartIndex; i <= groupEndIndex; i++)
+
+    for (int i = from; i <= to; i++)
     {
-        DZHDrawingGroup *group  = [_groups objectAtIndex:i];
+        DZHKLineEntity *entity  = [_klines objectAtIndex:i];
         
-        if (group.max > max)
-            max        = group.max;
+        if (entity.high > max)
+            max        = entity.high;
         
-        if (group.min < min)
-            min        = group.min;
+        if (entity.low < min)
+            min        = entity.low;
     }
     
     *minPrice                           = min;
@@ -370,6 +380,30 @@
     int curMonth                = (entity.date % 10000)/100;
     
     return lastMonth != curMonth;
+}
+
+#pragma mark - DZHDrawingContainer
+
+- (void)addDrawing:(id<DZHDrawing>)drawing atVirtualRect:(CGRect)rect
+{
+    DZHDrawingWrapper *wrapper          = [[DZHDrawingWrapper alloc] initWithDrawing:drawing virtualRect:rect];
+    [self.drawings addObject:wrapper];
+    [wrapper release];
+}
+
+- (CGRect)realRectForVirtualRect:(CGRect)virtualRect currentRect:(CGRect)currentRect;
+{
+    return CGRectMake(currentRect.origin.x + virtualRect.origin.x, virtualRect.origin.y, virtualRect.size.width, virtualRect.size.height);
+}
+
+- (CGFloat)beginCoordXForIndex:(NSUInteger)index
+{
+    return [self kLineLocationForIndex:index];
+}
+
+- (CGFloat)centerCoordXForIndex:(NSUInteger)index
+{
+    return [self centerCoordXForIndex:index];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -459,4 +493,3 @@
 }
 
 @end
-

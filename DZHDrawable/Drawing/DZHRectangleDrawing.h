@@ -11,4 +11,6 @@
 
 @interface DZHRectangleDrawing : NSObject<DZHDrawing>
 
+@property (nonatomic, retain)UIColor *lineColor;
+
 @end

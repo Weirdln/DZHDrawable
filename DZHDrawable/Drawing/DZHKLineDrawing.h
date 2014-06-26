@@ -10,6 +10,19 @@
 #import "DZHDrawing.h"
 #import "DZHKLineEntity.h"
 
+@protocol DZHKLineDrawing <DZHDrawing>
+
+/**最大价格*/
+@property (nonatomic)int maxPrice;
+
+/**最小价格*/
+@property (nonatomic)int minPrice;
+
+/**k线数据*/
+@property (nonatomic, retain) NSArray *kLineDatas;
+
+@end
+
 @protocol DZHKLineDrawingDataSource <NSObject>
 
 - (CGFloat)widthForKLine:(id<DZHKLineDrawing>)drawing;
