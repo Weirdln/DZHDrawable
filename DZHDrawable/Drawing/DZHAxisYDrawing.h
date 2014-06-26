@@ -30,7 +30,7 @@
 @property (nonatomic) int min;
 
 /**y轴刻度值宽度*/
-@property (nonatomic) CGFloat tickLabelWidth;
+@property (nonatomic) CGFloat labelWidth;
 
 /**
  * 准备工作，如果有必要则调整最大值，以提高绘制精度。如当刻度个数为3~6，最大值最小值之差为113时候，找不到合适的刻度个数，则调整最大值

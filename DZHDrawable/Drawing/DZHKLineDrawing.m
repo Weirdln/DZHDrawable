@@ -15,7 +15,6 @@
     NSMutableDictionary                 *_typeAttributes;
 }
 
-@synthesize scale       = _scale;
 @synthesize maxPrice    = _maxPrice;
 @synthesize minPrice    = _minPrice;
 @synthesize kLineDatas  = _kLineDatas;
@@ -88,6 +87,8 @@
         CGRect fillRect         = CGRectMake(x, MIN(open, close), kWidth, MAX(ABS(open - close), 1.));
         CGFloat center          = CGRectGetMidX(fillRect);
         
+//        CGMutablePathRef path   = CGPathCreateMutable();
+
         BOOL drawLine           = YES;//决定是否需要绘制最高点与最低点连成的线
         if (i == endIndex) //最后一根k线有可能超出范围，需要进行裁剪
         {

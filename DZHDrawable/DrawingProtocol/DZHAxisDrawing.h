@@ -26,3 +26,9 @@
 @property (nonatomic, retain) UIFont *labelFont;
 
 @end
+
+@protocol DZHAxisDrawingDataSource <NSObject>
+
+- (NSArray *)axisDatasForDrawing:(id<DZHAxisDrawing>)drawing;
+
+@end

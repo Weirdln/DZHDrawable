@@ -6,13 +6,12 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHDrawingCoordinateProvider.h"
 #import "DZHDrawing.h"
 
 /**
  * 绘制容器，用于管理绘制对象绘制位置
  */
-@protocol DZHDrawingContainer <DZHDrawingCoordinateProvider,DZHDrawing>
+@protocol DZHDrawingContainer <DZHDrawing>
 
 /**
  * 在指定位置添加一个绘制对象

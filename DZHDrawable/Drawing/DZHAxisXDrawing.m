@@ -11,7 +11,6 @@
 
 @implementation DZHAxisXDrawing
 
-@synthesize scale       = _scale;
 @synthesize formatter   = _formatter;
 @synthesize lineColor   = _lineColor;
 @synthesize labelFont   = _labelFont;
@@ -35,7 +34,6 @@
     NSParameterAssert(_labelFont != nil);
     NSParameterAssert(_lineColor != nil);
     NSParameterAssert(_groups != nil);
-    NSParameterAssert(_labelHeight != 0);
     NSParameterAssert(_dataSource);
     NSParameterAssert([_dataSource respondsToSelector:@selector(axisXDrawing:locationForIndex:)]);
     
@@ -52,8 +50,9 @@
     
     NSString *date              = [_formatter stringForObjectValue:@(group.date)];
     CGSize size                 = [date sizeWithFont:_labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
-    
     CGFloat lastX               = CGFLOAT_MIN;
+    CGColorRef textColor        = _labelColor.CGColor;
+    
     for (DZHDrawingGroup *group in _groups)
     {
         int index               = group.endIndex;
@@ -71,17 +70,19 @@
             CGContextAddLines(context, (CGPoint[]){CGPointMake(x, rect.origin.y), CGPointMake(x, y)}, 2);
         }
         
-        if (centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
+        if (_labelHeight > 0 && centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
         {
             NSLog(@"显示   x轴日期:%d",group.date);
             NSString *date      = [_formatter stringForObjectValue:@(group.date)];
+            
             CGContextSaveGState(context);
+            CGContextSetFillColorWithColor(context, textColor);
             [self drawStrInRect:date
-                                     rect:tickRect
-                                     font:_labelFont
-                                    color:_labelColor
-                                alignment:NSTextAlignmentLeft];
+                           rect:tickRect
+                           font:_labelFont
+                      alignment:NSTextAlignmentLeft];
             CGContextRestoreGState(context);
+            
             lastX               = tickRect.origin.x;
         }
     }
@@ -89,9 +90,8 @@
     CGContextRestoreGState(context);
 }
 
-- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font color:(UIColor *)color alignment:(NSTextAlignment)alignment
+- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font alignment:(NSTextAlignment)alignment
 {
-	[color set];
 	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
 }
 

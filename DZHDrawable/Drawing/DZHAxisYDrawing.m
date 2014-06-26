@@ -11,7 +11,6 @@
 
 @implementation DZHAxisYDrawing
 
-@synthesize scale           = _scale;
 @synthesize formatter       = _formatter;
 @synthesize lineColor       = _lineColor;
 @synthesize labelFont       = _labelFont;
@@ -20,7 +19,7 @@
 @synthesize minTickCount    = _minTickCount;
 @synthesize strip           = _strip;
 @synthesize tickCount       = _tickCount;
-@synthesize tickLabelWidth  = _tickLabelWidth;
+@synthesize labelWidth      = _labelWidth;
 @synthesize max             = _max;
 @synthesize min             = _min;
 
@@ -74,7 +73,6 @@
     NSParameterAssert(_labelColor != nil);
     NSParameterAssert(_labelFont != nil);
     NSParameterAssert(_formatter != nil);
-    NSParameterAssert(_tickLabelWidth != 0);
     
     int max                         = self.max;
     int min                         = self.min;
@@ -89,6 +87,7 @@
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
     CGContextSetStrokeColorWithColor(context, _lineColor.CGColor);
+    CGContextSetFillColorWithColor(context, _labelColor.CGColor);
     
     for (int i = 0; i <= tickCount; i++)
     {
@@ -96,7 +95,7 @@
         
         CGFloat y                   = [self mappingAsixYValue:_max min:_min v:value top:topY bottom:bottomY];
         
-        CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + _tickLabelWidth, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
+        CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + _labelWidth, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
         CGContextStrokePath(context);
         
         CGFloat tickPosition;
@@ -107,24 +106,23 @@
         else
             tickPosition            = y - tickHeight * .5;
         
-        CGRect tickRect             = CGRectMake(rect.origin.x , tickPosition, _tickLabelWidth, tickHeight);
-        NSString *str               = [_formatter stringForObjectValue:@(value)];
-
-        CGContextSaveGState(context);
-        [self drawStrInRect:str
-                                 rect:tickRect
-                                 font:_labelFont
-                                color:_labelColor
-                            alignment:NSTextAlignmentLeft];
-        CGContextRestoreGState(context);
+        if (_labelWidth > 0)
+        {
+            CGRect tickRect             = CGRectMake(rect.origin.x , tickPosition, _labelWidth, tickHeight);
+            NSString *str               = [_formatter stringForObjectValue:@(value)];
+            
+            [self drawStrInRect:str
+                           rect:tickRect
+                           font:_labelFont
+                      alignment:NSTextAlignmentLeft];
+        }
     }
     
     CGContextRestoreGState(context);
 }
 
-- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font color:(UIColor *)color alignment:(NSTextAlignment)alignment
+- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font alignment:(NSTextAlignment)alignment
 {
-	[color set];
 	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
 }
 

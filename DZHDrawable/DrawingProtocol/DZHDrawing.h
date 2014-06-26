@@ -13,10 +13,6 @@
  */
 @protocol DZHDrawing <NSObject>
 
-@property (nonatomic) CGFloat scale;
-
-@property (nonatomic, assign) id<DZHDrawingCoordinateProvider> coordinateProvider;
-
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context;
 
 @end

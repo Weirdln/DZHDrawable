@@ -76,7 +76,7 @@
         _axisYDrawing.labelFont         = [UIFont systemFontOfSize:10.];
         _axisYDrawing.labelColor        = labelColor;
         _axisYDrawing.lineColor         = lineColor;
-        _axisYDrawing.tickLabelWidth    = self.yLabelWidth;
+        _axisYDrawing.labelWidth        = self.yLabelWidth;
         _axisYDrawing.minTickCount      = 4;
         _axisYDrawing.maxTickCount      = 4;
         
@@ -248,7 +248,6 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context        = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, rect);
     
     [self drawRect:rect withContext:context];
 }
@@ -347,7 +346,6 @@
     NSParameterAssert(groupStartIndex != NSIntegerMax);
     NSParameterAssert(groupEndIndex != NSIntegerMax);
     
-    /*计算最大值最小值，将需要显示组的左边组和右边组也包括进来，用于防止太频繁变动坐标*/
     groupStartIndex             = MAX(0, groupStartIndex);
     groupEndIndex               = MIN(groupEndIndex, [_groups count] - 1);
     

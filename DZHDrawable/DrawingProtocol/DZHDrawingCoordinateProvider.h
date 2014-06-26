@@ -17,12 +17,12 @@
  * 该索引数据对应的绘制起始位置x坐标
  * @param index 数据索引
  */
-- (CGFloat)beginCoordXForIndex:(NSUInteger)index;
+- (int)beginCoordXForIndex:(NSUInteger)index;
 
 /**
  * 该索引数据对应的绘制中点x坐标
  * @param index 数据索引
  */
-- (CGFloat)centerCoordXForIndex:(NSUInteger)index;
+- (int)centerCoordXForIndex:(NSUInteger)index;
 
 @end

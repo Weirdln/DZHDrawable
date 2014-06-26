@@ -10,8 +10,6 @@
 
 @implementation DZHRectangleDrawing
 
-@synthesize scale       = _scale;
-
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
     CGContextSaveGState(context);
