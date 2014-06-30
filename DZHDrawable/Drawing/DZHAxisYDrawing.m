@@ -7,137 +7,68 @@
 //
 
 #import "DZHAxisYDrawing.h"
-#import <CoreText/CoreText.h>
+#import "DZHAxisEntity.h"
 
 @implementation DZHAxisYDrawing
 
-@synthesize formatter       = _formatter;
-@synthesize lineColor       = _lineColor;
-@synthesize labelFont       = _labelFont;
-@synthesize labelColor      = _labelColor;
-@synthesize maxTickCount    = _maxTickCount;
-@synthesize minTickCount    = _minTickCount;
-@synthesize strip           = _strip;
-@synthesize tickCount       = _tickCount;
-@synthesize labelWidth      = _labelWidth;
-@synthesize max             = _max;
-@synthesize min             = _min;
-
-- (void)dealloc
+- (instancetype)init
 {
-    [_lineColor release];
-    [_labelColor release];
-    [_labelFont release];
-    [_formatter release];
-    [super dealloc];
-}
-
-- (void)prepareAndAdjustMaxIfNeedWithMax:(int *)max min:(int *)min
-{
-    int strip;
-    int maxValue    = *max;
-    int count       = [self _tickCountWithMax:maxValue min:*min strip:&strip];
-    
-    while (count == NSIntegerMax)
+    if (self = [super init])
     {
-        maxValue ++;
-        NSLog(@"调整后的最大值为:%d",maxValue);
-        count       = [self _tickCountWithMax:maxValue min:*min strip:&strip];
+        self.axisType           = AxisTypeY;
     }
-    
-    *max            = maxValue;
-    self.max        = maxValue;
-    self.min        = *min;
-    self.tickCount  = count;
-    self.strip      = strip;
-}
-
-- (int)_tickCountWithMax:(int)max min:(int)min strip:(int *)strip
-{
-    int v               = max - min;
-    for (int i = _maxTickCount - 1; i >= _minTickCount - 1; i--)
-    {
-        if (v % i == 0)
-        {
-            *strip      = v / i;
-            return i;
-        }
-    }
-    return NSIntegerMax;
+    return self;
 }
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(_tickCount != 0);
-    NSParameterAssert(_lineColor != nil);
-    NSParameterAssert(_labelColor != nil);
-    NSParameterAssert(_labelFont != nil);
-    NSParameterAssert(_formatter != nil);
+    NSParameterAssert(self.lineColor != nil);
+    NSParameterAssert(self.labelColor != nil);
+    NSParameterAssert(self.labelFont != nil);
+    NSParameterAssert(self.dataSource != nil);
     
-    int max                         = self.max;
-    int min                         = self.min;
-    [self prepareAndAdjustMaxIfNeedWithMax:&max min:&min];
+    NSArray *datas                  = [self.dataSource datasForDrawing:self];
+    if ([datas count] == 0)
+        return;
     
-    int strip                       = self.strip;
-    int tickCount                   = self.tickCount;
-    CGFloat topY                    = rect.origin.y;
-    CGFloat bottomY                 = CGRectGetMaxY(rect);
-    CGFloat tickHeight              = [@"xx.xx" sizeWithFont:_labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].height;
+    CGFloat tickHeight              = [@"xx.xx" sizeWithFont:self.labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].height;
+    NSInteger end                   = [datas count] - 1;
+    NSInteger idx                   = 0;
     
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
-    CGContextSetStrokeColorWithColor(context, _lineColor.CGColor);
-    CGContextSetFillColorWithColor(context, _labelColor.CGColor);
+    CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
+    CGContextSetFillColorWithColor(context, self.labelColor.CGColor);
     
-    for (int i = 0; i <= tickCount; i++)
+    for (DZHAxisEntity *entity in datas)
     {
-        int value                   = _min + strip * i;
+        CGFloat y                   = entity.location.y;
+        NSString *labelText         = entity.labelText;
         
-        CGFloat y                   = [self mappingAsixYValue:_max min:_min v:value top:topY bottom:bottomY];
-        
-        CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + _labelWidth, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
+        CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + self.labelSpace, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
         CGContextStrokePath(context);
         
         CGFloat tickPosition;
-        if (i == 0)
+        if (idx == 0)
             tickPosition            = y - tickHeight;
-        else if (i == tickCount)
+        else if (idx == end)
             tickPosition            = y;
         else
             tickPosition            = y - tickHeight * .5;
         
-        if (_labelWidth > 0)
+        if (self.labelSpace > 0)
         {
-            CGRect tickRect             = CGRectMake(rect.origin.x , tickPosition, _labelWidth, tickHeight);
-            NSString *str               = [_formatter stringForObjectValue:@(value)];
+            CGRect tickRect             = CGRectMake(rect.origin.x , tickPosition, self.labelSpace, tickHeight);
             
-            [self drawStrInRect:str
+            [self drawStrInRect:labelText
                            rect:tickRect
-                           font:_labelFont
+                           font:self.labelFont
                       alignment:NSTextAlignmentLeft];
         }
+        
+        idx ++;
     }
-    
     CGContextRestoreGState(context);
-}
-
-- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font alignment:(NSTextAlignment)alignment
-{
-	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
-}
-
-- (float)mappingAsixYValue:(float)max min:(float)min v:(float)v top:(float)top bottom:(float)bottom
-{
-	float y;
-	
-	if (max == min)
-		y = bottom;
-	else if (v <= max && v >= min)
-		y = bottom - (v - min)/(max - min)*(bottom - top);
-	else
-		y = (v < min) ? bottom : top;
-	
-	return y;
 }
 
 @end

@@ -10,6 +10,16 @@
 
 @implementation DZHKLineDateFormatter
 
+- (int)monthOfDate:(int)date
+{
+    return (date % 10000)/100;
+}
+
+- (int)yearMonthOfDate:(int)date
+{
+    return date/100;
+}
+
 - (NSString *)stringForObjectValue:(id)obj
 {
     int date    = [obj intValue];

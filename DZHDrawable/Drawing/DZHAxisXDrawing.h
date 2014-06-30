@@ -6,23 +6,8 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import "DZHAxisDrawing.h"
+#import "DZHAxisDrawingBase.h"
 
-@class DZHAxisXDrawing;
-
-@protocol DZHAxisXDrawingDataSource <NSObject>
-
-- (CGFloat)axisXDrawing:(DZHAxisXDrawing *)drawing locationForIndex:(NSUInteger)index;
-
-@end
-
-@interface DZHAxisXDrawing : NSObject<DZHAxisDrawing>
-
-@property (nonatomic,assign) id<DZHAxisXDrawingDataSource> dataSource;
-
-@property (nonatomic) CGFloat labelHeight;
-
-@property (nonatomic, retain) NSArray *groups;
+@interface DZHAxisXDrawing : DZHAxisDrawingBase
 
 @end

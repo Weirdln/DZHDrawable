@@ -8,10 +8,14 @@
 
 #import "DZHDrawing.h"
 
+@protocol DZHDrawingContainerDelegate;
+
 /**
  * 绘制容器，用于管理绘制对象绘制位置
  */
-@protocol DZHDrawingContainer <DZHDrawing>
+@protocol DZHDrawingContainer <NSObject>
+
+@property (nonatomic, assign)id<DZHDrawingContainerDelegate> containerDelegate;
 
 /**
  * 在指定位置添加一个绘制对象
@@ -21,11 +25,27 @@
 - (void)addDrawing:(id<DZHDrawing>)drawing atVirtualRect:(CGRect)rect;
 
 /**
+ * 从容器中移除对象
+ * @param drawing 绘制对象
+ */
+- (void)removeDrawing:(id<DZHDrawing>)drawing;
+
+/**
  * 将绘制对象的虚拟位置转换为当前进行绘制的实际区域，如在一个ScrollView上进行绘制时，滚动时绘制区域会变化，需进行转换
  * @param rect 虚拟的位置
  * @param currentRect 容器当前的绘制区域
  * @returns 图像绘制对象需要进行绘制的区域
  */
 - (CGRect)realRectForVirtualRect:(CGRect)virtualRect currentRect:(CGRect)currentRect;
+
+@end
+
+@protocol DZHDrawingContainerDelegate <NSObject>
+
+@optional
+
+- (void)prepareContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect;
+
+- (void)completeContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect;
 
 @end

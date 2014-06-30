@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "DZHDrawing.h"
+#import "DZHDrawingBase.h"
 
-@interface DZHRectangleDrawing : NSObject<DZHDrawing>
+@interface DZHRectangleDrawing : DZHDrawingBase<DZHDrawing>
 
 @property (nonatomic, retain)UIColor *lineColor;
 

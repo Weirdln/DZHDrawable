@@ -1,39 +1,21 @@
 //
-//  DZHKLineView.h
-//  DzhIPhone
+//  DZHKLineViewController.h
+//  DZHDrawable
 //
-//  Created by Duanwwu on 14-6-20.
+//  Created by Duanwwu on 14-6-27.
+//  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
-//
 
-#import "DZHKLineDrawing.h"
-#import "DZHAxisXDrawing.h"
-#import "DZHDrawingContainer.h"
+#import <UIKit/UIKit.h>
 
-@class DZHAxisYDrawing;
-@class DZHRectangleDrawing;
+@class DZHKLineEntity;
 
-@interface DZHKLineView : UIScrollView<DZHKLineDrawingDataSource,DZHAxisXDrawingDataSource,DZHDrawingContainer>
-{
-    DZHKLineDrawing                 *_kLineDrawing;
-    DZHAxisXDrawing                 *_axisXDrawing;
-    DZHAxisYDrawing                 *_axisYDrawing;
-    DZHRectangleDrawing             *_rectDrawing;
-    
-    UILabel                         *_tipLable;
-}
+@interface DZHKLineViewController : UIViewController
 
-@property (nonatomic, retain) NSArray *klines;
-
-@property (nonatomic) CGFloat scale;//缩放比例
-
-@property (nonatomic) CGFloat kLineWidth; //k线实体宽度
-
-@property (nonatomic) CGFloat kLinePadding; //k线之间间距
 
 @end
 
-@interface DZHKLineView (abstract)
+@interface DZHKLineViewController (Abstract)
 
 /**
  * 计算指定区域内可绘制k线的起始结束索引
@@ -41,7 +23,16 @@
  * @returns startIndex:绘制k线起始索引
  * @returns endIndex:绘制k线结束索引
  */
-- (void)needDrawKLinesInRect:(CGRect)rect startIndex:(int *)startIndex endIndex:(int *)endIndex;
+- (void)needDrawKLinesInRect:(CGRect)rect startIndex:(NSInteger *)startIndex endIndex:(NSInteger *)endIndex;
+
+/**
+ * 计算范围内k线数据的最大值最小值
+ * @param from 计算开始索引
+ * @param to 计算结束索引
+ * @returns maxPrice 最大价格
+ * @returns minPrice 最小价格
+ */
+- (void)calculateMaxPrice:(NSInteger *)maxPrice minPrice:(NSInteger *)minPrice fromIndex:(NSInteger)from toIndex:(NSInteger)to;
 
 /**
  * 绘制所有k线需要的宽度
@@ -76,5 +67,22 @@
  * @returns 该位置k线索引
  */
 - (NSUInteger)nearIndexForLocation:(CGFloat)position;
+
+@end
+
+/**
+ * 对k线数据进行分组,分组以一个月为单位
+ */
+@interface DZHKLineViewController (Group)
+
+- (void)decisionGroupIfNeedWithPreEntity:(DZHKLineEntity *)preEntity curEntity:(DZHKLineEntity *)curEntity index:(int)index;
+
+- (NSArray *)groupsFromIndex:(NSInteger)from toIndex:(NSInteger)to monthInterval:(int)interval;
+
+@end
+
+@interface DZHKLineViewController (KLineData)
+
+- (NSArray *)candleDatas;
 
 @end

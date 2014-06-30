@@ -62,7 +62,7 @@
 
 - (NSString *) FormatDStr:(float)v len:(int)len dig:(int)dig
 {
-	int ln, rn;
+	NSInteger ln, rn;
 	char floatstr[64];
 	char temp[2];
 	char formatStr[10];
@@ -90,7 +90,7 @@
         subrang.location 	= ln + 1;
         subrang.length 		= MAX(rn, 0);
         NSString *rightstro = [vv substringWithRange:subrang];
-        int over 			= [vv length] - len;
+        NSInteger over 			= [vv length] - len;
         
         if (over > 0)
         {

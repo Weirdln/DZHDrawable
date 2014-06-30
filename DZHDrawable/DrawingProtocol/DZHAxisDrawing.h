@@ -8,13 +8,21 @@
 
 #import "DZHDrawing.h"
 
+@protocol DZHAxisDrawingDataSource;
+
+typedef enum
+{
+    AxisTypeX,  //x轴
+    AxisTypeY   //y轴
+}AxisType;
+
 /**
  * 坐标轴绘制对象
  */
 @protocol DZHAxisDrawing <DZHDrawing>
 
-/**格式化数据，通过数据获取绘制文本*/
-@property (nonatomic, retain) NSFormatter *formatter;
+/**坐标类型，暂只支持x与y类型*/
+@property (nonatomic, assign) AxisType axisType;
 
 /**线条颜色*/
 @property (nonatomic, retain) UIColor *lineColor;
@@ -25,10 +33,8 @@
 /**文字字体*/
 @property (nonatomic, retain) UIFont *labelFont;
 
-@end
-
-@protocol DZHAxisDrawingDataSource <NSObject>
-
-- (NSArray *)axisDatasForDrawing:(id<DZHAxisDrawing>)drawing;
+/**x轴为文字高度，y轴为文字宽度*/
+@property (nonatomic, assign) int labelSpace;
 
 @end
+

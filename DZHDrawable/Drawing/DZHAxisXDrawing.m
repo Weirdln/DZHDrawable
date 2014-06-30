@@ -7,79 +7,64 @@
 //
 
 #import "DZHAxisXDrawing.h"
-#import "DZHKLineEntity.h"
+#import "DZHAxisEntity.h"
 
 @implementation DZHAxisXDrawing
 
-@synthesize formatter   = _formatter;
-@synthesize lineColor   = _lineColor;
-@synthesize labelFont   = _labelFont;
-@synthesize labelColor  = _labelColor;
-
-- (void)dealloc
+- (instancetype)init
 {
-    [_formatter release];
-    [_labelColor release];
-    [_labelFont release];
-    [_lineColor release];
-    
-    [_groups release];
-    [super dealloc];
+    if (self = [super init])
+    {
+        self.axisType           = AxisTypeX;
+    }
+    return self;
 }
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(_formatter != nil);
-    NSParameterAssert(_labelColor != nil);
-    NSParameterAssert(_labelFont != nil);
-    NSParameterAssert(_lineColor != nil);
-    NSParameterAssert(_groups != nil);
-    NSParameterAssert(_dataSource);
-    NSParameterAssert([_dataSource respondsToSelector:@selector(axisXDrawing:locationForIndex:)]);
+    NSParameterAssert(self.labelColor != nil);
+    NSParameterAssert(self.labelFont != nil);
+    NSParameterAssert(self.lineColor != nil);
+    NSParameterAssert(self.dataSource);
     
-    DZHDrawingGroup *group      = [_groups firstObject];
-    if (!group)
+    NSArray *datas              = [self.dataSource datasForDrawing:self];
+    if ([datas count] == 0)
         return;
-
+    
+    DZHAxisEntity *entity       = [datas firstObject];
     CGFloat maxX                = CGRectGetMaxX(rect);
-    CGFloat y                   = CGRectGetMaxY(rect) - _labelHeight;
+    CGFloat y                   = CGRectGetMaxY(rect) - self.labelSpace;
     
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
-    CGContextSetStrokeColorWithColor(context, _lineColor.CGColor);
+    CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
     
-    NSString *date              = [_formatter stringForObjectValue:@(group.date)];
-    CGSize size                 = [date sizeWithFont:_labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
+    CGSize size                 = [entity.labelText sizeWithFont:self.labelFont constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
     CGFloat lastX               = CGFLOAT_MIN;
-    CGColorRef textColor        = _labelColor.CGColor;
+    CGColorRef textColor        = self.labelColor.CGColor;
     
-    for (DZHDrawingGroup *group in _groups)
+    for (DZHAxisEntity *entity in datas)
     {
-        int index               = group.endIndex;
-        CGFloat x               = [_dataSource axisXDrawing:self locationForIndex:index];
+        CGFloat x               = entity.location.x;
+        NSString *labelText     = entity.labelText;
         CGRect tickRect         = CGRectMake(x - size.width * .5, y, size.width, size.height);
         CGFloat centerX         = CGRectGetMidX(tickRect);
         
         if (tickRect.origin.x - lastX < size.width)
             continue;
         
-        NSLog(@"x轴日期:%d",group.date);
-        
         if (x > rect.origin.x && x < maxX) //只有在范围内的才绘制
         {
             CGContextAddLines(context, (CGPoint[]){CGPointMake(x, rect.origin.y), CGPointMake(x, y)}, 2);
         }
         
-        if (_labelHeight > 0 && centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
+        if (self.labelSpace > 0 && centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
         {
-            NSLog(@"显示   x轴日期:%d",group.date);
-            NSString *date      = [_formatter stringForObjectValue:@(group.date)];
-            
             CGContextSaveGState(context);
             CGContextSetFillColorWithColor(context, textColor);
-            [self drawStrInRect:date
+            [self drawStrInRect:labelText
                            rect:tickRect
-                           font:_labelFont
+                           font:self.labelFont
                       alignment:NSTextAlignmentLeft];
             CGContextRestoreGState(context);
             
@@ -88,11 +73,6 @@
     }
     CGContextStrokePath(context);
     CGContextRestoreGState(context);
-}
-
-- (void)drawStrInRect:(NSString *)str rect:(CGRect)rect font:(UIFont *)font alignment:(NSTextAlignment)alignment
-{
-	[str drawInRect:rect withFont:font lineBreakMode:NSLineBreakByClipping alignment:alignment];
 }
 
 @end

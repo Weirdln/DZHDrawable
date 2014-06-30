@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "DZHKLineViewController.h"
 
 @implementation AppDelegate
 
@@ -20,7 +20,8 @@
     application.statusBarHidden     = NO;
     application.statusBarStyle      = UIStatusBarStyleDefault;
     
-    ViewController *controller      = [[ViewController alloc] init];
+//    ViewController *controller      = [[ViewController alloc] init];
+    DZHKLineViewController *controller = [[DZHKLineViewController alloc] init];
     
     UINavigationController *nav     = [[UINavigationController alloc] initWithRootViewController:controller];
     window.rootViewController       = nav;

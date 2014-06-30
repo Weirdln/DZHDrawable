@@ -6,42 +6,10 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import "DZHDrawing.h"
 #import "DZHKLineEntity.h"
+#import "DZHDrawingBase.h"
 
-@protocol DZHKLineDrawing <DZHDrawing>
-
-/**最大价格*/
-@property (nonatomic)int maxPrice;
-
-/**最小价格*/
-@property (nonatomic)int minPrice;
-
-/**k线数据*/
-@property (nonatomic, retain) NSArray *kLineDatas;
-
-@end
-
-@protocol DZHKLineDrawingDataSource <NSObject>
-
-- (CGFloat)widthForKLine:(id<DZHKLineDrawing>)drawing;
-
-- (CGFloat)kLineDrawing:(id<DZHKLineDrawing>)drawing locationForIndex:(NSUInteger)index;
-
-@end
-
-@interface DZHKLineDrawing : NSObject<DZHKLineDrawing>
-
-@property (nonatomic, assign) id<DZHKLineDrawingDataSource> dataSource;
-
-/**k线数据起始索引*/
-@property (nonatomic) NSUInteger fromIndex;
-
-/**k线数据结束索引*/
-@property (nonatomic) NSUInteger toIndex;
-
-#pragma mark - 属性设置
+@interface DZHKLineDrawing : DZHDrawingBase
 
 /**
  * 设置不同k线绘制时的颜色

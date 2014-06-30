@@ -10,4 +10,8 @@
 
 @interface DZHKLineDateFormatter : NSFormatter
 
+- (int)monthOfDate:(int)date;
+
+- (int)yearMonthOfDate:(int)date;
+
 @end
