@@ -26,19 +26,19 @@
     
 }
 
-- (float)coordYWithValue:(float)v max:(float)max min:(float)min
+- (int)coordYWithValue:(float)v max:(float)max min:(float)min
 {
     return [self coordYWithValue:v max:max min:min top:_virtualFrame.origin.y bottom:CGRectGetMaxY(_virtualFrame)];
 }
 
-- (float)coordYWithValue:(float)v max:(float)max min:(float)min top:(float)top bottom:(float)bottom
+- (int)coordYWithValue:(float)v max:(float)max min:(float)min top:(float)top bottom:(float)bottom
 {
 	float y;
 	
 	if (max == min)
 		y = bottom;
 	else if (v <= max && v >= min)
-		y = bottom - (v - min)/(max - min)*(bottom - top);
+		y = roundf(bottom - (v - min)/(max - min)*(bottom - top));
 	else
 		y = (v < min) ? bottom : top;
 	

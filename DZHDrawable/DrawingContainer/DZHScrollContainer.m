@@ -33,7 +33,7 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context        = UIGraphicsGetCurrentContext();
-    
+
     if (_containerDelegate && [_containerDelegate respondsToSelector:@selector(prepareContainerDrawing:rect:)])
     {
         [_containerDelegate prepareContainerDrawing:self rect:rect];

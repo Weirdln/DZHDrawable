@@ -8,58 +8,24 @@
 
 #import "DZHKLineViewController.h"
 #import "UIColor+RGB.h"
-#import "DZHKLineDrawing.h"
-#import "DZHAxisYDrawing.h"
-#import "DZHAxisXDrawing.h"
-#import "DZHRectangleDrawing.h"
-#import "DZHKLineValueFormatter.h"
-#import "DZHKLineDateFormatter.h"
+#import "DZHKLineDataSource.h"
 #import "DZHKLineContainer.h"
-#import "DZHAxisEntity.h"
-#import "DZHCandleEntity.h"
+#import "DZHRectangleDrawing.h"
+#import "DZHAxisXDrawing.h"
+#import "DZHAxisYDrawing.h"
+#import "DZHKLineDrawing.h"
 
-@interface DZHKLineViewController ()<DZHDrawingDelegate,DZHDrawingDataSource,DZHDrawingContainerDelegate,DZHKLineContainerDelegate,UIScrollViewDelegate>
+@interface DZHKLineViewController ()<DZHKLineContainerDelegate,UIScrollViewDelegate>
 
-@property (nonatomic, retain) NSArray *klines;
-
-@property (nonatomic, retain) NSMutableArray *grouping;
-
-@property (nonatomic) NSInteger startIndex;
-
-@property (nonatomic) NSInteger endIndex;
-
-@property (nonatomic) NSInteger max;
-
-@property (nonatomic) NSInteger min;
-
-@property (nonatomic) CGFloat scale;//缩放比例
-
-@property (nonatomic) CGFloat minScale;
-
-@property (nonatomic) CGFloat maxScale;
-
-@property (nonatomic) CGFloat kLineWidth; //k线实体宽度
-
-@property (nonatomic) CGFloat kLinePadding; //k线之间间距
-
-@property (nonatomic) NSInteger minTickCount;/**y轴刻度最少个数*/
-
-@property (nonatomic) NSInteger maxTickCount;/**y轴刻度最多个数*/
-
-@property (nonatomic) NSInteger tickCount;/**刻度个数*/
+@property (nonatomic, assign) NSUInteger centerIndex;
 
 @end
 
 @implementation DZHKLineViewController
 {
-    DZHKLineDateFormatter           *_dateFormatter;
-    DZHKLineValueFormatter          *_valueFormatter;
-    DZHKLineContainer               *kLineContainer;
-    DZHKLineDrawing                 *klineDrawing;
-    
-    UIColor                         *positiveColor;
-    UIColor                         *negativeColor;
-    UIColor                         *crossColor;
+    DZHKLineDataSource                  *_dataSource;
+    DZHKLineContainer                   *kLineContainer;
+    DZHKLineDrawing                     *klineDrawing;
 }
 
 - (id)init
@@ -67,28 +33,13 @@
     self = [super init];
     if (self)
     {
-        self.grouping                   = [NSMutableArray array];
-        self.kLineWidth                 = 2.;
-        self.kLinePadding               = 2.;
-        self.minTickCount               = 4;
-        self.maxTickCount               = 4;
-        self.scale                      = 1.;
-        self.maxScale                   = 3.;
-        self.minScale                   = .5;
-        _dateFormatter                  = [[DZHKLineDateFormatter alloc] init];
-        _valueFormatter                 = [[DZHKLineValueFormatter alloc] init];
-        
-        positiveColor                   = [UIColor colorFromRGB:0xf92a27];
-        negativeColor                   = [UIColor colorFromRGB:0x2b9826];
-        crossColor                      = [UIColor grayColor];
+        _dataSource             = [[DZHKLineDataSource alloc] init];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [_dateFormatter release];
-    [_valueFormatter release];
     [super dealloc];
 }
 
@@ -120,6 +71,7 @@
     kLineContainer.kLineDelegate        = self;
     kLineContainer.containerDelegate    = self;
     [self.view addSubview:kLineContainer];
+    [kLineContainer release];
     
     UIColor *lineColor                  = [UIColor colorFromRGB:0x1e2630];
     UIColor *labelColor                 = [UIColor colorFromRGB:0x707880];
@@ -128,34 +80,38 @@
     DZHRectangleDrawing *rectDrawing    = [[DZHRectangleDrawing alloc] init];
     rectDrawing.lineColor               = lineColor;
     [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., .0, 260., 160.)];
+    [rectDrawing release];
     
     //画x轴的直线
     DZHAxisXDrawing *axisXDrawing       = [[DZHAxisXDrawing alloc] init];
-    axisXDrawing.dataSource             = self;
+    axisXDrawing.dataSource             = _dataSource;
     axisXDrawing.labelColor             = labelColor;
     axisXDrawing.lineColor              = lineColor;
     axisXDrawing.labelFont              = [UIFont systemFontOfSize:10.];
     axisXDrawing.labelSpace             = 20.;
     [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., .0, 260., 180.)];
+    [axisXDrawing release];
     
     //画y轴的直线
     DZHAxisYDrawing *axisYDrawing       = [[DZHAxisYDrawing alloc] init];
-    axisYDrawing.dataSource             = self;
-    axisYDrawing.delegate               = self;
+    axisYDrawing.dataSource             = _dataSource;
     axisYDrawing.labelFont              = [UIFont systemFontOfSize:10.];
     axisYDrawing.labelColor             = labelColor;
     axisYDrawing.lineColor              = lineColor;
     axisYDrawing.labelSpace             = 20.;
     [kLineContainer addDrawing:axisYDrawing atVirtualRect:CGRectMake(.0, 5., 280., 150.)];
+    [axisYDrawing release];
     
     //画k线
     klineDrawing                        = [[DZHKLineDrawing alloc] init];
-    klineDrawing.delegate               = self;
-    klineDrawing.dataSource             = self;
+    klineDrawing.dataSource             = _dataSource;
     [klineDrawing setColor:[UIColor colorFromRGB:0xf92a27] forType:KLineTypePositive];
     [klineDrawing setColor:[UIColor colorFromRGB:0x2b9826] forType:KLineTypeNegative];
     [klineDrawing setColor:[UIColor grayColor] forType:KLineTypeCross];
     [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
+    [klineDrawing release];
+    
+    _dataSource.kLineOffset             = 20.;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -171,134 +127,19 @@
     [klines addObjectsFromArray:datas];
     [klines addObjectsFromArray:datas];
     [klines addObjectsFromArray:datas];
-    self.klines              = klines;
+    _dataSource.klines              = klines;
+    
+    [self changeScrollContainerContentSize:CGSizeMake([self _getContainerWidth], kLineContainer.frame.size.height)];
+}
+
+- (CGFloat)_getContainerWidth
+{
+    return [_dataSource totalKLineWidth] + kLineContainer.frame.size.width - klineDrawing.virtualFrame.size.width;
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)setKlines:(NSArray *)klines
-{
-    if (_klines != klines)
-    {
-        [_klines release];
-        _klines                             = [klines retain];
-        
-        CGFloat width                   = [self totalKLineWidth];
-        [self changeScrollContainerContentSize:CGSizeMake(width, 0)];
-        
-        [_grouping removeAllObjects];
-        int idx                             = 0;
-        
-        DZHKLineEntity *lastEntity;
-        for (DZHKLineEntity *entity in _klines)
-        {
-            if (idx != 0)
-                [self decisionGroupIfNeedWithPreEntity:lastEntity curEntity:entity index:idx];
-            
-            lastEntity          = entity;
-            idx ++;
-        }
-    }
-}
-
-- (CGFloat)_getKLineWidth
-{
-    return _kLineWidth * _scale;
-}
-
-- (CGFloat)_getKlinePadding
-{
-    return _kLinePadding * _scale;
-}
-
-- (void)_getKLineMaxPrice:(NSInteger *)maxPrice minPrice:(NSInteger *)minPrice fromIndex:(NSInteger)from toIndex:(NSInteger)to
-{
-    NSInteger max                     = NSIntegerMin;
-    NSInteger min                     = NSIntegerMax;
-    
-    for (NSInteger i = from; i <= to; i++)
-    {
-        DZHKLineEntity *entity  = [_klines objectAtIndex:i];
-        
-        if (entity.high > max)
-            max        = entity.high;
-        
-        if (entity.low < min)
-            min        = entity.low;
-    }
-    
-    *minPrice                           = min;
-    *maxPrice                           = max;
-}
-
-#pragma mark - DZHDrawingDataSource
-
-- (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing
-{
-    if ([drawing isKindOfClass:[DZHAxisXDrawing class]])
-    {
-        return [self groupsFromIndex:_startIndex toIndex:_endIndex monthInterval:2];
-    }
-    else if ([drawing isKindOfClass:[DZHAxisYDrawing class]])
-    {
-        NSInteger tickCount,strip;
-        
-        [self prepareAndAdjustMaxIfNeed:&tickCount strip:&strip];
-        
-        NSMutableArray *datas       = [NSMutableArray array];
-        
-        for (int i = 0; i <= tickCount; i++)
-        {
-            NSInteger value             = self.min + strip * i;
-            CGFloat y                   = [drawing coordYWithValue:value max:_max min:_min];
-            
-            DZHAxisEntity *entity   = [[DZHAxisEntity alloc] init];
-            entity.location         = CGPointMake(.0, y);
-            entity.labelText        = [_valueFormatter stringForObjectValue:@(value)];
-            [datas addObject:entity];
-            [entity release];
-        }
-        return datas;
-    }
-    else if ([drawing isKindOfClass:[DZHKLineDrawing class]])
-    {
-        return [self candleDatas];
-    }
-    return nil;
-}
-
-- (void)prepareAndAdjustMaxIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip
-{
-    NSInteger maxValue    = self.max;
-    NSInteger min         = self.min;
-    
-    NSInteger count = [self _tickCountWithMax:maxValue min:min strip:strip];
-    
-    while (count == NSIntegerMax)
-    {
-        maxValue ++;
-        count       = [self _tickCountWithMax:maxValue min:min strip:strip];
-    }
-    
-    *tickCount      = count;
-    self.max        = maxValue;
-}
-
-- (NSInteger)_tickCountWithMax:(NSInteger)max min:(NSInteger)min strip:(NSInteger *)strip
-{
-    NSInteger v               = max - min;
-    for (NSInteger i = _maxTickCount - 1; i >= _minTickCount - 1; i--)
-    {
-        if (v % i == 0)
-        {
-            *strip      = v / i;
-            return i;
-        }
-    }
-    return NSIntegerMax;
 }
 
 - (void)changeScrollContainerContentSize:(CGSize)size
@@ -316,62 +157,47 @@
 
 - (void)prepareContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect
 {
-    CGRect realRect         = [drawing realRectForVirtualRect:klineDrawing.virtualFrame currentRect:rect];
-    [self needDrawKLinesInRect:realRect startIndex:&_startIndex endIndex:&_endIndex];
-    [self calculateMaxPrice:&_max minPrice:&_min fromIndex:_startIndex toIndex:_endIndex];
+    CGRect realRect             = [drawing realRectForVirtualRect:klineDrawing.virtualFrame currentRect:rect];
+    [_dataSource prepareWithKLineRect:realRect];
 }
 
 #pragma mark -  DZHKLineContainerDelegate
 
 - (CGFloat)scaledOfkLineContainer:(DZHKLineContainer *)container
 {
-    return self.scale;
+    self.centerIndex            = (_dataSource.startIndex + _dataSource.endIndex) * .5;
+    return _dataSource.scale;
 }
 
 - (void)kLineContainer:(DZHKLineContainer *)container scaled:(CGFloat)scale
 {
     CGRect frame                = container.frame;
-    CGFloat centerPosition      = container.contentOffset.x + frame.size.width * .5;
-    NSUInteger index            = [self nearIndexForLocation:centerPosition];
+    _dataSource.scale           = scale;
+    CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];
+    container.contentSize       = CGSizeMake([self _getContainerWidth], frame.size.height);
     
-    if (scale > _maxScale)
-        self.scale              = _maxScale;
-    else if (scale < _minScale)
-        self.scale              = _minScale;
+    if (container.contentOffset.x == 0)
+    {
+        [container setNeedsDisplay];
+    }
     else
-        self.scale              = scale;
-    
-    CGFloat newPosition         = [self kLineLocationForIndex:index];
-    container.contentSize       = CGSizeMake([self totalKLineWidth], frame.size.height);
-    
-    [container scrollRectToVisible:CGRectMake(newPosition - frame.size.width * .5, .0, frame.size.width, frame.size.height) animated:NO];
-    
-//    CGRect frame                = container.frame;
-//    CGFloat oldScale            = self.scale;
-//    CGPoint offset              = container.contentOffset;
-//    if (scale > _maxScale)
-//        self.scale              = _maxScale;
-//    else if (scale < _minScale)
-//        self.scale              = _minScale;
-//    else
-//        self.scale              = scale;
-//    
-//    CGFloat diff                = (self.scale - oldScale) * container.contentSize.width;
-//    NSLog(@"%f",diff);
-//    
-//    [container scrollRectToVisible:CGRectMake(MIN(offset.x + diff, 0), .0, frame.size.width, frame.size.height) animated:NO];
+    {
+        [container scrollRectToVisible:CGRectMake(newPosition - frame.size.width * .5, .0, frame.size.width, frame.size.height) animated:NO];
+    }
 }
 
 - (void)kLineContainer:(DZHKLineContainer *)container longPressLocation:(CGPoint)point state:(UIGestureRecognizerState)state
 {
-    NSUInteger index    = [self indexForLocation:point.x];
+    NSUInteger index    = [_dataSource nearIndexForLocation:point.x];
     if (index == NSUIntegerMax)
     {
         NSLog(@"无对应K线数据");
     }
     else
     {
-        DZHKLineEntity *entity  = [_klines objectAtIndex:index];
+        DZHKLineEntity *entity  = [_dataSource.klines objectAtIndex:index];
+        
+        NSLog(@"对应索引:%d 日期:%d",index,entity.date);
     }
 }
 
@@ -384,176 +210,4 @@
 
 @end
 
-#pragma mark - abstract
-
-@implementation DZHKLineViewController (Abstract)
-
-- (void)needDrawKLinesInRect:(CGRect)rect startIndex:(NSInteger *)startIndex endIndex:(NSInteger *)endIndex
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    CGFloat start               = klineDrawing.virtualFrame.origin.x;
-    *startIndex                 = MAX((rect.origin.x - kPadding - start)/space , 0);
-    *endIndex                   = MIN((CGRectGetMaxX(rect) - kPadding - start)/space , [_klines count] - 1);
-}
-
-- (void)calculateMaxPrice:(NSInteger *)maxPrice minPrice:(NSInteger *)minPrice fromIndex:(NSInteger)from toIndex:(NSInteger)to
-{
-    NSInteger max                     = NSIntegerMin;
-    NSInteger min                     = NSIntegerMax;
-    
-    for (NSInteger i = from; i <= to; i++)
-    {
-        DZHKLineEntity *entity  = [_klines objectAtIndex:i];
-        
-        if (entity.high > max)
-            max        = entity.high;
-        
-        if (entity.low < min)
-            min        = entity.low;
-    }
-    
-    *minPrice                           = min;
-    *maxPrice                           = max;
-}
-
-- (CGFloat)totalKLineWidth
-{
-    CGFloat kLineWidth          = [self _getKLineWidth];
-    CGFloat kLinePadding        = [self _getKlinePadding];
-    CGFloat mainWidth           = [self.klines count] * (kLineWidth + kLinePadding) + kLinePadding;
-    
-    return mainWidth + kLineContainer.frame.size.width - klineDrawing.virtualFrame.size.width;
-}
-
-- (CGFloat)kLineLocationForIndex:(NSUInteger)index
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    return klineDrawing.virtualFrame.origin.x + kPadding + index * space;
-}
-
-- (CGFloat)kLineCenterLocationForIndex:(NSUInteger)index
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    return klineDrawing.virtualFrame.origin.x + kPadding + index * space + kWidth * .5;
-}
-
-- (NSUInteger)indexForLocation:(CGFloat)position
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    CGFloat v                   = (position - kPadding - klineDrawing.virtualFrame.origin.x) / space ;
-    int mode                    = ((int)(v * 100)) %100;
-    int scale                   = kWidth / space * 100;
-    return mode > scale ? NSUIntegerMax : v;
-}
-
-- (NSUInteger)nearIndexForLocation:(CGFloat)position
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    CGFloat index               = (position - kPadding - klineDrawing.virtualFrame.origin.x) / space;
-    return index;
-}
-
-@end
-
-@implementation DZHKLineViewController (Group)
-
-- (void)decisionGroupIfNeedWithPreEntity:(DZHKLineEntity *)preEntity curEntity:(DZHKLineEntity *)curEntity index:(int)index
-{
-    int preMonth        = [_dateFormatter yearMonthOfDate:preEntity.date];
-    int curMonth        = [_dateFormatter yearMonthOfDate:curEntity.date];
-    
-    if (preMonth != curMonth)//如果当前数据跟上一个数据不在一个月，则进行分组
-    {
-        [self.grouping addObject:[NSString stringWithFormat:@"%d%d",curEntity.date,index]];
-    }
-}
-
-- (NSArray *)groupsFromIndex:(NSInteger)from toIndex:(NSInteger)to monthInterval:(int)interval
-{
-    NSParameterAssert(interval >= 1);
-    
-    NSMutableArray *datas           = [NSMutableArray array];
-    
-    NSInteger count                 = [self.grouping count];
-    int mode                        = count % interval;
-    int startIndex                  = mode == 0 ? 0 : mode + 1;
-    
-    for (int i = startIndex; i <count; i += interval)
-    {
-        NSString *str               = [_grouping objectAtIndex:i];
-        int index                   = [[str substringFromIndex:8] intValue];
-        
-        if (index >= from && index <= to)
-        {
-            CGFloat x               = [self kLineCenterLocationForIndex:index];
-            int date                = [[str substringToIndex:8] intValue];
-            
-            DZHAxisEntity *entity   = [[DZHAxisEntity alloc] init];
-            entity.location         = CGPointMake(x, 0.);
-            entity.labelText        = [_dateFormatter stringForObjectValue:@(date)];
-            [datas addObject:entity];
-            [entity release];
-        }
-        
-        if (index > to)
-            break;
-        
-    }
-    return datas;
-}
-
-@end
-
-@implementation DZHKLineViewController (KLineData)
-
-- (NSArray *)candleDatas
-{
-    NSInteger max               = self.max;
-    NSInteger min               = self.min;
-    NSUInteger startIndex       = self.startIndex;   //绘制起始点
-    NSUInteger endIndex         = self.endIndex;     //绘制结束点
-    CGFloat kWidth              = [self _getKLineWidth];
-    NSArray *klines             = self.klines;
-    NSMutableArray *datas       = [NSMutableArray array];
-   
-    CGFloat open,close,high,low,x,center;
-    CGRect fillRect;
-    DZHKLineEntity *entity;
-    DZHCandleEntity *candle;
-    
-    for (NSUInteger i = startIndex; i <= endIndex; i++)
-    {
-        entity                  = [klines objectAtIndex:i];
-        
-        open                    = [klineDrawing coordYWithValue:entity.open max:max min:min];
-        close                   = [klineDrawing coordYWithValue:entity.close max:max min:min];
-        high                    = [klineDrawing coordYWithValue:entity.high max:max min:min];
-        low                     = [klineDrawing coordYWithValue:entity.low max:max min:min];
-        
-        x                       = [self kLineLocationForIndex:i];
-        fillRect                = CGRectMake(x, MIN(open, close), kWidth, MAX(ABS(open - close), 1.));
-        center                  = CGRectGetMidX(fillRect);
-        
-        candle                  = [[DZHCandleEntity alloc] init];
-        candle.fillRect         = fillRect;
-        candle.high             = CGPointMake(center, high);
-        candle.low              = CGPointMake(center, low);
-        candle.kLineType        = entity.type;
-        [datas addObject:candle];
-        [candle release];
-    }
-    return datas;
-}
-
-@end
 

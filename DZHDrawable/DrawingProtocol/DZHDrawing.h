@@ -22,7 +22,7 @@
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context;
 
-- (float)coordYWithValue:(float)v max:(float)max min:(float)min;
+- (int)coordYWithValue:(float)v max:(float)max min:(float)min;
 
 @end
 
