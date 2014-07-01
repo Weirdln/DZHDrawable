@@ -14,6 +14,7 @@
 #import "DZHAxisXDrawing.h"
 #import "DZHAxisYDrawing.h"
 #import "DZHKLineDrawing.h"
+#import "DZHBarDrawing.h"
 
 @interface DZHKLineViewController ()<DZHKLineContainerDelegate,UIScrollViewDelegate>
 
@@ -75,6 +76,7 @@
     
     UIColor *lineColor                  = [UIColor colorFromRGB:0x1e2630];
     UIColor *labelColor                 = [UIColor colorFromRGB:0x707880];
+    UIFont *labelFont                   = [UIFont systemFontOfSize:8.];
     
     //画外层框
     DZHRectangleDrawing *rectDrawing    = [[DZHRectangleDrawing alloc] init];
@@ -85,9 +87,10 @@
     //画x轴的直线
     DZHAxisXDrawing *axisXDrawing       = [[DZHAxisXDrawing alloc] init];
     axisXDrawing.dataSource             = _dataSource;
+    axisXDrawing.tag                    = DrawingTagsKLineX;
     axisXDrawing.labelColor             = labelColor;
     axisXDrawing.lineColor              = lineColor;
-    axisXDrawing.labelFont              = [UIFont systemFontOfSize:10.];
+    axisXDrawing.labelFont              = labelFont;
     axisXDrawing.labelSpace             = 20.;
     [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., .0, 260., 180.)];
     [axisXDrawing release];
@@ -95,7 +98,8 @@
     //画y轴的直线
     DZHAxisYDrawing *axisYDrawing       = [[DZHAxisYDrawing alloc] init];
     axisYDrawing.dataSource             = _dataSource;
-    axisYDrawing.labelFont              = [UIFont systemFontOfSize:10.];
+    axisYDrawing.tag                    = DrawingTagsKLineY;
+    axisYDrawing.labelFont              = labelFont;
     axisYDrawing.labelColor             = labelColor;
     axisYDrawing.lineColor              = lineColor;
     axisYDrawing.labelSpace             = 20.;
@@ -105,6 +109,7 @@
     //画k线
     klineDrawing                        = [[DZHKLineDrawing alloc] init];
     klineDrawing.dataSource             = _dataSource;
+    klineDrawing.tag                    = DrawingTagsKLineItem;
     [klineDrawing setColor:[UIColor colorFromRGB:0xf92a27] forType:KLineTypePositive];
     [klineDrawing setColor:[UIColor colorFromRGB:0x2b9826] forType:KLineTypeNegative];
     [klineDrawing setColor:[UIColor grayColor] forType:KLineTypeCross];
@@ -112,6 +117,37 @@
     [klineDrawing release];
     
     _dataSource.kLineOffset             = 20.;
+    
+    //画成交量外框
+    DZHRectangleDrawing *volRectDrawing = [[DZHRectangleDrawing alloc] init];
+    volRectDrawing.lineColor            = lineColor;
+    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [volRectDrawing release];
+    
+    //画成交量x轴的直线
+    DZHAxisXDrawing *volumeAxisXDrawing = [[DZHAxisXDrawing alloc] init];
+    volumeAxisXDrawing.dataSource       = _dataSource;
+    volumeAxisXDrawing.tag              = DrawingTagsVolumeX;
+    volumeAxisXDrawing.lineColor        = lineColor;
+    [kLineContainer addDrawing:volumeAxisXDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [volumeAxisXDrawing release];
+    
+    //画成交量y轴的直线
+    DZHAxisYDrawing *volumeAxisYDrawing = [[DZHAxisYDrawing alloc] init];
+    volumeAxisYDrawing.dataSource       = _dataSource;
+    volumeAxisYDrawing.tag              = DrawingTagsVolumeY;
+    volumeAxisYDrawing.labelFont        = labelFont;
+    volumeAxisYDrawing.labelColor       = labelColor;
+    volumeAxisYDrawing.lineColor        = lineColor;
+    volumeAxisYDrawing.labelSpace       = 20.;
+    [kLineContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, 190.0, 280., 100.)];
+    [volumeAxisYDrawing release];
+    
+    DZHBarDrawing *barDrawing           = [[DZHBarDrawing alloc] init];
+    barDrawing.dataSource               = _dataSource;
+    barDrawing.tag                      = DrawingTagsVolumeItem;
+    [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [barDrawing release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -171,14 +207,17 @@
 
 - (void)kLineContainer:(DZHKLineContainer *)container scaled:(CGFloat)scale
 {
-    if (scale > _dataSource.maxScale || scale < _dataSource.minScale) //超出最大最小缩放倍数，不做处理
+    CGFloat maxScale            = _dataSource.maxScale;
+    CGFloat minScale            = _dataSource.minScale;
+    if (scale > maxScale && _dataSource.scale == maxScale)//超出最大缩放倍数，不做处理
         return;
-    
+    if (scale < minScale && _dataSource.scale == minScale)//超出最小缩放倍数，不做处理
+        return;
     if ((int)scale * 100 % 2 != 0)//过滤部分数据，降低刷新频率
         return;
-    
+
     CGRect frame                = container.frame;
-    _dataSource.scale           = scale * 1.2; //乘一个系数，增加放大时的平滑度
+    _dataSource.scale           = MAX(MIN(scale * 1.2,maxScale),minScale); //乘一个系数，增加放大时的平滑度
     CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];
     container.contentSize       = CGSizeMake([self _getContainerWidth], frame.size.height);
     

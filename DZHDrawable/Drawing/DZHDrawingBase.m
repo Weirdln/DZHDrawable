@@ -11,6 +11,7 @@
 @implementation DZHDrawingBase
 
 @synthesize virtualFrame    = _virtualFrame;
+@synthesize tag             = _tag;
 @synthesize delegate        = _delegate;
 @synthesize dataSource      = _dataSource;
 

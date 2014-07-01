@@ -9,6 +9,16 @@
 #import "DZHDrawing.h"
 #import "DZHKLineEntity.h"
 
+typedef enum
+{
+    DrawingTagsKLineX,
+    DrawingTagsKLineY,
+    DrawingTagsKLineItem,
+    DrawingTagsVolumeX,
+    DrawingTagsVolumeY,
+    DrawingTagsVolumeItem,
+}DrawingTags;
+
 @interface DZHKLineDataSource : NSObject<DZHDrawingDataSource>
 
 @property (nonatomic, retain) NSArray *klines;
@@ -22,6 +32,8 @@
 @property (nonatomic) NSInteger max;
 
 @property (nonatomic) NSInteger min;
+
+@property (nonatomic) NSInteger maxVol;
 
 @property (nonatomic) CGFloat scale;//缩放比例
 
@@ -54,24 +66,15 @@
 /**
  * 计算指定区域内可绘制k线的起始结束索引
  * @param rect 指定区域
- * @returns startIndex:绘制k线起始索引
- * @returns endIndex:绘制k线结束索引
  */
-- (void)needDrawKLinesInRect:(CGRect)rect startIndex:(NSInteger *)startIndex endIndex:(NSInteger *)endIndex;
+- (void)calculateStartAndEndIndexAtRect:(CGRect)rect;
 
 /**
  * 计算范围内k线数据的最大值最小值
  * @param from 计算开始索引
  * @param to 计算结束索引
- * @returns maxPrice 最大价格
- * @returns minPrice 最小价格
  */
-- (void)calculateMaxPrice:(NSInteger *)maxPrice minPrice:(NSInteger *)minPrice fromIndex:(NSInteger)from toIndex:(NSInteger)to;
-
-/**
- * @returns k线实体宽度＋k线间隔
- */
-- (CGFloat)itemWidth;
+- (void)calculateMaxAndMinDataFromIndex:(NSInteger)from toIndex:(NSInteger)to;
 
 /**
  * 绘制所有k线需要的宽度
@@ -109,6 +112,12 @@
 
 @end
 
+@interface DZHKLineDataSource (Color)
+
+- (UIColor *)corlorForType:(KLineType)type;
+
+@end
+
 /**
  * 对k线数据进行分组,分组以一个月为单位
  */
@@ -135,5 +144,23 @@
 @interface DZHKLineDataSource (KLine)
 
 - (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing;
+
+@end
+
+@interface DZHKLineDataSource (VolumeAxisX)
+
+- (NSArray *)axisXDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
+
+@end
+
+@interface DZHKLineDataSource (VolumeAxisY)
+
+- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
+
+@end
+
+@interface DZHKLineDataSource (Volume)
+
+- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
 
 @end

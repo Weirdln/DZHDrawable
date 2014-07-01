@@ -22,7 +22,7 @@ typedef enum
 @property (nonatomic) int high; // 最高价
 @property (nonatomic) int low;  // 最低价
 @property (nonatomic) int close;    // 收盘价
-
+@property (nonatomic) int vol;
 - (KLineType)type;
 
 @end

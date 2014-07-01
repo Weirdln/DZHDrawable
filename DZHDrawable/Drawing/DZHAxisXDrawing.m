@@ -22,9 +22,6 @@
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(self.labelColor != nil);
-    NSParameterAssert(self.labelFont != nil);
-    NSParameterAssert(self.lineColor != nil);
     NSParameterAssert(self.dataSource);
     
     NSArray *datas              = [self.dataSource datasForDrawing:self];
@@ -56,6 +53,7 @@
         if (x > rect.origin.x && x < maxX) //只有在范围内的才绘制
         {
             CGContextAddLines(context, (CGPoint[]){CGPointMake(x, rect.origin.y), CGPointMake(x, y)}, 2);
+            CGContextStrokePath(context);
         }
         
         if (self.labelSpace > 0 && centerX > rect.origin.x && CGRectGetMaxX(tickRect) <= maxX) //只有在范围内的才绘制
@@ -71,7 +69,6 @@
             lastX               = tickRect.origin.x;
         }
     }
-    CGContextStrokePath(context);
     CGContextRestoreGState(context);
 }
 

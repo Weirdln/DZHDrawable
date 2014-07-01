@@ -17,6 +17,19 @@
 #import "DZHKLineContainer.h"
 #import "DZHAxisEntity.h"
 #import "DZHCandleEntity.h"
+#import "DZHBarEntity.h"
+
+@interface DZHKLineDataSource ()
+
+@property (nonatomic, retain) NSMutableArray *volumes;
+
+@property (nonatomic, retain) NSMutableArray *klineX;
+
+@property (nonatomic, retain) NSMutableArray *klineY;
+
+@property (nonatomic, retain) NSMutableArray *klineItem;
+
+@end
 
 @implementation DZHKLineDataSource
 {
@@ -24,7 +37,7 @@
     DZHKLineValueFormatter          *_valueFormatter;
     UIColor                         *_positiveColor;
     UIColor                         *_negativeColor;
-    UIColor                         *crossColor;
+    UIColor                         *_crossColor;
 }
 
 - (instancetype)init
@@ -41,9 +54,10 @@
         self.scale                      = 1.;
         _dateFormatter                  = [[DZHKLineDateFormatter alloc] init];
         _valueFormatter                 = [[DZHKLineValueFormatter alloc] init];
-        _positiveColor                  = [UIColor colorFromRGB:0xf92a27];
-        _negativeColor                  = [UIColor colorFromRGB:0x2b9826];
-        crossColor                      = [UIColor grayColor];
+        
+        _positiveColor                  = [[UIColor colorFromRGB:0xf92a27] retain];
+        _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
+        _crossColor                     = [[UIColor grayColor] retain];
     }
     return self;
 }
@@ -55,7 +69,7 @@
     
     [_positiveColor release];
     [_negativeColor release];
-    [crossColor release];
+    [_crossColor release];
     
     [_grouping release];
     [_klines release];
@@ -92,26 +106,29 @@
 - (CGFloat)_getKlinePadding
 {
     return _kLinePadding;
-//    return _kLinePadding * _scale;
 }
 
 #pragma mark - DZHDrawingDataSource
 
 - (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing
 {
-    if ([drawing isKindOfClass:[DZHAxisXDrawing class]])
+    switch (drawing.tag)
     {
-        return [self axisXDatasForDrawing:drawing];
+        case DrawingTagsKLineX:
+            return [self axisXDatasForDrawing:drawing];
+        case DrawingTagsKLineY:
+            return [self axisYDatasForDrawing:drawing];
+        case DrawingTagsKLineItem:
+            return [self kLineDatasForDrawing:drawing];
+        case DrawingTagsVolumeX:
+            return [self axisXDatasForDrawing:drawing];
+        case DrawingTagsVolumeY:
+            return [self axisYDatasForVolumeDrawing:drawing];
+        case DrawingTagsVolumeItem:
+            return [self volumeDatasForVolumeDrawing:drawing];
+        default:
+            return nil;
     }
-    else if ([drawing isKindOfClass:[DZHAxisYDrawing class]])
-    {
-        return [self axisYDatasForDrawing:drawing];
-    }
-    else if ([drawing isKindOfClass:[DZHKLineDrawing class]])
-    {
-        return [self kLineDatasForDrawing:drawing];
-    }
-    return nil;
 }
 
 @end
@@ -122,23 +139,24 @@
 
 - (void)prepareWithKLineRect:(CGRect)rect
 {
-    [self needDrawKLinesInRect:rect startIndex:&_startIndex endIndex:&_endIndex];
-    [self calculateMaxPrice:&_max minPrice:&_min fromIndex:_startIndex toIndex:_endIndex];
+    [self calculateStartAndEndIndexAtRect:rect];
+    [self calculateMaxAndMinDataFromIndex:_startIndex toIndex:_endIndex];
 }
 
-- (void)needDrawKLinesInRect:(CGRect)rect startIndex:(NSInteger *)startIndex endIndex:(NSInteger *)endIndex
+- (void)calculateStartAndEndIndexAtRect:(CGRect)rect
 {
     CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
     CGFloat kPadding            = [self _getKlinePadding];  //k线间距
     CGFloat space               = kWidth + kPadding;
-    *startIndex                 = MAX((rect.origin.x - kPadding - _kLineOffset)/space , 0);
-    *endIndex                   = MIN((CGRectGetMaxX(rect) - kPadding - _kLineOffset)/space , [_klines count] - 1);
+    self.startIndex             = MAX((rect.origin.x - kPadding - _kLineOffset)/space , 0);
+    self.endIndex               = MIN((CGRectGetMaxX(rect) - kPadding - _kLineOffset)/space , [_klines count] - 1);
 }
 
-- (void)calculateMaxPrice:(NSInteger *)maxPrice minPrice:(NSInteger *)minPrice fromIndex:(NSInteger)from toIndex:(NSInteger)to
+- (void)calculateMaxAndMinDataFromIndex:(NSInteger)from toIndex:(NSInteger)to
 {
     NSInteger max                     = NSIntegerMin;
     NSInteger min                     = NSIntegerMax;
+    NSInteger vol                     = NSIntegerMin;
     
     for (NSInteger i = from; i <= to; i++)
     {
@@ -149,15 +167,14 @@
         
         if (entity.low < min)
             min        = entity.low;
+        
+        if (entity.vol > vol)
+            vol        = entity.vol;
     }
     
-    *minPrice                           = min;
-    *maxPrice                           = max;
-}
-
-- (CGFloat)itemWidth
-{
-    return [self _getKLineWidth] + [self _getKlinePadding];
+    self.max                            = max;
+    self.min                            = min;
+    self.maxVol                         = vol;
 }
 
 - (CGFloat)totalKLineWidth
@@ -201,6 +218,24 @@
     CGFloat space               = kWidth + kPadding;
     CGFloat index               = (position - kPadding - _kLineOffset) / space;
     return MIN(index, [_klines count] - 1);
+}
+
+@end
+
+@implementation DZHKLineDataSource (Color)
+
+- (UIColor *)corlorForType:(KLineType)type
+{
+    switch (type) {
+        case KLineTypePositive:
+            return _positiveColor;
+        case KLineTypeNegative:
+            return _negativeColor;
+        case KLineTypeCross:
+            return _crossColor;
+        default:
+            return nil;
+    }
 }
 
 @end
@@ -268,16 +303,16 @@
     
     [self adjustMaxIfNeed:&tickCount strip:&strip];
     
-    NSMutableArray *datas       = [NSMutableArray array];
+    NSMutableArray *datas           = [NSMutableArray array];
     
     for (int i = 0; i <= tickCount; i++)
     {
         NSInteger value             = self.min + strip * i;
         CGFloat y                   = [drawing coordYWithValue:value max:_max min:_min];
         
-        DZHAxisEntity *entity   = [[DZHAxisEntity alloc] init];
-        entity.location         = CGPointMake(.0, y);
-        entity.labelText        = [_valueFormatter stringForObjectValue:@(value)];
+        DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
+        entity.location             = CGPointMake(.0, y);
+        entity.labelText            = [_valueFormatter stringForObjectValue:@(value)];
         [datas addObject:entity];
         [entity release];
     }
@@ -354,6 +389,85 @@
         candle.kLineType        = entity.type;
         [datas addObject:candle];
         [candle release];
+    }
+    return datas;
+}
+
+@end
+
+@implementation DZHKLineDataSource (VolumeAxisX)
+
+- (NSArray *)axisXDatasForVolumeDrawing:(id<DZHDrawing>)drawing
+{
+    NSMutableArray *datas   = [NSMutableArray array];
+    
+    DZHAxisEntity *entity   = [[DZHAxisEntity alloc] init];
+    entity.location         = CGPointMake([self kLineCenterLocationForIndex:self.startIndex], 0.);
+    [datas addObject:entity];
+    [entity release];
+    
+    entity   = [[DZHAxisEntity alloc] init];
+    entity.location         = CGPointMake([self kLineCenterLocationForIndex:self.endIndex], 0.);
+    [datas addObject:entity];
+    [entity release];
+    
+    return datas;
+}
+
+@end
+
+@implementation DZHKLineDataSource (VolumeAxisY)
+
+- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing
+{
+    NSMutableArray *datas           = [NSMutableArray array];
+    
+    CGRect frame                = drawing.virtualFrame;
+    DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
+    entity.location             = CGPointMake(.0, CGRectGetMaxY(frame));
+    entity.labelText            = @"万手";
+    [datas addObject:entity];
+    [entity release];
+    
+    entity                      = [[DZHAxisEntity alloc] init];
+    entity.location             = CGPointMake(.0, CGRectGetMinY(frame));
+    entity.labelText            = [NSString stringWithFormat:@"%.1f",(float)self.maxVol/10000];
+    [datas addObject:entity];
+    [entity release];
+    
+    return datas;
+}
+
+@end
+
+@implementation DZHKLineDataSource (Volume)
+
+- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing
+{
+    NSUInteger startIndex       = self.startIndex;   //绘制起始点
+    NSUInteger endIndex         = self.endIndex;     //绘制结束点
+    CGFloat kWidth              = [self _getKLineWidth];
+    NSArray *klines             = self.klines;
+    NSMutableArray *datas       = [NSMutableArray array];
+    
+    CGFloat vol,low,x;
+    DZHKLineEntity *entity;
+    DZHBarEntity *barEntity;
+    
+    CGRect frame                = drawing.virtualFrame;
+    
+    for (NSUInteger i = startIndex; i <= endIndex; i++)
+    {
+        entity                  = [klines objectAtIndex:i];
+        vol                     = [drawing coordYWithValue:entity.vol max:self.maxVol min:0];
+        low                     = CGRectGetMaxY(frame);
+        x                       = [self kLineLocationForIndex:i];
+        
+        barEntity               = [[DZHBarEntity alloc] init];
+        barEntity.barRect       = CGRectMake(x, vol, kWidth, MAX(ABS(low - vol), 1.));
+        barEntity.color         = [self corlorForType:entity.type];
+        [datas addObject:barEntity];
+        [barEntity release];
     }
     return datas;
 }

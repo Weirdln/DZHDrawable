@@ -17,6 +17,7 @@
     [aCoder encodeInt:_high forKey:@"high"];
     [aCoder encodeInt:_low forKey:@"low"];
     [aCoder encodeInt:_close forKey:@"close"];
+    [aCoder encodeInt:_vol forKey:@"vol"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -28,6 +29,7 @@
         _high       = [aDecoder decodeIntForKey:@"high"];
         _low        = [aDecoder decodeIntForKey:@"low"];
         _close      = [aDecoder decodeIntForKey:@"close"];
+        _vol        = [aDecoder decodeIntForKey:@"vol"];
     }
     return self;
 }

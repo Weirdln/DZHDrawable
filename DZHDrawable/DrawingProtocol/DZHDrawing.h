@@ -14,11 +14,13 @@
  */
 @protocol DZHDrawing <NSObject>
 
-@property (nonatomic)CGRect virtualFrame;
+@property (nonatomic) CGRect virtualFrame;
 
-@property (nonatomic, assign)id<DZHDrawingDataSource> dataSource;
+@property (nonatomic) NSInteger tag;
 
-@property (nonatomic, assign)id<DZHDrawingDelegate> delegate;
+@property (nonatomic, assign) id<DZHDrawingDataSource> dataSource;
+
+@property (nonatomic, assign) id<DZHDrawingDelegate> delegate;
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context;
 

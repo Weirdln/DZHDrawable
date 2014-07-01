@@ -63,7 +63,7 @@
             [self drawStrInRect:labelText
                            rect:tickRect
                            font:self.labelFont
-                      alignment:NSTextAlignmentLeft];
+                      alignment:NSTextAlignmentRight];
         }
         
         idx ++;
