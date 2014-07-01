@@ -25,7 +25,7 @@
     CGRect fillRect;
     CGFloat x;
     CGPoint high,low;
-    
+
     for (DZHCandleEntity *entity in datas)
     {
         color                       = entity.color.CGColor;

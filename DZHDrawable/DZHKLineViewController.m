@@ -95,7 +95,7 @@
     [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., .0, 260., 180.)];
     [axisXDrawing release];
     
-    //画k线y轴
+    //画k线y轴，y轴需在k线之前绘制，因为绘制y轴的时候，为提高精度，会调整价格最大值
     DZHAxisYDrawing *axisYDrawing       = [[DZHAxisYDrawing alloc] init];
     axisYDrawing.dataSource             = _dataSource;
     axisYDrawing.tag                    = DrawingTagsKLineY;

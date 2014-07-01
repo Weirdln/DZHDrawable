@@ -29,9 +29,9 @@ typedef enum
 
 @property (nonatomic) NSInteger endIndex;
 
-@property (nonatomic) NSInteger max;
+@property (nonatomic) NSInteger maxPrice;
 
-@property (nonatomic) NSInteger min;
+@property (nonatomic) NSInteger minPrice;
 
 @property (nonatomic) NSInteger maxVol;
 
@@ -48,8 +48,6 @@ typedef enum
 @property (nonatomic) NSInteger minTickCount;/**y轴刻度最少个数*/
 
 @property (nonatomic) NSInteger maxTickCount;/**y轴刻度最多个数*/
-
-@property (nonatomic) NSInteger tickCount;/**刻度个数*/
 
 @property (nonatomic) CGFloat kLineOffset;/**k线绘制区域在x轴上的偏移量*/
 
@@ -97,13 +95,6 @@ typedef enum
 - (CGFloat)kLineCenterLocationForIndex:(NSUInteger)index;
 
 /**
- * 计算指定位置的点对应k线的索引，如果该位置没有k线则返回NSUIntegerMax。如两个k线之间的间隔，应返回NSUIntegerMax
- * @param position x坐标
- * @returns 该位置k线索引
- */
-- (NSUInteger)indexForLocation:(CGFloat)position;
-
-/**
  * 计算指定位置的点对应k线的索引，如果该位置没有k线则返回最接近的索引。
  * @param position x坐标
  * @returns 该位置k线索引
@@ -112,6 +103,9 @@ typedef enum
 
 @end
 
+/**
+ * 获取不同k线类型绘制的颜色
+ */
 @interface DZHKLineDataSource (Color)
 
 - (UIColor *)corlorForType:(KLineType)type;
@@ -144,12 +138,6 @@ typedef enum
 @interface DZHKLineDataSource (KLine)
 
 - (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing;
-
-@end
-
-@interface DZHKLineDataSource (VolumeAxisX)
-
-- (NSArray *)axisXDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
 
 @end
 

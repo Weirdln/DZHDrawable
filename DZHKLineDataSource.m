@@ -172,8 +172,8 @@
             vol        = entity.vol;
     }
     
-    self.max                            = max;
-    self.min                            = min;
+    self.maxPrice                       = max;
+    self.minPrice                       = min;
     self.maxVol                         = vol;
 }
 
@@ -198,17 +198,6 @@
     CGFloat kPadding            = [self _getKlinePadding];  //k线间距
     CGFloat space               = kWidth + kPadding;
     return _kLineOffset + kPadding + index * space + kWidth * .5;
-}
-
-- (NSUInteger)indexForLocation:(CGFloat)position
-{
-    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
-    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
-    CGFloat space               = kWidth + kPadding;
-    CGFloat v                   = (position - kPadding - _kLineOffset) / space ;
-    int mode                    = ((int)(v * 100)) %100;
-    int scale                   = kWidth / space * 100;
-    return mode > scale ? NSUIntegerMax : v;
 }
 
 - (NSUInteger)nearIndexForLocation:(CGFloat)position
@@ -244,7 +233,7 @@
 
 - (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing
 {
-    int interval                = MAX(1, roundf(1.4f / self.scale));
+    int interval        = MAX(1, roundf(1.4f / self.scale));
     return [self groupsFromIndex:_startIndex toIndex:_endIndex monthInterval:interval];
 }
 
@@ -307,8 +296,8 @@
     
     for (int i = 0; i <= tickCount; i++)
     {
-        NSInteger value             = self.min + strip * i;
-        CGFloat y                   = [drawing coordYWithValue:value max:_max min:_min];
+        NSInteger value             = _minPrice + strip * i;
+        CGFloat y                   = [drawing coordYWithValue:value max:_maxPrice min:_minPrice];
         
         DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
         entity.location             = CGPointMake(.0, y);
@@ -321,19 +310,19 @@
 
 - (void)adjustMaxIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip
 {
-    NSInteger maxValue    = self.max;
-    NSInteger min         = self.min;
+    NSInteger maxValue      = self.maxPrice;
+    NSInteger min           = self.minPrice;
     
-    NSInteger count = [self tickCountWithMax:maxValue min:min strip:strip];
+    NSInteger count         = [self tickCountWithMax:maxValue min:min strip:strip];
     
     while (count == NSIntegerMax)
     {
         maxValue ++;
-        count       = [self tickCountWithMax:maxValue min:min strip:strip];
+        count               = [self tickCountWithMax:maxValue min:min strip:strip];
     }
     
-    *tickCount      = count;
-    self.max        = maxValue;
+    *tickCount              = count;
+    self.maxPrice           = maxValue;
 }
 
 - (NSInteger)tickCountWithMax:(NSInteger)max min:(NSInteger)min strip:(NSInteger *)strip
@@ -356,8 +345,8 @@
 
 - (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing
 {
-    NSInteger max               = self.max;
-    NSInteger min               = self.min;
+    NSInteger max               = self.maxPrice;
+    NSInteger min               = self.minPrice;
     NSUInteger startIndex       = self.startIndex;   //绘制起始点
     NSUInteger endIndex         = self.endIndex;     //绘制结束点
     CGFloat kWidth              = [self _getKLineWidth];
@@ -390,27 +379,6 @@
         [datas addObject:candle];
         [candle release];
     }
-    return datas;
-}
-
-@end
-
-@implementation DZHKLineDataSource (VolumeAxisX)
-
-- (NSArray *)axisXDatasForVolumeDrawing:(id<DZHDrawing>)drawing
-{
-    NSMutableArray *datas   = [NSMutableArray array];
-    
-    DZHAxisEntity *entity   = [[DZHAxisEntity alloc] init];
-    entity.location         = CGPointMake([self kLineCenterLocationForIndex:self.startIndex], 0.);
-    [datas addObject:entity];
-    [entity release];
-    
-    entity   = [[DZHAxisEntity alloc] init];
-    entity.location         = CGPointMake([self kLineCenterLocationForIndex:self.endIndex], 0.);
-    [datas addObject:entity];
-    [entity release];
-    
     return datas;
 }
 
@@ -459,7 +427,7 @@
     for (NSUInteger i = startIndex; i <= endIndex; i++)
     {
         entity                  = [klines objectAtIndex:i];
-        vol                     = [drawing coordYWithValue:entity.vol max:self.maxVol min:0];
+        vol                     = [drawing coordYWithValue:entity.vol max:_maxVol min:0];
         low                     = CGRectGetMaxY(frame);
         x                       = [self kLineLocationForIndex:i];
         
