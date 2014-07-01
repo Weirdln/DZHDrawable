@@ -46,7 +46,3 @@
 
 @end
 
-@implementation DZHDrawingGroup
-
-
-@end

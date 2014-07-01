@@ -26,25 +26,3 @@ typedef enum
 - (KLineType)type;
 
 @end
-
-@interface DZHDrawingGroup : NSObject
-
-/**跨度，如1个月的所有k线为1组*/
-@property (nonatomic) int step;
-
-/**1组中的最大值*/
-@property (nonatomic) int max;
-
-/**1组中的最小值*/
-@property (nonatomic) int min;
-
-/**1组开始时间*/
-@property (nonatomic) int date;
-
-/**该组起始索引*/
-@property (nonatomic) NSUInteger startIndex;
-
-/**该组结束索引*/
-@property (nonatomic) NSUInteger endIndex;
-
-@end
