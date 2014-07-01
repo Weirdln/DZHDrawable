@@ -386,7 +386,7 @@
         candle.fillRect         = fillRect;
         candle.high             = CGPointMake(center, high);
         candle.low              = CGPointMake(center, low);
-        candle.kLineType        = entity.type;
+        candle.color            = [self corlorForType:entity.type];
         [datas addObject:candle];
         [candle release];
     }

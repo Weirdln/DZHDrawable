@@ -9,42 +9,7 @@
 #import "DZHKLineDrawing.h"
 #import "DZHCandleEntity.h"
 
-#define kLineColorKey @"kLineColor"
-
 @implementation DZHKLineDrawing
-{
-    NSMutableDictionary                 *_typeAttributes;
-}
-
-- (instancetype)init
-{
-    if (self = [super init])
-    {
-        _typeAttributes     = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [_typeAttributes release];
-    [super dealloc];
-}
-
-#pragma mark - 属性设置
-
-- (void)setColor:(UIColor *)color forType:(KLineType)type
-{
-    [_typeAttributes setObject:color forKey:@(type)];
-}
-
-- (UIColor *)colorForType:(KLineType)type
-{
-    UIColor *color              = [_typeAttributes objectForKey:@(type)];
-    return color ? color : [UIColor blackColor];
-}
-
-#pragma mark - 绘图方法
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
@@ -63,7 +28,7 @@
     
     for (DZHCandleEntity *entity in datas)
     {
-        color                       = [self colorForType:[entity kLineType]].CGColor;
+        color                       = entity.color.CGColor;
         fillRect                    = entity.fillRect;
         x                           = fillRect.origin.x;
         high                        = entity.high;

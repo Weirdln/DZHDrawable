@@ -78,13 +78,13 @@
     UIColor *labelColor                 = [UIColor colorFromRGB:0x707880];
     UIFont *labelFont                   = [UIFont systemFontOfSize:8.];
     
-    //画外层框
+    //画k线外框
     DZHRectangleDrawing *rectDrawing    = [[DZHRectangleDrawing alloc] init];
     rectDrawing.lineColor               = lineColor;
     [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., .0, 260., 160.)];
     [rectDrawing release];
     
-    //画x轴的直线
+    //画k线x轴
     DZHAxisXDrawing *axisXDrawing       = [[DZHAxisXDrawing alloc] init];
     axisXDrawing.dataSource             = _dataSource;
     axisXDrawing.tag                    = DrawingTagsKLineX;
@@ -95,7 +95,7 @@
     [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., .0, 260., 180.)];
     [axisXDrawing release];
     
-    //画y轴的直线
+    //画k线y轴
     DZHAxisYDrawing *axisYDrawing       = [[DZHAxisYDrawing alloc] init];
     axisYDrawing.dataSource             = _dataSource;
     axisYDrawing.tag                    = DrawingTagsKLineY;
@@ -110,9 +110,6 @@
     klineDrawing                        = [[DZHKLineDrawing alloc] init];
     klineDrawing.dataSource             = _dataSource;
     klineDrawing.tag                    = DrawingTagsKLineItem;
-    [klineDrawing setColor:[UIColor colorFromRGB:0xf92a27] forType:KLineTypePositive];
-    [klineDrawing setColor:[UIColor colorFromRGB:0x2b9826] forType:KLineTypeNegative];
-    [klineDrawing setColor:[UIColor grayColor] forType:KLineTypeCross];
     [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
     [klineDrawing release];
     
@@ -143,6 +140,7 @@
     [kLineContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, 190.0, 280., 100.)];
     [volumeAxisYDrawing release];
     
+    //画成交量柱
     DZHBarDrawing *barDrawing           = [[DZHBarDrawing alloc] init];
     barDrawing.dataSource               = _dataSource;
     barDrawing.tag                      = DrawingTagsVolumeItem;

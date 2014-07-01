@@ -6,19 +6,14 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHKLineEntity.h"
-
 @interface DZHCandleEntity : NSObject
 
-/**填充矩形*/
-@property (nonatomic, assign) CGRect fillRect;
+@property (nonatomic, assign) CGRect fillRect;/**填充矩形*/
 
-/**最高点*/
-@property (nonatomic, assign) CGPoint high;
+@property (nonatomic, assign) CGPoint high;/**最高点*/
 
-/**最低点*/
-@property (nonatomic, assign) CGPoint low;
+@property (nonatomic, assign) CGPoint low;/**最低点*/
 
-@property (nonatomic, assign) int kLineType;
+@property (nonatomic, retain) UIColor *color;/**蜡烛图颜色*/
 
 @end
