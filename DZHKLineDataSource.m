@@ -36,8 +36,8 @@
         self.kLinePadding               = 2.;
         self.minTickCount               = 4;
         self.maxTickCount               = 4;
-        self.maxScale                   = 4.;
-        self.minScale                   = .5;
+        self.maxScale                   = 5.;
+        self.minScale                   = 1.;
         self.scale                      = 1.;
         _dateFormatter                  = [[DZHKLineDateFormatter alloc] init];
         _valueFormatter                 = [[DZHKLineValueFormatter alloc] init];
@@ -84,24 +84,15 @@
     }
 }
 
-- (void)setScale:(CGFloat)scale
-{
-    if (scale > _maxScale)
-        _scale              = _maxScale;
-    else if (scale < _minScale)
-        _scale              = _minScale;
-    else
-        _scale              = scale;
-}
-
 - (CGFloat)_getKLineWidth
 {
-    return _kLineWidth * _scale;
+    return roundf(_kLineWidth * _scale);
 }
 
 - (CGFloat)_getKlinePadding
 {
-    return _kLinePadding * _scale;
+    return _kLinePadding;
+//    return _kLinePadding * _scale;
 }
 
 #pragma mark - DZHDrawingDataSource
@@ -162,6 +153,11 @@
     
     *minPrice                           = min;
     *maxPrice                           = max;
+}
+
+- (CGFloat)itemWidth
+{
+    return [self _getKLineWidth] + [self _getKlinePadding];
 }
 
 - (CGFloat)totalKLineWidth

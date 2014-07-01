@@ -22,7 +22,7 @@
 {
     if (self = [super initWithFrame:frame])
     {
-        self.decelerationRate           = .4;
+        self.decelerationRate           = .2;
         self.showsHorizontalScrollIndicator = NO;
         
         UILabel *label                  = [[UILabel alloc] initWithFrame:CGRectMake(- 50., 95., 40., 20.)];

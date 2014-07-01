@@ -171,12 +171,18 @@
 
 - (void)kLineContainer:(DZHKLineContainer *)container scaled:(CGFloat)scale
 {
+    if (scale > _dataSource.maxScale || scale < _dataSource.minScale) //超出最大最小缩放倍数，不做处理
+        return;
+    
+    if ((int)scale * 100 % 2 != 0)//过滤部分数据，降低刷新频率
+        return;
+    
     CGRect frame                = container.frame;
-    _dataSource.scale           = scale;
+    _dataSource.scale           = scale * 1.2; //乘一个系数，增加放大时的平滑度
     CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];
     container.contentSize       = CGSizeMake([self _getContainerWidth], frame.size.height);
     
-    if (container.contentOffset.x == 0)
+    if (container.contentOffset.x == 0)//offset为0时，手动刷新
     {
         [container setNeedsDisplay];
     }
