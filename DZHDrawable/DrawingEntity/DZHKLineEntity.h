@@ -23,6 +23,11 @@ typedef enum
 @property (nonatomic) int low;  // 最低价
 @property (nonatomic) int close;    // 收盘价
 @property (nonatomic) int vol;
+
+- (void)setMa:(int)ma withCycle:(int)cycle;
+
+- (int)maWithCycle:(int)cycle;
+
 - (KLineType)type;
 
 @end

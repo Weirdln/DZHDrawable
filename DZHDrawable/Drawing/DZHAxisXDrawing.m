@@ -11,15 +11,6 @@
 
 @implementation DZHAxisXDrawing
 
-- (instancetype)init
-{
-    if (self = [super init])
-    {
-        self.axisType           = AxisTypeX;
-    }
-    return self;
-}
-
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
     NSParameterAssert(self.dataSource);

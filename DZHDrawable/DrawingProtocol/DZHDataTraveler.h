@@ -6,9 +6,11 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol DZHDataTraveler <NSObject>
+
+@optional
+
+- (void)travelerBeginAtIndex:(int)index;
 
 - (void)travelerWithLastData:(id)last currentData:(id)currentData index:(int)index;
 

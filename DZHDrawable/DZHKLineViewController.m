@@ -14,7 +14,8 @@
 #import "DZHAxisXDrawing.h"
 #import "DZHAxisYDrawing.h"
 #import "DZHKLineDrawing.h"
-#import "DZHBarDrawing.h"
+#import "DZHFillBarDrawing.h"
+#import "DZHCurveDrawing.h"
 
 @interface DZHKLineViewController ()<DZHKLineContainerDelegate,UIScrollViewDelegate>
 
@@ -113,6 +114,12 @@
     [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
     [klineDrawing release];
     
+    DZHCurveDrawing *maDrawing          = [[DZHCurveDrawing alloc] init];
+    maDrawing.dataSource                = _dataSource;
+    maDrawing.tag                       = DrawingTagsMa;
+    [kLineContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
+    [maDrawing release];
+    
     _dataSource.kLineOffset             = 20.;
     
     //画成交量外框
@@ -141,7 +148,7 @@
     [volumeAxisYDrawing release];
     
     //画成交量柱
-    DZHBarDrawing *barDrawing           = [[DZHBarDrawing alloc] init];
+    DZHFillBarDrawing *barDrawing           = [[DZHFillBarDrawing alloc] init];
     barDrawing.dataSource               = _dataSource;
     barDrawing.tag                      = DrawingTagsVolumeItem;
     [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
@@ -211,9 +218,9 @@
         return;
     if (scale < minScale && _dataSource.scale == minScale)//超出最小缩放倍数，不做处理
         return;
-    if ((int)scale * 100 % 2 != 0)//过滤部分数据，降低刷新频率
-        return;
-
+//    if ((int)scale * 100 % 2 != 0)//过滤部分数据，降低刷新频率
+//        return;
+    
     CGRect frame                = container.frame;
     _dataSource.scale           = MAX(MIN(scale * 1.2,maxScale),minScale); //乘一个系数，增加放大时的平滑度
     CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];

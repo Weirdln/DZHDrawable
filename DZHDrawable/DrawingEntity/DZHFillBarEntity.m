@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHBarEntity.h"
+#import "DZHFillBarEntity.h"
 
-@implementation DZHBarEntity
+@implementation DZHFillBarEntity
 
 - (void)dealloc
 {

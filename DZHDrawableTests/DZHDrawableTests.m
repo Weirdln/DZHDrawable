@@ -7,6 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "DZHMACalculator.h"
+#import "DZHKLineEntity.h"
 
 @interface DZHDrawableTests : XCTestCase
 
@@ -26,9 +28,44 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testMACalculator
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    NSString *resource          = [[NSBundle mainBundle] resourcePath];
+    NSData *unarchiveData       = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/klines.data",resource]];
+    NSMutableArray *datas       = [NSKeyedUnarchiver unarchiveObjectWithData:unarchiveData];
+
+    int cycle                   = 10;
+    DZHMACalculator *ma         = [[DZHMACalculator alloc] initWithMACycle:cycle];
+    int total                   = 0;
+    int idx                     = 0;
+    
+    for (DZHKLineEntity *entity in datas)
+    {
+        total                   += entity.close;
+        if (idx >= cycle)
+        {
+            DZHKLineEntity *lastEntity  = [datas objectAtIndex:idx - cycle];
+            total                       -= lastEntity.close;
+            printf("%d,",total / cycle);
+        }
+        else
+        {
+            printf("%d,",total / (idx + 1));
+        }
+        
+        [ma travelerWithLastData:nil currentData:entity index:idx];
+        
+        idx ++;
+    }
+    
+    printf("\n---------------\n");
+    
+    for (DZHKLineEntity *entity in datas)
+    {
+        printf("%d,",[entity maWithCycle:cycle]);
+    }
+    
+    printf("\n");
 }
 
 @end

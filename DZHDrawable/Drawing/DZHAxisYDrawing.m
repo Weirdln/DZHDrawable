@@ -11,15 +11,6 @@
 
 @implementation DZHAxisYDrawing
 
-- (instancetype)init
-{
-    if (self = [super init])
-    {
-        self.axisType           = AxisTypeY;
-    }
-    return self;
-}
-
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
     NSParameterAssert(self.lineColor != nil);

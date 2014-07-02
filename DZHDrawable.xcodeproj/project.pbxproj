@@ -10,8 +10,14 @@
 		4F26CC97195CF22C0078FA86 /* DZHKLineContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F26CC96195CF22C0078FA86 /* DZHKLineContainer.m */; };
 		4F319F7E1960FA4B0033D322 /* DZHCandleEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F319F7D1960FA4B0033D322 /* DZHCandleEntity.m */; };
 		4F319F811961487E0033D322 /* DZHKLineDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F319F801961487E0033D322 /* DZHKLineDataSource.m */; };
-		4F3A0D8D19625D94005233D3 /* DZHBarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D8C19625D94005233D3 /* DZHBarEntity.m */; };
-		4F3A0D9019625E7C005233D3 /* DZHBarDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D8F19625E7C005233D3 /* DZHBarDrawing.m */; };
+		4F3A0D8D19625D94005233D3 /* DZHFillBarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D8C19625D94005233D3 /* DZHFillBarEntity.m */; };
+		4F3A0D9019625E7C005233D3 /* DZHFillBarDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D8F19625E7C005233D3 /* DZHFillBarDrawing.m */; };
+		4F3A0D9319629F25005233D3 /* DZHCurveDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D9219629F25005233D3 /* DZHCurveDrawing.m */; };
+		4F3A0D961962A5AF005233D3 /* DZHStrokeBarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D951962A5AF005233D3 /* DZHStrokeBarEntity.m */; };
+		4F3A0D9C1962AA5A005233D3 /* DZHStrokeBarDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D9B1962AA5A005233D3 /* DZHStrokeBarDrawing.m */; };
+		4F3A0DA31962B3B6005233D3 /* NSFixedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */; };
+		4F48DA6D19638B7A00AB4A22 /* DZHDrawableEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA6C19638B7A00AB4A22 /* DZHDrawableEntity.m */; };
+		4F48DA731963B12700AB4A22 /* DZHMACalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA721963B12700AB4A22 /* DZHMACalculator.m */; };
 		4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F974888195BAE3D0067EF19 /* UIColor+RGB.m */; };
 		4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F97488F195BF4650067EF19 /* DZHDrawingWrapper.m */; };
 		4F974893195C06EA0067EF19 /* DZHScrollContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F974892195C06EA0067EF19 /* DZHScrollContainer.m */; };
@@ -59,10 +65,23 @@
 		4F319F7D1960FA4B0033D322 /* DZHCandleEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHCandleEntity.m; sourceTree = "<group>"; };
 		4F319F7F1961487E0033D322 /* DZHKLineDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DZHKLineDataSource.h; path = ../DZHKLineDataSource.h; sourceTree = "<group>"; };
 		4F319F801961487E0033D322 /* DZHKLineDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DZHKLineDataSource.m; path = ../DZHKLineDataSource.m; sourceTree = "<group>"; };
-		4F3A0D8B19625D94005233D3 /* DZHBarEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHBarEntity.h; sourceTree = "<group>"; };
-		4F3A0D8C19625D94005233D3 /* DZHBarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHBarEntity.m; sourceTree = "<group>"; };
-		4F3A0D8E19625E7C005233D3 /* DZHBarDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHBarDrawing.h; sourceTree = "<group>"; };
-		4F3A0D8F19625E7C005233D3 /* DZHBarDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHBarDrawing.m; sourceTree = "<group>"; };
+		4F3A0D8B19625D94005233D3 /* DZHFillBarEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHFillBarEntity.h; sourceTree = "<group>"; };
+		4F3A0D8C19625D94005233D3 /* DZHFillBarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHFillBarEntity.m; sourceTree = "<group>"; };
+		4F3A0D8E19625E7C005233D3 /* DZHFillBarDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHFillBarDrawing.h; sourceTree = "<group>"; };
+		4F3A0D8F19625E7C005233D3 /* DZHFillBarDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHFillBarDrawing.m; sourceTree = "<group>"; };
+		4F3A0D9119629F25005233D3 /* DZHCurveDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHCurveDrawing.h; sourceTree = "<group>"; };
+		4F3A0D9219629F25005233D3 /* DZHCurveDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHCurveDrawing.m; sourceTree = "<group>"; };
+		4F3A0D941962A5AF005233D3 /* DZHStrokeBarEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHStrokeBarEntity.h; sourceTree = "<group>"; };
+		4F3A0D951962A5AF005233D3 /* DZHStrokeBarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHStrokeBarEntity.m; sourceTree = "<group>"; };
+		4F3A0D9A1962AA5A005233D3 /* DZHStrokeBarDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHStrokeBarDrawing.h; sourceTree = "<group>"; };
+		4F3A0D9B1962AA5A005233D3 /* DZHStrokeBarDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHStrokeBarDrawing.m; sourceTree = "<group>"; };
+		4F3A0DA11962B3B6005233D3 /* NSFixedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFixedArray.h; sourceTree = "<group>"; };
+		4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFixedArray.m; sourceTree = "<group>"; };
+		4F48DA6B19638B7A00AB4A22 /* DZHDrawableEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDrawableEntity.h; sourceTree = "<group>"; };
+		4F48DA6C19638B7A00AB4A22 /* DZHDrawableEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDrawableEntity.m; sourceTree = "<group>"; };
+		4F48DA6F19638D1600AB4A22 /* DZHDrawableEntityProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawableEntityProtocols.h; sourceTree = "<group>"; };
+		4F48DA711963B12700AB4A22 /* DZHMACalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHMACalculator.h; sourceTree = "<group>"; };
+		4F48DA721963B12700AB4A22 /* DZHMACalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMACalculator.m; sourceTree = "<group>"; };
 		4F974887195BAE3D0067EF19 /* UIColor+RGB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RGB.h"; sourceTree = "<group>"; };
 		4F974888195BAE3D0067EF19 /* UIColor+RGB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RGB.m"; sourceTree = "<group>"; };
 		4F97488A195BBBC00067EF19 /* DZHDrawingContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingContainer.h; sourceTree = "<group>"; };
@@ -140,6 +159,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F3A0DA01962B391005233D3 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				4F3A0DA11962B3B6005233D3 /* NSFixedArray.h */,
+				4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */,
+				4F48DA711963B12700AB4A22 /* DZHMACalculator.h */,
+				4F48DA721963B12700AB4A22 /* DZHMACalculator.m */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		4F48DA7019638F8200AB4A22 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		4F974886195BADC70067EF19 /* Addition */ = {
 			isa = PBXGroup;
 			children = (
@@ -183,8 +220,12 @@
 				4FD46E95195BAB19006BD33D /* DZHKLineDrawing.m */,
 				4FD46E96195BAB19006BD33D /* DZHRectangleDrawing.h */,
 				4FD46E97195BAB19006BD33D /* DZHRectangleDrawing.m */,
-				4F3A0D8E19625E7C005233D3 /* DZHBarDrawing.h */,
-				4F3A0D8F19625E7C005233D3 /* DZHBarDrawing.m */,
+				4F3A0D8E19625E7C005233D3 /* DZHFillBarDrawing.h */,
+				4F3A0D8F19625E7C005233D3 /* DZHFillBarDrawing.m */,
+				4F3A0D9A1962AA5A005233D3 /* DZHStrokeBarDrawing.h */,
+				4F3A0D9B1962AA5A005233D3 /* DZHStrokeBarDrawing.m */,
+				4F3A0D9119629F25005233D3 /* DZHCurveDrawing.h */,
+				4F3A0D9219629F25005233D3 /* DZHCurveDrawing.m */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -213,8 +254,12 @@
 				4FAD71B1195D11680023929A /* DZHAxisEntity.m */,
 				4F319F7C1960FA4B0033D322 /* DZHCandleEntity.h */,
 				4F319F7D1960FA4B0033D322 /* DZHCandleEntity.m */,
-				4F3A0D8B19625D94005233D3 /* DZHBarEntity.h */,
-				4F3A0D8C19625D94005233D3 /* DZHBarEntity.m */,
+				4F3A0D8B19625D94005233D3 /* DZHFillBarEntity.h */,
+				4F3A0D8C19625D94005233D3 /* DZHFillBarEntity.m */,
+				4F3A0D941962A5AF005233D3 /* DZHStrokeBarEntity.h */,
+				4F3A0D951962A5AF005233D3 /* DZHStrokeBarEntity.m */,
+				4F48DA6B19638B7A00AB4A22 /* DZHDrawableEntity.h */,
+				4F48DA6C19638B7A00AB4A22 /* DZHDrawableEntity.m */,
 			);
 			path = DrawingEntity;
 			sourceTree = "<group>";
@@ -226,6 +271,7 @@
 				4F97488D195BE0E80067EF19 /* DZHAxisDrawing.h */,
 				4F97488A195BBBC00067EF19 /* DZHDrawingContainer.h */,
 				4FAD71B9195D66DF0023929A /* DZHDataTraveler.h */,
+				4F48DA6F19638D1600AB4A22 /* DZHDrawableEntityProtocols.h */,
 			);
 			path = DrawingProtocol;
 			sourceTree = "<group>";
@@ -264,6 +310,8 @@
 		4FF972A9195BA1B100FB0940 /* DZHDrawable */ = {
 			isa = PBXGroup;
 			children = (
+				4F48DA7019638F8200AB4A22 /* Common */,
+				4F3A0DA01962B391005233D3 /* Other */,
 				4F974886195BADC70067EF19 /* Addition */,
 				4FD46E8A195BAB19006BD33D /* DataFormatter */,
 				4FD46E8F195BAB19006BD33D /* Drawing */,
@@ -409,27 +457,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F974896195C0A670067EF19 /* DZHContainer.m in Sources */,
+				4F48DA731963B12700AB4A22 /* DZHMACalculator.m in Sources */,
 				4FD46EA4195BAB19006BD33D /* DZHKLineDrawing.m in Sources */,
 				4FD46EA0195BAB19006BD33D /* DZHKLineDateFormatter.m in Sources */,
 				4FAD71B5195D185B0023929A /* DZHAxisDrawingBase.m in Sources */,
 				4FAD71B2195D11680023929A /* DZHAxisEntity.m in Sources */,
 				4FD46EA1195BAB19006BD33D /* DZHKLineValueFormatter.m in Sources */,
 				4FD46EA7195BAB19006BD33D /* DZHKLineEntity.m in Sources */,
+				4F3A0DA31962B3B6005233D3 /* NSFixedArray.m in Sources */,
 				4F319F811961487E0033D322 /* DZHKLineDataSource.m in Sources */,
-				4F3A0D8D19625D94005233D3 /* DZHBarEntity.m in Sources */,
+				4F3A0D8D19625D94005233D3 /* DZHFillBarEntity.m in Sources */,
 				4FD46EA2195BAB19006BD33D /* DZHAxisXDrawing.m in Sources */,
 				4F974893195C06EA0067EF19 /* DZHScrollContainer.m in Sources */,
 				4F97489C195C210D0067EF19 /* DZHDrawingBase.m in Sources */,
 				4FAD71B8195D425F0023929A /* DZHKLineViewController.m in Sources */,
 				4F26CC97195CF22C0078FA86 /* DZHKLineContainer.m in Sources */,
 				4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */,
-				4F3A0D9019625E7C005233D3 /* DZHBarDrawing.m in Sources */,
+				4F3A0D9019625E7C005233D3 /* DZHFillBarDrawing.m in Sources */,
+				4F3A0D9319629F25005233D3 /* DZHCurveDrawing.m in Sources */,
 				4F319F7E1960FA4B0033D322 /* DZHCandleEntity.m in Sources */,
 				4FD46EA5195BAB19006BD33D /* DZHRectangleDrawing.m in Sources */,
 				4FF972B4195BA1B100FB0940 /* AppDelegate.m in Sources */,
+				4F3A0D9C1962AA5A005233D3 /* DZHStrokeBarDrawing.m in Sources */,
+				4F48DA6D19638B7A00AB4A22 /* DZHDrawableEntity.m in Sources */,
 				4FF972B0195BA1B100FB0940 /* main.m in Sources */,
 				4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */,
 				4FD46EA3195BAB19006BD33D /* DZHAxisYDrawing.m in Sources */,
+				4F3A0D961962A5AF005233D3 /* DZHStrokeBarEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

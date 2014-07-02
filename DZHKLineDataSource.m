@@ -17,7 +17,9 @@
 #import "DZHKLineContainer.h"
 #import "DZHAxisEntity.h"
 #import "DZHCandleEntity.h"
-#import "DZHBarEntity.h"
+#import "DZHFillBarEntity.h"
+#import "DZHMACalculator.h"
+#import "DZHCurveDrawing.h"
 
 @interface DZHKLineDataSource ()
 
@@ -38,6 +40,10 @@
     UIColor                         *_positiveColor;
     UIColor                         *_negativeColor;
     UIColor                         *_crossColor;
+    
+    DZHMACalculator                  *_ma5;
+    DZHMACalculator                  *_ma10;
+    DZHMACalculator                  *_ma20;
 }
 
 - (instancetype)init
@@ -46,11 +52,11 @@
     {
         self.grouping                   = [NSMutableArray array];
         self.kLineWidth                 = 2.;
-        self.kLinePadding               = 2.;
+        self.kLinePadding               = 1.;
         self.minTickCount               = 4;
         self.maxTickCount               = 4;
         self.maxScale                   = 5.;
-        self.minScale                   = 1.;
+        self.minScale                   = .5;
         self.scale                      = 1.;
         _dateFormatter                  = [[DZHKLineDateFormatter alloc] init];
         _valueFormatter                 = [[DZHKLineValueFormatter alloc] init];
@@ -58,6 +64,10 @@
         _positiveColor                  = [[UIColor colorFromRGB:0xf92a27] retain];
         _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
         _crossColor                     = [[UIColor grayColor] retain];
+        
+        _ma5                            = [[DZHMACalculator alloc] initWithMACycle:5];
+        _ma10                           = [[DZHMACalculator alloc] initWithMACycle:10];
+        _ma20                           = [[DZHMACalculator alloc] initWithMACycle:20];
     }
     return self;
 }
@@ -91,6 +101,10 @@
         {
             if (idx != 0)
                 [self decisionGroupIfNeedWithPreEntity:lastEntity curEntity:entity index:idx];
+            
+            [_ma5 travelerWithLastData:lastEntity currentData:entity index:idx];
+            [_ma10 travelerWithLastData:lastEntity currentData:entity index:idx];
+            [_ma20 travelerWithLastData:lastEntity currentData:entity index:idx];
             
             lastEntity          = entity;
             idx ++;
@@ -126,6 +140,8 @@
             return [self axisYDatasForVolumeDrawing:drawing];
         case DrawingTagsVolumeItem:
             return [self volumeDatasForVolumeDrawing:drawing];
+        case DrawingTagsMa:
+            return [self maDatasForMaDrawing:drawing];
         default:
             return nil;
     }
@@ -420,7 +436,7 @@
     
     CGFloat vol,low,x;
     DZHKLineEntity *entity;
-    DZHBarEntity *barEntity;
+    DZHFillBarEntity *barEntity;
     
     CGRect frame                = drawing.virtualFrame;
     
@@ -431,12 +447,65 @@
         low                     = CGRectGetMaxY(frame);
         x                       = [self kLineLocationForIndex:i];
         
-        barEntity               = [[DZHBarEntity alloc] init];
+        barEntity               = [[DZHFillBarEntity alloc] init];
         barEntity.barRect       = CGRectMake(x, vol, kWidth, MAX(ABS(low - vol), 1.));
         barEntity.color         = [self corlorForType:entity.type];
         [datas addObject:barEntity];
         [barEntity release];
     }
+    return datas;
+}
+
+@end
+
+@implementation DZHKLineDataSource (MA)
+
+- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing
+{
+    NSUInteger startIndex       = self.startIndex;   //绘制起始点
+    NSUInteger endIndex         = self.endIndex;     //绘制结束点
+    NSArray *klines             = self.klines;
+    NSMutableArray *datas       = [NSMutableArray array];
+    
+    CGFloat x;
+    DZHKLineEntity *entity;
+    
+    NSMutableDictionary *ma5    = [NSMutableDictionary dictionary];
+    NSMutableDictionary *ma10   = [NSMutableDictionary dictionary];
+    NSMutableDictionary *ma20   = [NSMutableDictionary dictionary];
+    
+    ma5[kCurveColorKey]         = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    ma10[kCurveColorKey]        = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
+    ma20[kCurveColorKey]        = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
+    
+    NSInteger count             = endIndex - startIndex + 1;
+    
+    ma5[kCurvePointCountKey]    = @(count);
+    ma10[kCurvePointCountKey]   = @(count);
+    ma20[kCurvePointCountKey]   = @(count);
+    
+    CGPoint *points5            = malloc(sizeof(CGPoint) * count);
+    CGPoint *points10           = malloc(sizeof(CGPoint) * count);
+    CGPoint *points20           = malloc(sizeof(CGPoint) * count);
+    
+    for (NSUInteger i = startIndex,j = 0; i <= endIndex; i++,j++)
+    {
+        entity                  = [klines objectAtIndex:i];
+        x                       = [self kLineCenterLocationForIndex:i];
+        
+        points5[j]              = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:5] max:_maxPrice min:_minPrice]);
+        points10[j]             = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:10] max:_maxPrice min:_minPrice]);
+        points20[j]             = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:20] max:_maxPrice min:_minPrice]);
+    }
+    
+    ma5[kCurvePointsKey]        = [NSValue valueWithPointer:points5];
+    ma10[kCurvePointsKey]       = [NSValue valueWithPointer:points10];
+    ma20[kCurvePointsKey]       = [NSValue valueWithPointer:points20];
+    
+    [datas addObject:ma5];
+    [datas addObject:ma10];
+    [datas addObject:ma20];
+    
     return datas;
 }
 

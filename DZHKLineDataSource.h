@@ -17,6 +17,7 @@ typedef enum
     DrawingTagsVolumeX,
     DrawingTagsVolumeY,
     DrawingTagsVolumeItem,
+    DrawingTagsMa,
 }DrawingTags;
 
 @interface DZHKLineDataSource : NSObject<DZHDrawingDataSource>
@@ -150,5 +151,11 @@ typedef enum
 @interface DZHKLineDataSource (Volume)
 
 - (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
+
+@end
+
+@interface DZHKLineDataSource (MA)
+
+- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing;
 
 @end

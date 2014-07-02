@@ -1,5 +1,5 @@
 //
-//  DZHBarDrawing.h
+//  DZHStrokeBarDrawing.h
 //  DZHDrawable
 //
 //  Created by Duanwwu on 14-7-1.
@@ -8,6 +8,6 @@
 
 #import "DZHDrawingBase.h"
 
-@interface DZHBarDrawing : DZHDrawingBase
+@interface DZHStrokeBarDrawing : DZHDrawingBase
 
 @end

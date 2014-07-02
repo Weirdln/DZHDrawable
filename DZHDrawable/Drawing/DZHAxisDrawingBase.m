@@ -13,7 +13,6 @@
 @synthesize lineColor           = _lineColor;
 @synthesize labelColor          = _labelColor;
 @synthesize labelFont           = _labelFont;
-@synthesize axisType            = _axisType;
 @synthesize labelSpace          = _labelSpace;
 
 - (void)dealloc
