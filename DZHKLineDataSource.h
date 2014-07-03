@@ -76,6 +76,12 @@ typedef enum
 - (void)calculateMaxAndMinDataFromIndex:(NSInteger)from toIndex:(NSInteger)to;
 
 /**
+ * k线宽度 包括k线实体和k线间隔
+ * @returns 每根k线总宽度
+ */
+- (CGFloat)kItemWidth;
+
+/**
  * 绘制所有k线需要的宽度
  * @returns 总的宽度
  */
@@ -118,7 +124,7 @@ typedef enum
  */
 @interface DZHKLineDataSource (AxisX)
 
-- (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 - (void)decisionGroupIfNeedWithPreEntity:(DZHKLineEntity *)preEntity curEntity:(DZHKLineEntity *)curEntity index:(int)index;
 
@@ -128,7 +134,7 @@ typedef enum
 
 @interface DZHKLineDataSource (AxisY)
 
-- (NSArray *)axisYDatasForDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)axisYDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 - (void)adjustMaxIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip;
 
@@ -138,24 +144,24 @@ typedef enum
 
 @interface DZHKLineDataSource (KLine)
 
-- (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end
 
 @interface DZHKLineDataSource (VolumeAxisY)
 
-- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end
 
 @interface DZHKLineDataSource (Volume)
 
-- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end
 
 @interface DZHKLineDataSource (MA)
 
-- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end

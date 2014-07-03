@@ -15,7 +15,7 @@
 {
     NSParameterAssert(self.dataSource);
     
-    NSArray *datas              = [self.dataSource datasForDrawing:self];
+    NSArray *datas              = [self.dataSource datasForDrawing:self inRect:rect];
     if ([datas count] == 0)
         return;
     

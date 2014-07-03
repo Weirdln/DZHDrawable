@@ -8,11 +8,9 @@
 
 @interface DZHCandleEntity : NSObject
 
-@property (nonatomic, assign) CGRect fillRect;/**填充矩形*/
+@property (nonatomic, assign) CGRect barRect;/**开盘、收盘*/
 
-@property (nonatomic, assign) CGPoint high;/**最高点*/
-
-@property (nonatomic, assign) CGPoint low;/**最低点*/
+@property (nonatomic, assign) CGRect stickRect;/**最高、最低*/
 
 @property (nonatomic, retain) UIColor *color;/**蜡烛图颜色*/
 

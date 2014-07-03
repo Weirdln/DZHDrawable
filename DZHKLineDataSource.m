@@ -31,6 +31,8 @@
 
 @property (nonatomic, retain) NSMutableArray *klineItem;
 
+@property (nonatomic, assign) CGFloat barWidth;//k线实体、成交量柱宽度
+
 @end
 
 @implementation DZHKLineDataSource
@@ -112,9 +114,23 @@
     }
 }
 
+- (void)setScale:(CGFloat)scale
+{
+    if (_scale != scale)
+    {
+        _scale              = scale;
+        
+        int width           = roundf(_kLineWidth * scale);
+        _barWidth           = width % 2 == 0 ? width + 1 : width;
+        
+        NSLog(@"_barWidth :%f",_barWidth);
+    }
+}
+
 - (CGFloat)_getKLineWidth
 {
-    return roundf(_kLineWidth * _scale);
+//    return floorf(_kLineWidth * _scale);
+    return _barWidth;
 }
 
 - (CGFloat)_getKlinePadding
@@ -124,24 +140,24 @@
 
 #pragma mark - DZHDrawingDataSource
 
-- (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     switch (drawing.tag)
     {
         case DrawingTagsKLineX:
-            return [self axisXDatasForDrawing:drawing];
+            return [self axisXDatasForDrawing:drawing inRect:rect];
         case DrawingTagsKLineY:
-            return [self axisYDatasForDrawing:drawing];
+            return [self axisYDatasForDrawing:drawing inRect:rect];
         case DrawingTagsKLineItem:
-            return [self kLineDatasForDrawing:drawing];
+            return [self kLineDatasForDrawing:drawing inRect:rect];
         case DrawingTagsVolumeX:
-            return [self axisXDatasForDrawing:drawing];
+            return [self axisXDatasForDrawing:drawing inRect:rect];
         case DrawingTagsVolumeY:
-            return [self axisYDatasForVolumeDrawing:drawing];
+            return [self axisYDatasForVolumeDrawing:drawing inRect:rect];
         case DrawingTagsVolumeItem:
-            return [self volumeDatasForVolumeDrawing:drawing];
+            return [self volumeDatasForVolumeDrawing:drawing inRect:rect];
         case DrawingTagsMa:
-            return [self maDatasForMaDrawing:drawing];
+            return [self maDatasForMaDrawing:drawing inRect:rect];
         default:
             return nil;
     }
@@ -191,6 +207,11 @@
     self.maxPrice                       = max;
     self.minPrice                       = min;
     self.maxVol                         = vol;
+}
+
+- (CGFloat)kItemWidth
+{
+    return [self _getKlinePadding] + [self _getKLineWidth];
 }
 
 - (CGFloat)totalKLineWidth
@@ -247,7 +268,7 @@
 
 @implementation DZHKLineDataSource (AxisX)
 
-- (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     int interval        = MAX(1, roundf(1.4f / self.scale));
     return [self groupsFromIndex:_startIndex toIndex:_endIndex monthInterval:interval];
@@ -302,7 +323,7 @@
 
 @implementation DZHKLineDataSource (AxisY)
 
-- (NSArray *)axisYDatasForDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)axisYDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     NSInteger tickCount,strip;
     
@@ -359,7 +380,7 @@
 
 @implementation DZHKLineDataSource (KLine)
 
-- (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)kLineDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     NSInteger max               = self.maxPrice;
     NSInteger min               = self.minPrice;
@@ -368,9 +389,8 @@
     CGFloat kWidth              = [self _getKLineWidth];
     NSArray *klines             = self.klines;
     NSMutableArray *datas       = [NSMutableArray array];
-    
     CGFloat open,close,high,low,x,center;
-    CGRect fillRect;
+    CGRect barRect;
     DZHKLineEntity *entity;
     DZHCandleEntity *candle;
     
@@ -384,13 +404,24 @@
         low                     = [drawing coordYWithValue:entity.low max:max min:min];
         
         x                       = [self kLineLocationForIndex:i];
-        fillRect                = CGRectMake(x, MIN(open, close), kWidth, MAX(ABS(open - close), 1.));
-        center                  = CGRectGetMidX(fillRect);
+        barRect                 = CGRectMake(x, MIN(open, close), kWidth, MAX(ABS(open - close), 1.));
+        
+        if (i == endIndex && CGRectGetMaxX(barRect) > CGRectGetMaxX(rect)) //最后一根k线部分超出范围
+        {
+            self.endIndex       -= 1; //调整起始绘制点，后面相关的绘制都会受到影响，如均线
+            continue;
+        }
+        else if (i == startIndex && CGRectGetMinX(barRect) < CGRectGetMinX(rect))   //第一根k线部分超出范围
+        {
+            self.startIndex     += 1; //调整结束绘制点，后面相关的绘制都会受到影响，如均线
+            continue;
+        }
+        
+        center                  = floorf(CGRectGetMidX(barRect));
         
         candle                  = [[DZHCandleEntity alloc] init];
-        candle.fillRect         = fillRect;
-        candle.high             = CGPointMake(center, high);
-        candle.low              = CGPointMake(center, low);
+        candle.barRect          = barRect;
+        candle.stickRect        = CGRectMake(center, high, 1., low - high);
         candle.color            = [self corlorForType:entity.type];
         [datas addObject:candle];
         [candle release];
@@ -402,7 +433,7 @@
 
 @implementation DZHKLineDataSource (VolumeAxisY)
 
-- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)axisYDatasForVolumeDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     NSMutableArray *datas           = [NSMutableArray array];
     
@@ -426,7 +457,7 @@
 
 @implementation DZHKLineDataSource (Volume)
 
-- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)volumeDatasForVolumeDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     NSUInteger startIndex       = self.startIndex;   //绘制起始点
     NSUInteger endIndex         = self.endIndex;     //绘制结束点
@@ -438,13 +469,11 @@
     DZHKLineEntity *entity;
     DZHFillBarEntity *barEntity;
     
-    CGRect frame                = drawing.virtualFrame;
-    
     for (NSUInteger i = startIndex; i <= endIndex; i++)
     {
         entity                  = [klines objectAtIndex:i];
         vol                     = [drawing coordYWithValue:entity.vol max:_maxVol min:0];
-        low                     = CGRectGetMaxY(frame);
+        low                     = CGRectGetMaxY(rect);
         x                       = [self kLineLocationForIndex:i];
         
         barEntity               = [[DZHFillBarEntity alloc] init];
@@ -460,7 +489,7 @@
 
 @implementation DZHKLineDataSource (MA)
 
-- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing
+- (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
     NSUInteger startIndex       = self.startIndex;   //绘制起始点
     NSUInteger endIndex         = self.endIndex;     //绘制结束点

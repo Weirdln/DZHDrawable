@@ -21,27 +21,20 @@ NSString * const kCurvePointCountKey    = @"CurveCount";
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
     
-    NSArray *datas                  = [self.dataSource datasForDrawing:self];
+    NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
     for (NSDictionary *dic in datas)
     {
         CGColorRef color            = ((UIColor *)[dic objectForKey:kCurveColorKey]).CGColor;
-        int count                   = [[dic objectForKey:kCurvePointCountKey] intValue];
+        int end                     = [[dic objectForKey:kCurvePointCountKey] intValue] - 1;
         CGPoint *pts                = [((NSValue *)[dic objectForKey:kCurvePointsKey]) pointerValue];
         
-        int begin                   = 0;
-        int end                     = count - 1;
-        if (pts[0].x <= CGRectGetMinX(rect))
-            begin                   = 1;
-        if (pts[end].x >= CGRectGetMaxX(rect))
-            end                     -= 1;
-        
         CGContextSetStrokeColorWithColor(context, color);
-        CGContextMoveToPoint(context, pts[begin].x, pts[begin].y);
-        for (int i = begin; i < end; i++)
+        CGContextMoveToPoint(context, pts[0].x, pts[0].y);
+        for (int i = 0; i < end; i++)
         {
             CGContextAddQuadCurveToPoint(context, pts[i].x, pts[i].y, (pts[i].x + pts[i+1].x) * 0.5, (pts[i].y + pts[i+1].y) * 0.5);
         }
-        if (end > 1) CGContextAddLineToPoint(context, pts[end].x, pts[end].y);
+        if (end > 0) CGContextAddLineToPoint(context, pts[end].x, pts[end].y);
         CGContextStrokePath(context);
         
         free(pts);

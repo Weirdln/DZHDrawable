@@ -46,7 +46,7 @@
  */
 @protocol DZHDrawingDataSource <NSObject>
 
-- (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing;
+- (NSArray *)datasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end
 
