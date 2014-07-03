@@ -21,6 +21,10 @@
 
 @property (nonatomic, assign) NSUInteger centerIndex;
 
+@property (nonatomic, assign) CGFloat scale;
+
+@property (nonatomic, assign) CGFloat lastOffset;
+
 @end
 
 @implementation DZHKLineViewController
@@ -36,6 +40,7 @@
     if (self)
     {
         _dataSource             = [[DZHKLineDataSource alloc] init];
+        _scale                  = 1.;
     }
     return self;
 }
@@ -190,8 +195,8 @@
     
     CGRect frame                = kLineContainer.frame;
     kLineContainer.contentSize  = CGSizeMake(newContentWidth, frame.size.height);
-    
-    [kLineContainer scrollRectToVisible:CGRectMake(newContentWidth - oldContentWidth - frame.size.width, .0, frame.size.width, frame.size.height) animated:NO];
+    self.lastOffset             = newContentWidth - oldContentWidth - frame.size.width;
+    [kLineContainer scrollRectToVisible:CGRectMake(_lastOffset, .0, frame.size.width, frame.size.height) animated:NO];
 }
 
 #pragma mark - DZHDrawingContainerDelegate
@@ -207,22 +212,23 @@
 - (CGFloat)scaledOfkLineContainer:(DZHKLineContainer *)container
 {
     self.centerIndex            = (_dataSource.startIndex + _dataSource.endIndex) * .5;
-    return _dataSource.scale;
+    return _scale;
 }
 
 - (void)kLineContainer:(DZHKLineContainer *)container scaled:(CGFloat)scale
 {
     CGFloat maxScale            = _dataSource.maxScale;
     CGFloat minScale            = _dataSource.minScale;
-    if (scale > maxScale && _dataSource.scale == maxScale)//超出最大缩放倍数，不做处理
+    CGFloat finalScale          = scale > 1. ? 1.5 * scale : .7 * scale; //乘一个系数，增加放大时的平滑度
+    
+    if (finalScale >= maxScale && _dataSource.scale == maxScale)//超出最大缩放倍数，不做处理
         return;
-    if (scale < minScale && _dataSource.scale == minScale)//超出最小缩放倍数，不做处理
+    if (finalScale <= minScale && _dataSource.scale == minScale)//超出最小缩放倍数，不做处理
         return;
-//    if ((int)scale * 100 % 2 != 0)//过滤部分数据，降低刷新频率
-//        return;
     
     CGRect frame                = container.frame;
-    _dataSource.scale           = MAX(MIN(scale * 1.2,maxScale),minScale); //乘一个系数，增加放大时的平滑度
+    _dataSource.scale           = MAX(MIN(finalScale,maxScale),minScale);
+    _scale                      = MAX(MIN(scale,maxScale),minScale);
     CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];
     container.contentSize       = CGSizeMake([self _getContainerWidth], frame.size.height);
     
@@ -255,7 +261,24 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [scrollView setNeedsDisplay];
+    CGFloat offset                      = scrollView.contentOffset.x;
+    
+    if (offset >= 0. && offset <= scrollView.contentSize.width - scrollView.frame.size.width)
+    {
+        int width                       = [_dataSource kItemWidth];
+        if (fabs((offset - _lastOffset) / width) > 1.) //如果移动的距离大于一根k线的宽度，则刷新界面
+        {
+            CGFloat x                   = roundf(offset / width) * width; //让偏移量刚好为k线宽度整数倍
+            
+            scrollView.contentOffset    = CGPointMake(x, scrollView.contentOffset.y);
+            self.lastOffset             = x;
+            [scrollView setNeedsDisplay];
+        }
+    }
+    else
+    {
+        [scrollView setNeedsDisplay];
+    }
 }
 
 @end
