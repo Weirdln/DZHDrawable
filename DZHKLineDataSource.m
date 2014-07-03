@@ -122,14 +122,11 @@
         
         int width           = roundf(_kLineWidth * scale);
         _barWidth           = width % 2 == 0 ? width + 1 : width;
-        
-        NSLog(@"_barWidth :%f",_barWidth);
     }
 }
 
 - (CGFloat)_getKLineWidth
 {
-//    return floorf(_kLineWidth * _scale);
     return _barWidth;
 }
 

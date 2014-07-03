@@ -1,0 +1,1 @@
+*.o *.lo *.la .*.rej *.rej .*~ *~ .#* .DS_Store *~.nib *.mode* *.pbxuser CVS _*.java *.perspective .LSOverride *.xcuserdatad

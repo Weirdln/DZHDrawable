@@ -15,7 +15,6 @@
 		4F3A0D9319629F25005233D3 /* DZHCurveDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D9219629F25005233D3 /* DZHCurveDrawing.m */; };
 		4F3A0D961962A5AF005233D3 /* DZHStrokeBarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D951962A5AF005233D3 /* DZHStrokeBarEntity.m */; };
 		4F3A0D9C1962AA5A005233D3 /* DZHStrokeBarDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D9B1962AA5A005233D3 /* DZHStrokeBarDrawing.m */; };
-		4F3A0DA31962B3B6005233D3 /* NSFixedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */; };
 		4F48DA6D19638B7A00AB4A22 /* DZHDrawableEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA6C19638B7A00AB4A22 /* DZHDrawableEntity.m */; };
 		4F48DA731963B12700AB4A22 /* DZHMACalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA721963B12700AB4A22 /* DZHMACalculator.m */; };
 		4F974889195BAE3D0067EF19 /* UIColor+RGB.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F974888195BAE3D0067EF19 /* UIColor+RGB.m */; };
@@ -75,8 +74,6 @@
 		4F3A0D951962A5AF005233D3 /* DZHStrokeBarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHStrokeBarEntity.m; sourceTree = "<group>"; };
 		4F3A0D9A1962AA5A005233D3 /* DZHStrokeBarDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHStrokeBarDrawing.h; sourceTree = "<group>"; };
 		4F3A0D9B1962AA5A005233D3 /* DZHStrokeBarDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHStrokeBarDrawing.m; sourceTree = "<group>"; };
-		4F3A0DA11962B3B6005233D3 /* NSFixedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFixedArray.h; sourceTree = "<group>"; };
-		4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFixedArray.m; sourceTree = "<group>"; };
 		4F48DA6B19638B7A00AB4A22 /* DZHDrawableEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDrawableEntity.h; sourceTree = "<group>"; };
 		4F48DA6C19638B7A00AB4A22 /* DZHDrawableEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDrawableEntity.m; sourceTree = "<group>"; };
 		4F48DA6F19638D1600AB4A22 /* DZHDrawableEntityProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawableEntityProtocols.h; sourceTree = "<group>"; };
@@ -162,8 +159,6 @@
 		4F3A0DA01962B391005233D3 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				4F3A0DA11962B3B6005233D3 /* NSFixedArray.h */,
-				4F3A0DA21962B3B6005233D3 /* NSFixedArray.m */,
 				4F48DA711963B12700AB4A22 /* DZHMACalculator.h */,
 				4F48DA721963B12700AB4A22 /* DZHMACalculator.m */,
 			);
@@ -464,7 +459,6 @@
 				4FAD71B2195D11680023929A /* DZHAxisEntity.m in Sources */,
 				4FD46EA1195BAB19006BD33D /* DZHKLineValueFormatter.m in Sources */,
 				4FD46EA7195BAB19006BD33D /* DZHKLineEntity.m in Sources */,
-				4F3A0DA31962B3B6005233D3 /* NSFixedArray.m in Sources */,
 				4F319F811961487E0033D322 /* DZHKLineDataSource.m in Sources */,
 				4F3A0D8D19625D94005233D3 /* DZHFillBarEntity.m in Sources */,
 				4FD46EA2195BAB19006BD33D /* DZHAxisXDrawing.m in Sources */,
