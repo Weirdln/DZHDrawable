@@ -7,7 +7,7 @@
 //
 
 #import "DZHFillBarDrawing.h"
-#import "DZHFillBarEntity.h"
+#import "DZHDrawingItemModels.h"
 
 @implementation DZHFillBarDrawing
 
@@ -20,10 +20,10 @@
     
     NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
     
-    for (DZHFillBarEntity *entity in datas)
+    for (id<DZHVolumeBar> entity in datas)
     {
-        CGContextSetFillColorWithColor(context, entity.color.CGColor);
-        CGContextFillRect(context, entity.barRect);
+        CGContextSetFillColorWithColor(context, entity.volumeColor.CGColor);
+        CGContextFillRect(context, entity.volumeRect);
     }
     CGContextRestoreGState(context);
 }

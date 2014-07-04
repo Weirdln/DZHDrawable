@@ -7,7 +7,7 @@
 //
 
 #import "DZHKLineDrawing.h"
-#import "DZHCandleEntity.h"
+#import "DZHDrawingItemModels.h"
 
 @implementation DZHKLineDrawing
 
@@ -20,10 +20,10 @@
     
     NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
 
-    for (DZHCandleEntity *entity in datas)
+    for (id<DZHCandleStick> entity in datas)
     {
-        CGContextSetFillColorWithColor(context, entity.color.CGColor);
-        CGContextAddRect(context, entity.barRect);
+        CGContextSetFillColorWithColor(context, entity.stickColor.CGColor);
+        CGContextAddRect(context, entity.solidRect);
         CGContextAddRect(context, entity.stickRect);
         CGContextFillPath(context);
         CGContextStrokePath(context);

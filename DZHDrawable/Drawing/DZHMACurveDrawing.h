@@ -8,10 +8,6 @@
 
 #import "DZHDrawingBase.h"
 
-extern NSString * const kCurveColorKey;
-extern NSString * const kCurvePointsKey;
-extern NSString * const kCurvePointCountKey;
-
-@interface DZHCurveDrawing : DZHDrawingBase
+@interface DZHMACurveDrawing : DZHDrawingBase
 
 @end

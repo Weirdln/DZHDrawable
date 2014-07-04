@@ -7,24 +7,26 @@
 //
 
 #import "DZHKLineEntity.h"
-#import "DZHDrawableEntityProtocols.h"
+#import "DZHDrawingItemModels.h"
 
-@interface DZHDrawableEntity : NSObject<DZHDrawableMapping>
+@interface DZHDrawingItemModel : NSObject<DZHCandleStick,DZHVolumeBar>
 
 @property (nonatomic, retain) DZHKLineEntity *originData;
 
 @property (nonatomic) CGFloat locationX;
 
-@property (nonatomic) CGFloat width;
+@property (nonatomic) CGFloat itemWidth;
 
 @property (nonatomic, retain, readonly) NSMutableDictionary *extendData;
 
-@end
-
-@interface DZHDrawableEntity (CandleStick)<DZHCandleStick>
+- (instancetype)initWithOriginData:(DZHKLineEntity *)originData;
 
 @end
 
-@interface DZHDrawableEntity (VolumeBar)<DZHVolumeBar>
+@interface DZHDrawingItemModel (MACurve)<DZHMACurve>
+
+@end
+
+@interface DZHDrawingItemModel (VolumeMACurve)<DZHVolumeMACurve>
 
 @end

@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DZHKLineDataSource.m"
-            timestampString = "426048409.117548"
+            timestampString = "426132205.668466"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "435"
-            endingLineNumber = "435"
+            startingLineNumber = "530"
+            endingLineNumber = "530"
             landmarkName = "-axisYDatasForVolumeDrawing:inRect:"
             landmarkType = "5">
          </BreakpointContent>
@@ -64,38 +64,6 @@
             startingLineNumber = "40"
             endingLineNumber = "40"
             landmarkName = "-testMACalculator"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DZHDrawable/Other/DZHMACalculator.m"
-            timestampString = "425975494.315617"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "-travelerWithLastData:currentData:index:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DZHDrawable/Other/DZHMACalculator.m"
-            timestampString = "425975494.315617"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "-travelerWithLastData:currentData:index:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -19,7 +19,10 @@
 #import "DZHCandleEntity.h"
 #import "DZHFillBarEntity.h"
 #import "DZHMACalculator.h"
-#import "DZHCurveDrawing.h"
+#import "DZHMACurveDrawing.h"
+#import "DZHDrawingUtil.h"
+#import "DZHMAModel.h"
+#import "DZHVolumeMACalculator.h"
 
 @interface DZHKLineDataSource ()
 
@@ -33,6 +36,14 @@
 
 @property (nonatomic, assign) CGFloat barWidth;//k线实体、成交量柱宽度
 
+@property (nonatomic, retain) NSArray *MAModels;
+
+@property (nonatomic, retain) NSArray *MACalculators;
+
+@property (nonatomic, retain) NSArray *volumeMAModels;
+
+@property (nonatomic, retain) NSArray *volumeMACalculators;
+
 @end
 
 @implementation DZHKLineDataSource
@@ -42,10 +53,6 @@
     UIColor                         *_positiveColor;
     UIColor                         *_negativeColor;
     UIColor                         *_crossColor;
-    
-    DZHMACalculator                  *_ma5;
-    DZHMACalculator                  *_ma10;
-    DZHMACalculator                  *_ma20;
 }
 
 - (instancetype)init
@@ -67,11 +74,62 @@
         _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
         _crossColor                     = [[UIColor grayColor] retain];
         
-        _ma5                            = [[DZHMACalculator alloc] initWithMACycle:5];
-        _ma10                           = [[DZHMACalculator alloc] initWithMACycle:10];
-        _ma20                           = [[DZHMACalculator alloc] initWithMACycle:20];
+        [self initMA];
+        [self initVolumeMA];
     }
     return self;
+}
+
+- (void)initMA
+{
+    DZHMACalculator *ma5            = [[DZHMACalculator alloc] initWithMACycle:KLineCycleFive];
+    DZHMACalculator *ma10           = [[DZHMACalculator alloc] initWithMACycle:KLineCycleTen];
+    DZHMACalculator *ma20           = [[DZHMACalculator alloc] initWithMACycle:KLineCycleTwenty];
+    
+    DZHMAModel *model5              = [[DZHMAModel alloc] initWithMACycle:KLineCycleFive];
+    DZHMAModel *model10             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTen];
+    DZHMAModel *model20             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTwenty];
+    
+    model5.color                    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    model10.color                   = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
+    model20.color                   = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
+    
+    self.MACalculators              = @[ma5,ma10,ma20];
+    self.MAModels                   = @[model5,model10,model20];
+    
+    [ma5 release];
+    [ma10 release];
+    [ma20 release];
+    
+    [model5 release];
+    [model10 release];
+    [model20 release];
+}
+
+- (void)initVolumeMA
+{
+    DZHVolumeMACalculator *ma5      = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleFive];
+    DZHVolumeMACalculator *ma10     = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleTen];
+    DZHVolumeMACalculator *ma20     = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleTwenty];
+    
+    DZHMAModel *model5              = [[DZHMAModel alloc] initWithMACycle:KLineCycleFive];
+    DZHMAModel *model10             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTen];
+    DZHMAModel *model20             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTwenty];
+    
+    model5.color                    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    model10.color                   = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
+    model20.color                   = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
+    
+    self.VolumeMACalculators        = @[ma5,ma10,ma20];
+    self.VolumeMAModels             = @[model5,model10,model20];
+    
+    [ma5 release];
+    [ma10 release];
+    [ma20 release];
+    
+    [model5 release];
+    [model10 release];
+    [model20 release];
 }
 
 - (void)dealloc
@@ -85,6 +143,13 @@
     
     [_grouping release];
     [_klines release];
+    
+    [_MAModels release];
+    [_MACalculators release];
+    
+    [_volumeMAModels release];
+    [_volumeMACalculators release];
+    
     [super dealloc];
 }
 
@@ -93,24 +158,38 @@
     if (_klines != klines)
     {
         [_klines release];
-        _klines                             = [klines retain];
         
         [_grouping removeAllObjects];
         int idx                             = 0;
+    
+        NSMutableArray *datas               = [[NSMutableArray alloc] init];
+        DZHDrawingItemModel *lastModel;
+        DZHDrawingItemModel *model;
         
-        DZHKLineEntity *lastEntity;
-        for (DZHKLineEntity *entity in _klines)
+        for (DZHKLineEntity *entity in klines)
         {
+            model                           = [[DZHDrawingItemModel alloc] initWithOriginData:entity];
+            [datas addObject:model];
+            [model release];
+            
             if (idx != 0)
-                [self decisionGroupIfNeedWithPreEntity:lastEntity curEntity:entity index:idx];
+                [self decisionGroupIfNeedWithPreDate:lastModel.date curDate:entity.date index:idx];
             
-            [_ma5 travelerWithLastData:lastEntity currentData:entity index:idx];
-            [_ma10 travelerWithLastData:lastEntity currentData:entity index:idx];
-            [_ma20 travelerWithLastData:lastEntity currentData:entity index:idx];
+            for (DZHMACalculator *calculator in _MACalculators)
+            {
+                [calculator travelerWithLastData:lastModel currentData:model index:idx];
+            }
             
-            lastEntity          = entity;
+            for (DZHVolumeMACalculator *calculator in _volumeMACalculators)
+            {
+                [calculator travelerWithLastData:lastModel currentData:model index:idx];
+            }
+            
+            lastModel          = model;
             idx ++;
         }
+        
+        _klines                             = datas;
     }
 }
 
@@ -155,6 +234,8 @@
             return [self volumeDatasForVolumeDrawing:drawing inRect:rect];
         case DrawingTagsMa:
             return [self maDatasForMaDrawing:drawing inRect:rect];
+        case DrawingTagsVolumeMa:
+            return [self volumeMADatasForMaDrawing:drawing inRect:rect];
         default:
             return nil;
     }
@@ -177,8 +258,8 @@
     CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
     CGFloat kPadding            = [self _getKlinePadding];  //k线间距
     CGFloat space               = kWidth + kPadding;
-    self.startIndex             = MAX((rect.origin.x - kPadding - _kLineOffset)/space , 0);
-    self.endIndex               = MIN((CGRectGetMaxX(rect) - kPadding - _kLineOffset)/space , [_klines count] - 1);
+    self.startIndex             = MAX(ceilf((rect.origin.x - kPadding - _kLineOffset)/space), 0);
+    self.endIndex               = MIN((CGRectGetMaxX(rect) - kPadding - _kLineOffset)/space - 1, [_klines count] - 1);
 }
 
 - (void)calculateMaxAndMinDataFromIndex:(NSInteger)from toIndex:(NSInteger)to
@@ -189,7 +270,7 @@
     
     for (NSInteger i = from; i <= to; i++)
     {
-        DZHKLineEntity *entity  = [_klines objectAtIndex:i];
+        DZHDrawingItemModel *entity  = [_klines objectAtIndex:i];
         
         if (entity.high > max)
             max        = entity.high;
@@ -243,6 +324,21 @@
     return MIN(index, [_klines count] - 1);
 }
 
+- (CGFloat)nearTimesLocationForLocation:(CGFloat)position
+{
+    CGFloat kWidth              = [self _getKLineWidth];    //k线实体宽度
+    CGFloat kPadding            = [self _getKlinePadding];  //k线间距
+    CGFloat space               = kWidth + kPadding;
+    CGFloat index               = (position - kPadding - _kLineOffset) / space;
+    
+    return roundf(index) * space + kPadding + _kLineOffset;
+}
+
+- (NSInteger)MAStartIndexWithIndex:(NSInteger)index cycle:(int)cycle
+{
+    return index < cycle - 1 ? cycle - 1 : index;
+}
+
 @end
 
 @implementation DZHKLineDataSource (Color)
@@ -271,14 +367,14 @@
     return [self groupsFromIndex:_startIndex toIndex:_endIndex monthInterval:interval];
 }
 
-- (void)decisionGroupIfNeedWithPreEntity:(DZHKLineEntity *)preEntity curEntity:(DZHKLineEntity *)curEntity index:(int)index
+- (void)decisionGroupIfNeedWithPreDate:(int)preDate curDate:(int)curDate index:(int)index
 {
-    int preMonth        = [_dateFormatter yearMonthOfDate:preEntity.date];
-    int curMonth        = [_dateFormatter yearMonthOfDate:curEntity.date];
+    int preMonth        = [_dateFormatter yearMonthOfDate:preDate];
+    int curMonth        = [_dateFormatter yearMonthOfDate:curDate];
     
     if (preMonth != curMonth)//如果当前数据跟上一个数据不在一个月，则进行分组
     {
-        [self.grouping addObject:[NSString stringWithFormat:@"%d%d",curEntity.date,index]];
+        [self.grouping addObject:[NSString stringWithFormat:@"%d%d",curDate,index]];
     }
 }
 
@@ -328,10 +424,13 @@
     
     NSMutableArray *datas           = [NSMutableArray array];
     
+    CGFloat bottom              = CGRectGetMaxY(rect);
+    CGFloat top                 = CGRectGetMinY(rect);
+    
     for (int i = 0; i <= tickCount; i++)
     {
         NSInteger value             = _minPrice + strip * i;
-        CGFloat y                   = [drawing coordYWithValue:value max:_maxPrice min:_minPrice];
+        CGFloat y                   = [DZHDrawingUtil locationYForValue:value withMax:_maxPrice min:_minPrice top:top bottom:bottom];
         
         DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
         entity.location             = CGPointMake(.0, y);
@@ -386,42 +485,41 @@
     CGFloat kWidth              = [self _getKLineWidth];
     NSArray *klines             = self.klines;
     NSMutableArray *datas       = [NSMutableArray array];
+    
+    CGFloat bottom              = CGRectGetMaxY(rect);
+    CGFloat top                 = CGRectGetMinY(rect);
     CGFloat open,close,high,low,x,center;
     CGRect barRect;
-    DZHKLineEntity *entity;
-    DZHCandleEntity *candle;
+    DZHDrawingItemModel *entity;
     
     for (NSUInteger i = startIndex; i <= endIndex; i++)
     {
         entity                  = [klines objectAtIndex:i];
         
-        open                    = [drawing coordYWithValue:entity.open max:max min:min];
-        close                   = [drawing coordYWithValue:entity.close max:max min:min];
-        high                    = [drawing coordYWithValue:entity.high max:max min:min];
-        low                     = [drawing coordYWithValue:entity.low max:max min:min];
+        open                    = [DZHDrawingUtil locationYForValue:entity.open withMax:max min:min top:top bottom:bottom];
+        close                   = [DZHDrawingUtil locationYForValue:entity.close withMax:max min:min top:top bottom:bottom];
+        high                    = [DZHDrawingUtil locationYForValue:entity.high withMax:max min:min top:top bottom:bottom];
+        low                     = [DZHDrawingUtil locationYForValue:entity.low withMax:max min:min top:top bottom:bottom];
         
         x                       = [self kLineLocationForIndex:i];
         barRect                 = CGRectMake(x, MIN(open, close), kWidth, MAX(ABS(open - close), 1.));
         
-        if (i == endIndex && CGRectGetMaxX(barRect) > CGRectGetMaxX(rect)) //最后一根k线部分超出范围
-        {
-            self.endIndex       -= 1; //调整起始绘制点，后面相关的绘制都会受到影响，如均线
-            continue;
-        }
-        else if (i == startIndex && CGRectGetMinX(barRect) < CGRectGetMinX(rect))   //第一根k线部分超出范围
-        {
-            self.startIndex     += 1; //调整结束绘制点，后面相关的绘制都会受到影响，如均线
-            continue;
-        }
+//        if (i == endIndex && CGRectGetMaxX(barRect) > CGRectGetMaxX(rect)) //最后一根k线部分超出范围
+//        {
+//            self.endIndex       -= 1; //调整起始绘制点，后面相关的绘制都会受到影响，如均线
+//            continue;
+//        }
+//        else if (i == startIndex && CGRectGetMinX(barRect) < CGRectGetMinX(rect))   //第一根k线部分超出范围
+//        {
+//            self.startIndex     += 1; //调整结束绘制点，后面相关的绘制都会受到影响，如均线
+//            continue;
+//        }
         
         center                  = floorf(CGRectGetMidX(barRect));
-        
-        candle                  = [[DZHCandleEntity alloc] init];
-        candle.barRect          = barRect;
-        candle.stickRect        = CGRectMake(center, high, 1., low - high);
-        candle.color            = [self corlorForType:entity.type];
-        [datas addObject:candle];
-        [candle release];
+        entity.solidRect        = barRect;
+        entity.stickRect        = CGRectMake(center, high, 1., low - high);
+        entity.stickColor       = [self corlorForType:entity.type];
+        [datas addObject:entity];
     }
     return datas;
 }
@@ -461,23 +559,21 @@
     CGFloat kWidth              = [self _getKLineWidth];
     NSArray *klines             = self.klines;
     NSMutableArray *datas       = [NSMutableArray array];
+    CGFloat bottom              = CGRectGetMaxY(rect);
+    CGFloat top                 = CGRectGetMinY(rect);
     
-    CGFloat vol,low,x;
-    DZHKLineEntity *entity;
-    DZHFillBarEntity *barEntity;
+    CGFloat vol,x;
+    DZHDrawingItemModel *entity;
     
     for (NSUInteger i = startIndex; i <= endIndex; i++)
     {
         entity                  = [klines objectAtIndex:i];
-        vol                     = [drawing coordYWithValue:entity.vol max:_maxVol min:0];
-        low                     = CGRectGetMaxY(rect);
+        vol                     = [DZHDrawingUtil locationYForValue:entity.vol withMax:_maxVol min:0 top:top bottom:bottom];
         x                       = [self kLineLocationForIndex:i];
         
-        barEntity               = [[DZHFillBarEntity alloc] init];
-        barEntity.barRect       = CGRectMake(x, vol, kWidth, MAX(ABS(low - vol), 1.));
-        barEntity.color         = [self corlorForType:entity.type];
-        [datas addObject:barEntity];
-        [barEntity release];
+        entity.volumeRect       = CGRectMake(x, vol, kWidth, MAX(ABS(bottom - vol), 1.));
+        entity.volumeColor      = [self corlorForType:entity.type];
+        [datas addObject:entity];
     }
     return datas;
 }
@@ -491,48 +587,59 @@
     NSUInteger startIndex       = self.startIndex;   //绘制起始点
     NSUInteger endIndex         = self.endIndex;     //绘制结束点
     NSArray *klines             = self.klines;
-    NSMutableArray *datas       = [NSMutableArray array];
+    CGFloat bottom              = CGRectGetMaxY(rect);
+    CGFloat top                 = CGRectGetMinY(rect);
     
-    CGFloat x;
-    DZHKLineEntity *entity;
+    DZHDrawingItemModel *entity;
     
-    NSMutableDictionary *ma5    = [NSMutableDictionary dictionary];
-    NSMutableDictionary *ma10   = [NSMutableDictionary dictionary];
-    NSMutableDictionary *ma20   = [NSMutableDictionary dictionary];
-    
-    ma5[kCurveColorKey]         = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-    ma10[kCurveColorKey]        = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
-    ma20[kCurveColorKey]        = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
-    
-    NSInteger count             = endIndex - startIndex + 1;
-    
-    ma5[kCurvePointCountKey]    = @(count);
-    ma10[kCurvePointCountKey]   = @(count);
-    ma20[kCurvePointCountKey]   = @(count);
-    
-    CGPoint *points5            = malloc(sizeof(CGPoint) * count);
-    CGPoint *points10           = malloc(sizeof(CGPoint) * count);
-    CGPoint *points20           = malloc(sizeof(CGPoint) * count);
-    
-    for (NSUInteger i = startIndex,j = 0; i <= endIndex; i++,j++)
+    for (DZHMAModel *model in _MAModels)
     {
-        entity                  = [klines objectAtIndex:i];
-        x                       = [self kLineCenterLocationForIndex:i];
+        NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
+        NSInteger count         = endIndex - begin + 1;
         
-        points5[j]              = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:5] max:_maxPrice min:_minPrice]);
-        points10[j]             = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:10] max:_maxPrice min:_minPrice]);
-        points20[j]             = CGPointMake(x, [drawing coordYWithValue:[entity maWithCycle:20] max:_maxPrice min:_minPrice]);
+        CGPoint *points         = malloc(sizeof(CGPoint) * count);
+        for (NSInteger i = 0,j = begin; i < count; i ++,j++)
+        {
+            entity              = [klines objectAtIndex:j];
+            points[i]           = CGPointMake([self kLineCenterLocationForIndex:j], [DZHDrawingUtil locationYForValue:[entity MAWithCycle:model.cycle] withMax:_maxPrice min:_minPrice top:top bottom:bottom]);
+        }
+        [model setPoints:points withCount:count];
+        free(points);
     }
     
-    ma5[kCurvePointsKey]        = [NSValue valueWithPointer:points5];
-    ma10[kCurvePointsKey]       = [NSValue valueWithPointer:points10];
-    ma20[kCurvePointsKey]       = [NSValue valueWithPointer:points20];
+    return self.MAModels;
+}
+
+@end
+
+@implementation DZHKLineDataSource (VolumeMA)
+
+- (NSArray *)volumeMADatasForMaDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
+{
+    NSUInteger startIndex       = self.startIndex;   //绘制起始点
+    NSUInteger endIndex         = self.endIndex;     //绘制结束点
+    NSArray *klines             = self.klines;
+    CGFloat bottom              = CGRectGetMaxY(rect);
+    CGFloat top                 = CGRectGetMinY(rect);
     
-    [datas addObject:ma5];
-    [datas addObject:ma10];
-    [datas addObject:ma20];
+    DZHDrawingItemModel *entity;
     
-    return datas;
+    for (DZHMAModel *model in _volumeMAModels)
+    {
+        NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
+        NSInteger count         = endIndex - begin + 1;
+        
+        CGPoint *points         = malloc(sizeof(CGPoint) * count);
+        for (NSInteger i = 0,j = begin; i < count; i ++,j++)
+        {
+            entity              = [klines objectAtIndex:j];
+            points[i]           = CGPointMake([self kLineCenterLocationForIndex:j], [DZHDrawingUtil locationYForValue:[entity volumeMAWithCycle:model.cycle] withMax:_maxVol min:0 top:top bottom:bottom]);
+        }
+        [model setPoints:points withCount:count];
+        free(points);
+    }
+    
+    return self.volumeMAModels;
 }
 
 @end

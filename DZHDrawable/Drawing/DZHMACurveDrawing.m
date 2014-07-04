@@ -6,13 +6,10 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHCurveDrawing.h"
+#import "DZHMACurveDrawing.h"
+#import "DZHMAModel.h"
 
-@implementation DZHCurveDrawing
-
-NSString * const kCurveColorKey         = @"CurveColor";
-NSString * const kCurvePointsKey        = @"CurvePoints";
-NSString * const kCurvePointCountKey    = @"CurveCount";
+@implementation DZHMACurveDrawing
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
@@ -22,13 +19,12 @@ NSString * const kCurvePointCountKey    = @"CurveCount";
     CGContextSetLineWidth(context, 1.);
     
     NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
-    for (NSDictionary *dic in datas)
+    for (DZHMAModel *model in datas)
     {
-        CGColorRef color            = ((UIColor *)[dic objectForKey:kCurveColorKey]).CGColor;
-        int end                     = [[dic objectForKey:kCurvePointCountKey] intValue] - 1;
-        CGPoint *pts                = [((NSValue *)[dic objectForKey:kCurvePointsKey]) pointerValue];
+        NSInteger end               = model.count - 1;
+        CGPoint *pts                = model.points;
         
-        CGContextSetStrokeColorWithColor(context, color);
+        CGContextSetStrokeColorWithColor(context, model.color.CGColor);
         CGContextMoveToPoint(context, pts[0].x, pts[0].y);
         for (int i = 0; i < end; i++)
         {
@@ -36,8 +32,6 @@ NSString * const kCurvePointCountKey    = @"CurveCount";
         }
         if (end > 0) CGContextAddLineToPoint(context, pts[end].x, pts[end].y);
         CGContextStrokePath(context);
-        
-        free(pts);
     }
     CGContextRestoreGState(context);
 }

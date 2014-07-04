@@ -7,7 +7,7 @@
 //
 
 #import "DZHDrawing.h"
-#import "DZHKLineEntity.h"
+#import "DZHDrawingItemModel.h"
 
 typedef enum
 {
@@ -18,7 +18,15 @@ typedef enum
     DrawingTagsVolumeY,
     DrawingTagsVolumeItem,
     DrawingTagsMa,
+    DrawingTagsVolumeMa,
 }DrawingTags;
+
+typedef enum
+{
+    KLineCycleFive          = 5,
+    KLineCycleTen           = 10,
+    KLineCycleTwenty        = 20,
+}KLineCycle;
 
 @interface DZHKLineDataSource : NSObject<DZHDrawingDataSource>
 
@@ -108,6 +116,15 @@ typedef enum
  */
 - (NSUInteger)nearIndexForLocation:(CGFloat)position;
 
+/**
+ * 计算最接近的能被k线宽度整除的坐标
+ * @param position 位置
+ * @returns 最接近的k线宽度整数倍坐标
+ */
+- (CGFloat)nearTimesLocationForLocation:(CGFloat)position;
+
+- (NSInteger)MAStartIndexWithIndex:(NSInteger)index cycle:(int)cycle;
+
 @end
 
 /**
@@ -126,7 +143,7 @@ typedef enum
 
 - (NSArray *)axisXDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
-- (void)decisionGroupIfNeedWithPreEntity:(DZHKLineEntity *)preEntity curEntity:(DZHKLineEntity *)curEntity index:(int)index;
+- (void)decisionGroupIfNeedWithPreDate:(int)preDate curDate:(int)curDate index:(int)index;
 
 - (NSArray *)groupsFromIndex:(NSInteger)from toIndex:(NSInteger)to monthInterval:(int)interval;
 
@@ -163,5 +180,11 @@ typedef enum
 @interface DZHKLineDataSource (MA)
 
 - (NSArray *)maDatasForMaDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
+
+@end
+
+@interface DZHKLineDataSource (VolumeMA)
+
+- (NSArray *)volumeMADatasForMaDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end

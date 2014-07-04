@@ -8,12 +8,6 @@
 
 #import "DZHKLineEntity.h"
 
-@interface DZHKLineEntity ()
-
-@property (nonatomic, retain) NSMutableDictionary *extendData;
-
-@end
-
 @implementation DZHKLineEntity
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
@@ -36,24 +30,8 @@
         _low        = [aDecoder decodeIntForKey:@"low"];
         _close      = [aDecoder decodeIntForKey:@"close"];
         _vol        = [aDecoder decodeIntForKey:@"vol"];
-        _extendData = [[NSMutableDictionary alloc] init];
     }
     return self;
-}
-
-- (instancetype)init
-{
-    if (self = [super init])
-    {
-        _extendData = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [_extendData release];
-    [super dealloc];
 }
 
 - (KLineType)type
@@ -64,16 +42,6 @@
         return  KLineTypeNegative;
     else
         return KLineTypeCross;
-}
-
-- (void)setMa:(int)ma withCycle:(int)cycle
-{
-    [_extendData setObject:@(ma) forKey:[NSString stringWithFormat:@"MA%d",cycle]];
-}
-
-- (int)maWithCycle:(int)cycle
-{
-    return [[_extendData objectForKey:[NSString stringWithFormat:@"MA%d",cycle]] intValue];
 }
 
 @end

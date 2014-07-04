@@ -1,15 +1,15 @@
 //
-//  DZHMACalculate.m
+//  DZHVolumeMACalculator.m
 //  DZHDrawable
 //
-//  Created by Duanwwu on 14-7-2.
+//  Created by Duanwwu on 14-7-4.
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHMACalculator.h"
+#import "DZHVolumeMACalculator.h"
 #import "DZHDrawingItemModel.h"
 
-@implementation DZHMACalculator
+@implementation DZHVolumeMACalculator
 {
     int                     _total;
     int                     *_lastValues;//缓存数据
@@ -39,7 +39,7 @@
 
 - (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(int)index
 {
-    int close                   = currentData.close;
+    int close                   = currentData.vol;
     int cycle                   = _cycle;
     
     _total                      += close;
@@ -48,13 +48,13 @@
         int idx                 = (index - cycle) % cycle;//缓存中需要重新设置值的索引，当前索引-周期所在数据的值在缓存中的索引
         _total                  -= _lastValues[idx];
         int ma                  = _total / cycle;
-        [currentData setMA:ma withCycle:cycle];
+        [currentData setVolumeMA:ma withCycle:cycle];
         _lastValues[idx]        = close;
     }
     else if (index == cycle - 1) //均线第一个点
     {
         int ma                  = _total / cycle;
-        [currentData setMA:ma withCycle:cycle];
+        [currentData setVolumeMA:ma withCycle:cycle];
         _lastValues[index]      = close;
     }
     else

@@ -15,7 +15,7 @@
 #import "DZHAxisYDrawing.h"
 #import "DZHKLineDrawing.h"
 #import "DZHFillBarDrawing.h"
-#import "DZHCurveDrawing.h"
+#import "DZHMACurveDrawing.h"
 
 @interface DZHKLineViewController ()<DZHKLineContainerDelegate,UIScrollViewDelegate>
 
@@ -119,7 +119,8 @@
     [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
     [klineDrawing release];
     
-    DZHCurveDrawing *maDrawing          = [[DZHCurveDrawing alloc] init];
+    //k线移动平均线
+    DZHMACurveDrawing *maDrawing          = [[DZHMACurveDrawing alloc] init];
     maDrawing.dataSource                = _dataSource;
     maDrawing.tag                       = DrawingTagsMa;
     [kLineContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
@@ -153,11 +154,18 @@
     [volumeAxisYDrawing release];
     
     //画成交量柱
-    DZHFillBarDrawing *barDrawing           = [[DZHFillBarDrawing alloc] init];
+    DZHFillBarDrawing *barDrawing       = [[DZHFillBarDrawing alloc] init];
     barDrawing.dataSource               = _dataSource;
     barDrawing.tag                      = DrawingTagsVolumeItem;
     [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
     [barDrawing release];
+    
+    //k线移动平均线
+    DZHMACurveDrawing *volMADrawing     = [[DZHMACurveDrawing alloc] init];
+    volMADrawing.dataSource             = _dataSource;
+    volMADrawing.tag                    = DrawingTagsVolumeMa;
+    [kLineContainer addDrawing:volMADrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [volMADrawing release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -195,8 +203,7 @@
     
     CGRect frame                = kLineContainer.frame;
     kLineContainer.contentSize  = CGSizeMake(newContentWidth, frame.size.height);
-    self.lastOffset             = newContentWidth - oldContentWidth - frame.size.width;
-    [kLineContainer scrollRectToVisible:CGRectMake(_lastOffset, .0, frame.size.width, frame.size.height) animated:NO];
+    [kLineContainer scrollRectToVisible:CGRectMake(newContentWidth - oldContentWidth - frame.size.width, .0, frame.size.width, frame.size.height) animated:NO];
 }
 
 #pragma mark - DZHDrawingContainerDelegate
@@ -261,21 +268,21 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGFloat offset                      = scrollView.contentOffset.x;
-    
-    if (offset >= 0. && offset <= scrollView.contentSize.width - scrollView.frame.size.width)
-    {
-        int width                       = [_dataSource kItemWidth];
-        if (fabs((offset - _lastOffset) / width) > 1.) //如果移动的距离大于一根k线的宽度，则刷新界面
-        {
-            CGFloat x                   = roundf(offset / width) * width; //让偏移量刚好为k线宽度整数倍
-            
-            scrollView.contentOffset    = CGPointMake(x, scrollView.contentOffset.y);
-            self.lastOffset             = x;
-            [scrollView setNeedsDisplay];
-        }
-    }
-    else
+//    CGFloat offset                      = scrollView.contentOffset.x;
+//    
+//    if (offset > 0. && offset < scrollView.contentSize.width - scrollView.frame.size.width)
+//    {
+//        int width                       = [_dataSource kItemWidth];
+//        if (fabs((offset - _lastOffset) / width) > 1.) //如果移动的距离大于一根k线的宽度，则刷新界面
+//        {
+//            CGFloat x                   = [_dataSource nearTimesLocationForLocation:offset]; //让偏移量刚好为k线宽度整数倍
+//            
+//            scrollView.contentOffset    = CGPointMake(x, scrollView.contentOffset.y);
+//            self.lastOffset             = x;
+//            [scrollView setNeedsDisplay];
+//        }
+//    }
+//    else
     {
         [scrollView setNeedsDisplay];
     }
