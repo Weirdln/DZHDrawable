@@ -17,6 +17,8 @@
 
 @property (nonatomic) CGFloat itemWidth;
 
+@property (nonatomic) KLineType type;
+
 @property (nonatomic, retain, readonly) NSMutableDictionary *extendData;
 
 - (instancetype)initWithOriginData:(DZHKLineEntity *)originData;

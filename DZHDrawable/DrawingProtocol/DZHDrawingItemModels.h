@@ -52,7 +52,7 @@
  */
 @protocol DZHVolumeBar <DZHDrawingItemProtocol>
 
-- (int)vol;
+- (int)volume;
 
 @property (nonatomic, assign) CGRect volumeRect;/**柱*/
 

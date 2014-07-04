@@ -58,12 +58,7 @@
     return _originData.date;
 }
 
-- (int)type
-{
-    return _originData.type;
-}
-
-- (int)vol
+- (int)volume
 {
     return _originData.vol;
 }

@@ -40,6 +40,9 @@
     if (self)
     {
         _dataSource             = [[DZHKLineDataSource alloc] init];
+        _dataSource.MAConfigs   = @{@(KLineCycleFive) : [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0],
+                                     @(KLineCycleTen) : [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0],
+                                     @(KLineCycleTwenty) : [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0]};
         _scale                  = 1.;
     }
     return self;

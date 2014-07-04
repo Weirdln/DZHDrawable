@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DZHKLineDataSource.m"
-            timestampString = "426132205.668466"
+            timestampString = "426148693.454956"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "530"
-            endingLineNumber = "530"
+            startingLineNumber = "580"
+            endingLineNumber = "580"
             landmarkName = "-axisYDatasForVolumeDrawing:inRect:"
             landmarkType = "5">
          </BreakpointContent>
@@ -64,6 +64,22 @@
             startingLineNumber = "40"
             endingLineNumber = "40"
             landmarkName = "-testMACalculator"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DZHDrawable/Drawing/DZHAxisYDrawing.m"
+            timestampString = "426136004.516006"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
+            landmarkName = "-drawRect:withContext:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -23,6 +23,7 @@
 #import "DZHDrawingUtil.h"
 #import "DZHMAModel.h"
 #import "DZHVolumeMACalculator.h"
+#import "DZHKLineTypeStrategy.h"
 
 @interface DZHKLineDataSource ()
 
@@ -44,6 +45,8 @@
 
 @property (nonatomic, retain) NSArray *volumeMACalculators;
 
+@property (nonatomic, retain) NSArray *MACycle;
+
 @end
 
 @implementation DZHKLineDataSource
@@ -53,6 +56,7 @@
     UIColor                         *_positiveColor;
     UIColor                         *_negativeColor;
     UIColor                         *_crossColor;
+    DZHKLineTypeStrategy            *_strategy;
 }
 
 - (instancetype)init
@@ -74,62 +78,55 @@
         _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
         _crossColor                     = [[UIColor grayColor] retain];
         
-        [self initMA];
-        [self initVolumeMA];
+        _strategy                       = [[DZHKLineTypeStrategy alloc] init];
     }
     return self;
 }
 
-- (void)initMA
+- (void)setMAConfigs:(NSDictionary *)config
 {
-    DZHMACalculator *ma5            = [[DZHMACalculator alloc] initWithMACycle:KLineCycleFive];
-    DZHMACalculator *ma10           = [[DZHMACalculator alloc] initWithMACycle:KLineCycleTen];
-    DZHMACalculator *ma20           = [[DZHMACalculator alloc] initWithMACycle:KLineCycleTwenty];
-    
-    DZHMAModel *model5              = [[DZHMAModel alloc] initWithMACycle:KLineCycleFive];
-    DZHMAModel *model10             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTen];
-    DZHMAModel *model20             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTwenty];
-    
-    model5.color                    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-    model10.color                   = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
-    model20.color                   = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
-    
-    self.MACalculators              = @[ma5,ma10,ma20];
-    self.MAModels                   = @[model5,model10,model20];
-    
-    [ma5 release];
-    [ma10 release];
-    [ma20 release];
-    
-    [model5 release];
-    [model10 release];
-    [model20 release];
-}
-
-- (void)initVolumeMA
-{
-    DZHVolumeMACalculator *ma5      = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleFive];
-    DZHVolumeMACalculator *ma10     = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleTen];
-    DZHVolumeMACalculator *ma20     = [[DZHVolumeMACalculator alloc] initWithMACycle:KLineCycleTwenty];
-    
-    DZHMAModel *model5              = [[DZHMAModel alloc] initWithMACycle:KLineCycleFive];
-    DZHMAModel *model10             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTen];
-    DZHMAModel *model20             = [[DZHMAModel alloc] initWithMACycle:KLineCycleTwenty];
-    
-    model5.color                    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-    model10.color                   = [UIColor colorWithRed:1.0 green:1.0 blue:0.0 alpha:1.0];
-    model20.color                   = [UIColor colorWithRed:0.87 green:0.23 blue:0.84 alpha:1.0];
-    
-    self.VolumeMACalculators        = @[ma5,ma10,ma20];
-    self.VolumeMAModels             = @[model5,model10,model20];
-    
-    [ma5 release];
-    [ma10 release];
-    [ma20 release];
-    
-    [model5 release];
-    [model10 release];
-    [model20 release];
+    if (_MAConfigs != config)
+    {
+        [_MAConfigs release];
+        _MAConfigs                  = [config retain];
+        
+        NSMutableArray *maCals      = [NSMutableArray array];
+        NSMutableArray *volCals     = [NSMutableArray array];
+        NSMutableArray *models      = [NSMutableArray array];
+        NSMutableArray *volModels   = [NSMutableArray array];
+        NSMutableArray *cycle       = [NSMutableArray array];
+        
+        [config enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, UIColor *color, BOOL *stop) {
+            
+            [cycle addObject:key];
+            
+            int cycle                       = [key intValue];
+            DZHMACalculator *cal            = [[DZHMACalculator alloc] initWithMACycle:cycle];
+            DZHMAModel *model               = [[DZHMAModel alloc] initWithMACycle:cycle];
+            model.color                     = color;
+            
+            DZHVolumeMACalculator *volCal   = [[DZHVolumeMACalculator alloc] initWithMACycle:cycle];
+            DZHMAModel *volModel            = [[DZHMAModel alloc] initWithMACycle:cycle];
+            volModel.color                  = color;
+            
+            [maCals addObject:cal];
+            [models addObject:model];
+            
+            [volCals addObject:volCal];
+            [volModels addObject:volModel];
+            
+            [cal release];
+            [model release];
+            [volCal release];
+            [volModel release];
+        }];
+        
+        self.MACalculators          = maCals;
+        self.volumeMACalculators    = volCals;
+        self.MAModels               = models;
+        self.volumeMAModels         = volModels;
+        self.MACycle                = cycle;
+    }
 }
 
 - (void)dealloc
@@ -144,11 +141,15 @@
     [_grouping release];
     [_klines release];
     
+    //MA相关数据
+    [_MAConfigs release];
+    [_MACycle release];
     [_MAModels release];
     [_MACalculators release];
-    
     [_volumeMAModels release];
     [_volumeMACalculators release];
+    
+    [_strategy release];
     
     [super dealloc];
 }
@@ -184,6 +185,8 @@
             {
                 [calculator travelerWithLastData:lastModel currentData:model index:idx];
             }
+            
+            [_strategy travelerWithLastData:lastModel currentData:model index:idx];
             
             lastModel          = model;
             idx ++;
@@ -264,22 +267,41 @@
 
 - (void)calculateMaxAndMinDataFromIndex:(NSInteger)from toIndex:(NSInteger)to
 {
-    NSInteger max                     = NSIntegerMin;
-    NSInteger min                     = NSIntegerMax;
-    NSInteger vol                     = NSIntegerMin;
+    DZHDrawingItemModel *entity         = [_klines lastObject];
+    NSInteger max                       = entity.high;
+    NSInteger min                       = entity.low;
+    NSInteger vol                       = entity.volume;
     
     for (NSInteger i = from; i <= to; i++)
     {
-        DZHDrawingItemModel *entity  = [_klines objectAtIndex:i];
+        entity                          = [_klines objectAtIndex:i];
         
         if (entity.high > max)
-            max        = entity.high;
+            max                         = entity.high;
         
         if (entity.low < min)
-            min        = entity.low;
+            min                         = entity.low;
         
-        if (entity.vol > vol)
-            vol        = entity.vol;
+        if (entity.volume > vol)
+            vol                         = entity.volume;
+        
+        for (NSNumber *cycle in _MACycle)
+        {
+            int ma                      = [entity MAWithCycle:[cycle intValue]];
+            int volMA                   = [entity volumeMAWithCycle:[cycle intValue]];
+            
+            if (ma > 0)
+            {
+                if (ma > max)
+                    max                     = ma;
+                
+                if (ma < min)
+                    min                     = ma;
+            }
+
+            if (volMA > 0 && volMA > vol)
+                vol                     = volMA;
+        }
     }
     
     self.maxPrice                       = max;
@@ -420,12 +442,15 @@
 {
     NSInteger tickCount,strip;
     
-    [self adjustMaxIfNeed:&tickCount strip:&strip];
+    if (_maxPrice == _minPrice)
+        [self adjustMinIfNeed:&tickCount strip:&strip];
+    else
+        [self adjustMaxIfNeed:&tickCount strip:&strip];
     
     NSMutableArray *datas           = [NSMutableArray array];
     
-    CGFloat bottom              = CGRectGetMaxY(rect);
-    CGFloat top                 = CGRectGetMinY(rect);
+    CGFloat bottom                  = CGRectGetMaxY(rect);
+    CGFloat top                     = CGRectGetMinY(rect);
     
     for (int i = 0; i <= tickCount; i++)
     {
@@ -456,6 +481,21 @@
     
     *tickCount              = count;
     self.maxPrice           = maxValue;
+}
+
+- (void)adjustMinIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip
+{
+    *tickCount              = _maxTickCount - 1;
+    NSInteger min           = 0;
+    NSInteger t             = 1000;
+    do
+    {
+        t                   *= .1;
+        min                 = _maxPrice - *tickCount * t;
+    } while (min < 0);
+    
+    self.minPrice           = min;
+    *strip                  = t;
 }
 
 - (NSInteger)tickCountWithMax:(NSInteger)max min:(NSInteger)min strip:(NSInteger *)strip
@@ -568,7 +608,7 @@
     for (NSUInteger i = startIndex; i <= endIndex; i++)
     {
         entity                  = [klines objectAtIndex:i];
-        vol                     = [DZHDrawingUtil locationYForValue:entity.vol withMax:_maxVol min:0 top:top bottom:bottom];
+        vol                     = [DZHDrawingUtil locationYForValue:entity.volume withMax:_maxVol min:0 top:top bottom:bottom];
         x                       = [self kLineLocationForIndex:i];
         
         entity.volumeRect       = CGRectMake(x, vol, kWidth, MAX(ABS(bottom - vol), 1.));
@@ -589,6 +629,7 @@
     NSArray *klines             = self.klines;
     CGFloat bottom              = CGRectGetMaxY(rect);
     CGFloat top                 = CGRectGetMinY(rect);
+    NSMutableArray *datas       = [NSMutableArray array];
     
     DZHDrawingItemModel *entity;
     
@@ -596,6 +637,10 @@
     {
         NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
         NSInteger count         = endIndex - begin + 1;
+        
+        if (count <= 0)
+            continue;
+        [datas addObject:model];
         
         CGPoint *points         = malloc(sizeof(CGPoint) * count);
         for (NSInteger i = 0,j = begin; i < count; i ++,j++)
@@ -607,7 +652,7 @@
         free(points);
     }
     
-    return self.MAModels;
+    return datas;
 }
 
 @end
@@ -621,6 +666,7 @@
     NSArray *klines             = self.klines;
     CGFloat bottom              = CGRectGetMaxY(rect);
     CGFloat top                 = CGRectGetMinY(rect);
+    NSMutableArray *datas       = [NSMutableArray array];
     
     DZHDrawingItemModel *entity;
     
@@ -628,6 +674,10 @@
     {
         NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
         NSInteger count         = endIndex - begin + 1;
+        
+        if (count <= 0)
+            continue;
+        [datas addObject:model];
         
         CGPoint *points         = malloc(sizeof(CGPoint) * count);
         for (NSInteger i = 0,j = begin; i < count; i ++,j++)
@@ -639,7 +689,7 @@
         free(points);
     }
     
-    return self.volumeMAModels;
+    return datas;
 }
 
 @end

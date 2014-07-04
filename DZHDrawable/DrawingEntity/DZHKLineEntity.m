@@ -34,15 +34,5 @@
     return self;
 }
 
-- (KLineType)type
-{
-    if (self.open < self.close)
-        return KLineTypePositive;
-    else if (self.open > self.close)
-        return  KLineTypeNegative;
-    else
-        return KLineTypeCross;
-}
-
 @end
 

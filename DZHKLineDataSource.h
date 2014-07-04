@@ -60,6 +60,8 @@ typedef enum
 
 @property (nonatomic) CGFloat kLineOffset;/**k线绘制区域在x轴上的偏移量*/
 
+@property (nonatomic, retain) NSDictionary *MAConfigs;/**k线、量线移动平均线配置 {周期:颜色}*/
+
 @end
 
 @interface DZHKLineDataSource (Base)
@@ -123,6 +125,12 @@ typedef enum
  */
 - (CGFloat)nearTimesLocationForLocation:(CGFloat)position;
 
+/**
+ * 计算均线绘制起始索引，如5日线，0～3的k线不用绘制均线
+ * @param index k线绘制起始索引
+ * @param cycle 周期
+ * @returns 均线绘制起始索引
+ */
 - (NSInteger)MAStartIndexWithIndex:(NSInteger)index cycle:(int)cycle;
 
 @end
@@ -153,8 +161,27 @@ typedef enum
 
 - (NSArray *)axisYDatasForDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
+/**
+ * 调整最大值，当maxPrice与minPrice不相等时调用
+ * @returns tickCount 跨度个数 ＝ 刻度个数－1
+ * @returns strip 跨度值
+ */
 - (void)adjustMaxIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip;
 
+/**
+ * 调整最小值，当maxPrice与minPrice相等时调用
+ * @returns tickCount 跨度个数 ＝ 刻度个数－1
+ * @returns strip 跨度值
+ */
+- (void)adjustMinIfNeed:(NSInteger *)tickCount strip:(NSInteger *)strip;
+
+/**
+ * 计算跨度值和跨度个数，由adjustMaxIfNeed:strip:调用
+ * @param max 最大值
+ * @param min 最小值
+ * @returns strip 跨度值
+ * @returns 跨度个数
+ */
 - (NSInteger)tickCountWithMax:(NSInteger)max min:(NSInteger)min strip:(NSInteger *)strip;
 
 @end

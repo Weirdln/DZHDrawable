@@ -27,17 +27,24 @@
     NSInteger idx                   = 0;
     
     CGContextSaveGState(context);
-    CGContextSetLineWidth(context, 1.);
-    CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
     CGContextSetFillColorWithColor(context, self.labelColor.CGColor);
+    BOOL drawLine                   = rect.size.width != self.labelSpace;
+    if (drawLine)
+    {
+        CGContextSetLineWidth(context, 1.);
+        CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
+    }
     
     for (DZHAxisEntity *entity in datas)
     {
         CGFloat y                   = entity.location.y;
         NSString *labelText         = entity.labelText;
         
-        CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + self.labelSpace, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
-        CGContextStrokePath(context);
+        if (drawLine)
+        {
+            CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + self.labelSpace, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
+            CGContextStrokePath(context);
+        }
         
         CGFloat tickPosition;
         if (idx == 0)

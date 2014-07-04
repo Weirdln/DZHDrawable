@@ -24,6 +24,4 @@ typedef enum
 @property (nonatomic) int close;    // 收盘价
 @property (nonatomic) int vol;
 
-- (KLineType)type;
-
 @end

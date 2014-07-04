@@ -39,27 +39,27 @@
 
 - (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(int)index
 {
-    int close                   = currentData.vol;
+    int vol                     = currentData.volume;
     int cycle                   = _cycle;
     
-    _total                      += close;
+    _total                      += vol;
     if (index >= cycle)
     {
         int idx                 = (index - cycle) % cycle;//缓存中需要重新设置值的索引，当前索引-周期所在数据的值在缓存中的索引
         _total                  -= _lastValues[idx];
         int ma                  = _total / cycle;
         [currentData setVolumeMA:ma withCycle:cycle];
-        _lastValues[idx]        = close;
+        _lastValues[idx]        = vol;
     }
     else if (index == cycle - 1) //均线第一个点
     {
         int ma                  = _total / cycle;
         [currentData setVolumeMA:ma withCycle:cycle];
-        _lastValues[index]      = close;
+        _lastValues[index]      = vol;
     }
     else
     {
-        _lastValues[index]      = close;
+        _lastValues[index]      = vol;
     }
 }
 
