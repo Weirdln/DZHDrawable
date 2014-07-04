@@ -199,11 +199,18 @@
 - (void)changeScrollContainerContentSize:(CGSize)size
 {
     CGFloat oldContentWidth     = kLineContainer.contentSize.width;
+    CGRect frame                = kLineContainer.frame;
     CGFloat newContentWidth     = size.width;
     
-    CGRect frame                = kLineContainer.frame;
-    kLineContainer.contentSize  = CGSizeMake(newContentWidth, frame.size.height);
-    [kLineContainer scrollRectToVisible:CGRectMake(newContentWidth - oldContentWidth - frame.size.width, .0, frame.size.width, frame.size.height) animated:NO];
+    if (newContentWidth < frame.size.width)
+    {
+        kLineContainer.contentSize  = CGSizeMake(frame.size.width + 1., frame.size.height);
+    }
+    else
+    {
+        kLineContainer.contentSize  = CGSizeMake(newContentWidth, frame.size.height);
+        [kLineContainer scrollRectToVisible:CGRectMake(newContentWidth - oldContentWidth - frame.size.width, .0, frame.size.width, frame.size.height) animated:NO];
+    }
 }
 
 #pragma mark - DZHDrawingContainerDelegate
