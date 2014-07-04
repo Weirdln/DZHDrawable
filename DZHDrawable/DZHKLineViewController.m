@@ -75,7 +75,7 @@
     
     self.view.backgroundColor   = [UIColor whiteColor];
 
-    kLineContainer                      = [[DZHKLineContainer alloc] initWithFrame:CGRectMake(10., 10., 300., 400)];
+    kLineContainer                      = [[DZHKLineContainer alloc] initWithFrame:CGRectMake(10., 25., 420., 240.)];
     kLineContainer.backgroundColor      = [UIColor colorFromRGB:0x0e1014];
     kLineContainer.delegate             = self;
     kLineContainer.kLineDelegate        = self;
@@ -87,10 +87,14 @@
     UIColor *labelColor                 = [UIColor colorFromRGB:0x707880];
     UIFont *labelFont                   = [UIFont systemFontOfSize:8.];
     
+    CGFloat axisWidth                   = 400.;
+    CGFloat width                       = 380.;
+    CGFloat kHeight                     = 120.;
+    
     //画k线外框
     DZHRectangleDrawing *rectDrawing    = [[DZHRectangleDrawing alloc] init];
     rectDrawing.lineColor               = lineColor;
-    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., .0, 260., 160.)];
+    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight + 10.)];
     [rectDrawing release];
     
     //画k线x轴
@@ -101,7 +105,7 @@
     axisXDrawing.lineColor              = lineColor;
     axisXDrawing.labelFont              = labelFont;
     axisXDrawing.labelSpace             = 20.;
-    [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., .0, 260., 180.)];
+    [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight + 30.)];
     [axisXDrawing release];
     
     //画k线y轴，y轴需在k线之前绘制，因为绘制y轴的时候，为提高精度，会调整价格最大值
@@ -112,29 +116,31 @@
     axisYDrawing.labelColor             = labelColor;
     axisYDrawing.lineColor              = lineColor;
     axisYDrawing.labelSpace             = 20.;
-    [kLineContainer addDrawing:axisYDrawing atVirtualRect:CGRectMake(.0, 5., 280., 150.)];
+    [kLineContainer addDrawing:axisYDrawing atVirtualRect:CGRectMake(.0, 10., axisWidth, kHeight)];
     [axisYDrawing release];
     
     //画k线
     klineDrawing                        = [[DZHKLineDrawing alloc] init];
     klineDrawing.dataSource             = _dataSource;
     klineDrawing.tag                    = DrawingTagsKLineItem;
-    [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
+    [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 10., width, kHeight)];
     [klineDrawing release];
     
     //k线移动平均线
     DZHMACurveDrawing *maDrawing          = [[DZHMACurveDrawing alloc] init];
     maDrawing.dataSource                = _dataSource;
     maDrawing.tag                       = DrawingTagsMa;
-    [kLineContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 5., 260., 150.)];
+    [kLineContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 10., width, kHeight)];
     [maDrawing release];
     
     _dataSource.kLineOffset             = 20.;
     
+    CGFloat y                           = kHeight + 30.;
+    CGFloat volHeight                   = 80.;
     //画成交量外框
     DZHRectangleDrawing *volRectDrawing = [[DZHRectangleDrawing alloc] init];
     volRectDrawing.lineColor            = lineColor;
-    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
     [volRectDrawing release];
     
     //画成交量x轴的直线
@@ -142,7 +148,7 @@
     volumeAxisXDrawing.dataSource       = _dataSource;
     volumeAxisXDrawing.tag              = DrawingTagsVolumeX;
     volumeAxisXDrawing.lineColor        = lineColor;
-    [kLineContainer addDrawing:volumeAxisXDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [kLineContainer addDrawing:volumeAxisXDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
     [volumeAxisXDrawing release];
     
     //画成交量y轴的直线
@@ -153,21 +159,21 @@
     volumeAxisYDrawing.labelColor       = labelColor;
     volumeAxisYDrawing.lineColor        = lineColor;
     volumeAxisYDrawing.labelSpace       = 20.;
-    [kLineContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, 190.0, 280., 100.)];
+    [kLineContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, y, axisWidth, volHeight)];
     [volumeAxisYDrawing release];
     
     //画成交量柱
     DZHFillBarDrawing *barDrawing       = [[DZHFillBarDrawing alloc] init];
     barDrawing.dataSource               = _dataSource;
     barDrawing.tag                      = DrawingTagsVolumeItem;
-    [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
     [barDrawing release];
     
     //k线移动平均线
     DZHMACurveDrawing *volMADrawing     = [[DZHMACurveDrawing alloc] init];
     volMADrawing.dataSource             = _dataSource;
     volMADrawing.tag                    = DrawingTagsVolumeMa;
-    [kLineContainer addDrawing:volMADrawing atVirtualRect:CGRectMake(20., 190.0, 260., 100.)];
+    [kLineContainer addDrawing:volMADrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
     [volMADrawing release];
 }
 
