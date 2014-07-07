@@ -10,6 +10,8 @@
 
 @interface UIColor (RGB)
 
+- (UIColor *)initWithRGB:(int)rgbValue;
+
 + (UIColor *)colorFromRGB:(int)rgbValue;
 
 @end
