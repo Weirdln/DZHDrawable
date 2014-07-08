@@ -51,18 +51,6 @@
     [super dealloc];
 }
 
-- (void)setColorProvider:(id<DZHColorDataProviderProtocol>)colorProvider
-{
-    if (_colorProvider != colorProvider)
-    {
-        [_colorProvider release];
-        _colorProvider  = [colorProvider retain];
-        
-        _fast.color     = [colorProvider colorForMACDLineType:MACDLineTypeFast];
-        _slow.color     = [colorProvider colorForMACDLineType:MACDLineTypeSlow];
-    }
-}
-
 #pragma mark - DZHDataProviderProtocol
 
 - (void)setupPropertyWhenTravelLastData:(DZHDrawingItemModel *)lastData currentData:(DZHDrawingItemModel *)curData index:(NSInteger)index
@@ -164,8 +152,12 @@
         
         slowPoints[i]       = CGPointMake([context centerLocationForIndex:j], [DZHDrawingUtil locationYForValue:entity.DEA withMax:_max min:_min top:top bottom:bottom]);
     }
+    
     [_fast setPoints:fastPoints withCount:count];
     [_slow setPoints:slowPoints withCount:count];
+    
+    _fast.color             = [_colorProvider colorForMACDLineType:MACDLineTypeFast];
+    _slow.color             = [_colorProvider colorForMACDLineType:MACDLineTypeSlow];
     
     free(fastPoints);
     free(slowPoints);
