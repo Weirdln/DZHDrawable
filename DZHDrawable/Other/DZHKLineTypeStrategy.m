@@ -11,7 +11,7 @@
 
 @implementation DZHKLineTypeStrategy
 
-- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(int)index
+- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(NSInteger)index
 {
     if (currentData.open < currentData.close)
         currentData.type        = KLineTypePositive;

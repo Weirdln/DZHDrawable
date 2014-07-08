@@ -10,11 +10,15 @@
 
 @implementation DZHDrawingItemModel
 
-@synthesize solidRect     = _solidRect;
-@synthesize stickRect     = _stickRect;
-@synthesize stickColor    = _stickColor;
-@synthesize volumeRect    = _volumeRect;
-@synthesize volumeColor   = _volumeColor;
+@synthesize solidRect;
+@synthesize stickRect;
+@synthesize stickColor;
+@synthesize barRect;
+@synthesize barFillColor;
+@synthesize EMAFast;
+@synthesize EMASlow;
+@synthesize DIF;
+@synthesize DEA;
 
 - (instancetype)initWithOriginData:(DZHKLineEntity *)originData
 {
@@ -111,16 +115,6 @@
     return [[_extendData objectForKey:[NSString stringWithFormat:@"MA%d",cycle]] intValue];
 }
 
-- (void)setMAPoint:(CGPoint)point withCycle:(int)cycle
-{
-    [_extendData setObject:[NSValue valueWithCGPoint:point] forKey:[NSString stringWithFormat:@"MA_Point%d",cycle]];
-}
-
-- (CGPoint)MAPointWithCycle:(int)cycle
-{
-    return [[_extendData objectForKey:[NSString stringWithFormat:@"MA_Point%d",cycle]] CGPointValue];
-}
-
 @end
 
 @implementation DZHDrawingItemModel (VolumeMACurve)
@@ -135,14 +129,5 @@
     return [[_extendData objectForKey:[NSString stringWithFormat:@"VolMA%d",cycle]] intValue];
 }
 
-- (void)setVolumeMAPoint:(CGPoint)point withCycle:(int)cycle
-{
-    [_extendData setObject:[NSValue valueWithCGPoint:point] forKey:[NSString stringWithFormat:@"VolMA_Point%d",cycle]];
-}
-
-- (CGPoint)volumeMAPointWithCycle:(int)cycle
-{
-    return [[_extendData objectForKey:[NSString stringWithFormat:@"VolMA_Point%d",cycle]] CGPointValue];
-}
-
 @end
+

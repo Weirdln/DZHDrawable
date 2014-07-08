@@ -16,6 +16,7 @@
 #import "DZHKLineDrawing.h"
 #import "DZHFillBarDrawing.h"
 #import "DZHMACurveDrawing.h"
+#import "DZHKLineEntity.h"
 
 @interface DZHKLineViewController ()<DZHKLineContainerDelegate,UIScrollViewDelegate>
 
@@ -29,9 +30,9 @@
 
 @implementation DZHKLineViewController
 {
-    DZHKLineDataSource                  *_dataSource;
+    DZHKLineDataSource                      *_dataSource;
     DZHKLineContainer                   *kLineContainer;
-    DZHKLineDrawing                     *klineDrawing;
+    DZHContainer                        *kContainer;
 }
 
 - (id)init
@@ -77,9 +78,8 @@
 
     kLineContainer                      = [[DZHKLineContainer alloc] initWithFrame:CGRectMake(10., 25., 420., 240.)];
     kLineContainer.backgroundColor      = [UIColor colorFromRGB:0x0e1014];
-    kLineContainer.delegate             = self;
     kLineContainer.kLineDelegate        = self;
-    kLineContainer.containerDelegate    = self;
+    kLineContainer.delegate             = self;
     [self.view addSubview:kLineContainer];
     [kLineContainer release];
     
@@ -91,90 +91,99 @@
     CGFloat width                       = 380.;
     CGFloat kHeight                     = 120.;
     
+    kContainer                          = [[DZHContainer alloc] init];
+    
     //画k线外框
     DZHRectangleDrawing *rectDrawing    = [[DZHRectangleDrawing alloc] init];
+    rectDrawing.drawingDelegate         = _dataSource;
     rectDrawing.lineColor               = lineColor;
-    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight + 10.)];
+    [kContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., 0., width, kHeight + 10.)];
     [rectDrawing release];
     
     //画k线x轴
     DZHAxisXDrawing *axisXDrawing       = [[DZHAxisXDrawing alloc] init];
-    axisXDrawing.dataSource             = _dataSource;
-    axisXDrawing.tag                    = DrawingTagsKLineX;
+    axisXDrawing.drawingDataSource      = _dataSource;
+    axisXDrawing.drawingTag             = DrawingTagsKLineX;
     axisXDrawing.labelColor             = labelColor;
     axisXDrawing.lineColor              = lineColor;
     axisXDrawing.labelFont              = labelFont;
     axisXDrawing.labelSpace             = 20.;
-    [kLineContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight + 30.)];
+    [kContainer addDrawing:axisXDrawing atVirtualRect:CGRectMake(20., 0., width, kHeight + 30.)];
     [axisXDrawing release];
     
     //画k线y轴，y轴需在k线之前绘制，因为绘制y轴的时候，为提高精度，会调整价格最大值
     DZHAxisYDrawing *axisYDrawing       = [[DZHAxisYDrawing alloc] init];
-    axisYDrawing.dataSource             = _dataSource;
-    axisYDrawing.tag                    = DrawingTagsKLineY;
+    axisYDrawing.drawingDataSource      = _dataSource;
+    axisYDrawing.drawingTag             = DrawingTagsKLineY;
     axisYDrawing.labelFont              = labelFont;
     axisYDrawing.labelColor             = labelColor;
     axisYDrawing.lineColor              = lineColor;
     axisYDrawing.labelSpace             = 20.;
-    [kLineContainer addDrawing:axisYDrawing atVirtualRect:CGRectMake(.0, 10., axisWidth, kHeight)];
+    [kContainer addDrawing:axisYDrawing atVirtualRect:CGRectMake(.0, 5., axisWidth, kHeight)];
     [axisYDrawing release];
     
     //画k线
-    klineDrawing                        = [[DZHKLineDrawing alloc] init];
-    klineDrawing.dataSource             = _dataSource;
-    klineDrawing.tag                    = DrawingTagsKLineItem;
-    [kLineContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 10., width, kHeight)];
-    [klineDrawing release];
+    DZHKLineDrawing *klineDrawing       = [[DZHKLineDrawing alloc] init];
+    
+    klineDrawing.drawingDataSource      = _dataSource;
+    klineDrawing.drawingTag             = DrawingTagsKLineItem;
+    [kContainer addDrawing:klineDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight)];
     
     //k线移动平均线
-    DZHMACurveDrawing *maDrawing          = [[DZHMACurveDrawing alloc] init];
-    maDrawing.dataSource                = _dataSource;
-    maDrawing.tag                       = DrawingTagsMa;
-    [kLineContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 10., width, kHeight)];
+    DZHMACurveDrawing *maDrawing        = [[DZHMACurveDrawing alloc] init];
+    maDrawing.drawingDataSource         = _dataSource;
+    maDrawing.drawingTag                = DrawingTagsMa;
+    [kContainer addDrawing:maDrawing atVirtualRect:CGRectMake(20., 5., width, kHeight)];
     [maDrawing release];
     
-    _dataSource.kLineOffset             = 20.;
+    [kLineContainer addDrawing:kContainer atVirtualRect:CGRectMake(.0, 5., width, kHeight + 30.)];
+    [kContainer release];
+    
+    DZHContainer *volumeContainer       = [[DZHContainer alloc] init];
     
     CGFloat y                           = kHeight + 30.;
     CGFloat volHeight                   = 80.;
     //画成交量外框
     DZHRectangleDrawing *volRectDrawing = [[DZHRectangleDrawing alloc] init];
     volRectDrawing.lineColor            = lineColor;
-    [kLineContainer addDrawing:rectDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
+    [volumeContainer addDrawing:volRectDrawing atVirtualRect:CGRectMake(20., 0, width, volHeight)];
     [volRectDrawing release];
     
     //画成交量x轴的直线
     DZHAxisXDrawing *volumeAxisXDrawing = [[DZHAxisXDrawing alloc] init];
-    volumeAxisXDrawing.dataSource       = _dataSource;
-    volumeAxisXDrawing.tag              = DrawingTagsVolumeX;
+    volumeAxisXDrawing.drawingDataSource    = _dataSource;
+    volumeAxisXDrawing.drawingTag       = DrawingTagsVolumeX;
     volumeAxisXDrawing.lineColor        = lineColor;
-    [kLineContainer addDrawing:volumeAxisXDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
+    [volumeContainer addDrawing:volumeAxisXDrawing atVirtualRect:CGRectMake(20., 0, width, volHeight)];
     [volumeAxisXDrawing release];
     
     //画成交量y轴的直线
     DZHAxisYDrawing *volumeAxisYDrawing = [[DZHAxisYDrawing alloc] init];
-    volumeAxisYDrawing.dataSource       = _dataSource;
-    volumeAxisYDrawing.tag              = DrawingTagsVolumeY;
+    volumeAxisYDrawing.drawingDataSource    = _dataSource;
+    volumeAxisYDrawing.drawingTag       = DrawingTagsVolumeY;
     volumeAxisYDrawing.labelFont        = labelFont;
     volumeAxisYDrawing.labelColor       = labelColor;
     volumeAxisYDrawing.lineColor        = lineColor;
     volumeAxisYDrawing.labelSpace       = 20.;
-    [kLineContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, y, axisWidth, volHeight)];
+    [volumeContainer addDrawing:volumeAxisYDrawing atVirtualRect:CGRectMake(.0, 0, axisWidth, volHeight)];
     [volumeAxisYDrawing release];
     
     //画成交量柱
     DZHFillBarDrawing *barDrawing       = [[DZHFillBarDrawing alloc] init];
-    barDrawing.dataSource               = _dataSource;
-    barDrawing.tag                      = DrawingTagsVolumeItem;
-    [kLineContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
+    barDrawing.drawingDataSource        = _dataSource;
+    barDrawing.drawingTag               = DrawingTagsVolumeItem;
+    [volumeContainer addDrawing:barDrawing atVirtualRect:CGRectMake(20., 0, width, volHeight)];
     [barDrawing release];
     
     //k线移动平均线
     DZHMACurveDrawing *volMADrawing     = [[DZHMACurveDrawing alloc] init];
-    volMADrawing.dataSource             = _dataSource;
-    volMADrawing.tag                    = DrawingTagsVolumeMa;
-    [kLineContainer addDrawing:volMADrawing atVirtualRect:CGRectMake(20., y, width, volHeight)];
+    volMADrawing.drawingDataSource      = _dataSource;
+    volMADrawing.drawingTag             = DrawingTagsVolumeMa;
+    [volumeContainer addDrawing:volMADrawing atVirtualRect:CGRectMake(20., 0, width, volHeight)];
     [volMADrawing release];
+    
+    [kLineContainer addDrawing:volumeContainer atVirtualRect:CGRectMake(.0, y, axisWidth, volHeight)];
+    [volumeContainer release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -197,7 +206,7 @@
 
 - (CGFloat)_getContainerWidth
 {
-    return [_dataSource totalKLineWidth] + kLineContainer.frame.size.width - klineDrawing.virtualFrame.size.width;
+    return [_dataSource.context totalWidth] + kLineContainer.frame.size.width - kContainer.virtualFrame.size.width;
 }
 
 - (void)didReceiveMemoryWarning
@@ -222,19 +231,11 @@
     }
 }
 
-#pragma mark - DZHDrawingContainerDelegate
-
-- (void)prepareContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect
-{
-    CGRect realRect             = [drawing realRectForVirtualRect:klineDrawing.virtualFrame currentRect:rect];
-    [_dataSource prepareWithKLineRect:realRect];
-}
-
-#pragma mark -  DZHKLineContainerDelegate
+#pragma mark -  DZHKLineContainerDelegat                                                                                                                                                                                                                                  
 
 - (CGFloat)scaledOfkLineContainer:(DZHKLineContainer *)container
 {
-    self.centerIndex            = (_dataSource.startIndex + _dataSource.endIndex) * .5;
+    self.centerIndex            = (_dataSource.context.fromIndex + _dataSource.context.toIndex) * .5;
     return _scale;
 }
 
@@ -252,7 +253,7 @@
     CGRect frame                = container.frame;
     _dataSource.scale           = MAX(MIN(finalScale,maxScale),minScale);
     _scale                      = MAX(MIN(scale,maxScale),minScale);
-    CGFloat newPosition         = [_dataSource kLineLocationForIndex:self.centerIndex];
+    CGFloat newPosition         = [_dataSource.context locationForIndex:self.centerIndex];
     container.contentSize       = CGSizeMake([self _getContainerWidth], frame.size.height);
     
     if (container.contentOffset.x == 0)//offset为0时，手动刷新
@@ -267,7 +268,7 @@
 
 - (void)kLineContainer:(DZHKLineContainer *)container longPressLocation:(CGPoint)point state:(UIGestureRecognizerState)state
 {
-    NSUInteger index    = [_dataSource nearIndexForLocation:point.x];
+    NSUInteger index    = [_dataSource.context nearIndexForLocation:point.x];
     if (index == NSUIntegerMax)
     {
         NSLog(@"无对应K线数据");

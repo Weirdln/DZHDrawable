@@ -9,7 +9,7 @@
 #import "DZHKLineEntity.h"
 #import "DZHDrawingItemModels.h"
 
-@interface DZHDrawingItemModel : NSObject<DZHCandleStick,DZHVolumeBar>
+@interface DZHDrawingItemModel : NSObject<DZHCandleStick,DZHBarItem,DZHMACD>
 
 @property (nonatomic, retain) DZHKLineEntity *originData;
 

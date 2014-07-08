@@ -13,17 +13,17 @@
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(self.dataSource);
+    NSParameterAssert(self.drawingDataSource);
     
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
     
-    NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
+    NSArray *datas                  = [self.drawingDataSource datasForDrawing:self inRect:rect];
     
-    for (id<DZHVolumeBar> entity in datas)
+    for (id<DZHBarItem> entity in datas)
     {
-        CGContextSetFillColorWithColor(context, entity.volumeColor.CGColor);
-        CGContextFillRect(context, entity.volumeRect);
+        CGContextSetFillColorWithColor(context, entity.barFillColor.CGColor);
+        CGContextFillRect(context, entity.barRect);
     }
     CGContextRestoreGState(context);
 }

@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHDrawingContainer.h"
+#import "DZHContainer.h"
 
 @interface DZHScrollContainer : UIScrollView<DZHDrawingContainer>
 {
-    NSMutableArray                      *_drawings;
+    DZHContainer                        *_container;
 }
 
 @end

@@ -11,11 +11,9 @@
 
 @implementation DZHContainer
 
-@synthesize containerDelegate       = _containerDelegate;
-
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)init
 {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self)
     {
         _drawings               = [[NSMutableArray alloc] init];
@@ -30,44 +28,27 @@
     [super dealloc];
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    CGContextRef context        = UIGraphicsGetCurrentContext();
-    
-    if (_containerDelegate && [_containerDelegate respondsToSelector:@selector(prepareContainerDrawing:rect:)])
-    {
-        [_containerDelegate prepareContainerDrawing:self rect:rect];
-    }
-    
-    [self drawRect:rect withContext:context];
-    
-    if (_containerDelegate && [_containerDelegate respondsToSelector:@selector(completeContainerDrawing:rect:)])
-    {
-        [_containerDelegate completeContainerDrawing:self rect:rect];
-    }
-}
-
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
     for (DZHDrawingWrapper *wrapper in _drawings)
     {
         id<DZHDrawing> drawing      = wrapper.drawing;
         
-        if (CGRectIsEmpty(wrapper.virtualRect))
+        if (CGRectIsEmpty(wrapper.virtualFrame))
             continue;
         
-        CGRect rect                 = [self realRectForVirtualRect:wrapper.virtualRect currentRect:rect];
+        CGRect realRect             = [self realRectForVirtualRect:wrapper.virtualFrame currentRect:rect];
         
-        if (drawing.delegate && [drawing.delegate respondsToSelector:@selector(prepareDrawing:)])
+        if (drawing.drawingDelegate && [drawing.drawingDelegate respondsToSelector:@selector(prepareDrawing:inRect:)])
         {
-            [drawing.delegate prepareDrawing:drawing];
+            [drawing.drawingDelegate prepareDrawing:drawing inRect:realRect];
         }
         
-        [drawing drawRect:rect withContext:context];
+        [drawing drawRect:realRect withContext:context];
         
-        if (drawing.delegate && [drawing.delegate respondsToSelector:@selector(completeDrawing:)])
+        if (drawing.drawingDelegate && [drawing.drawingDelegate respondsToSelector:@selector(completeDrawing:inRect:)])
         {
-            [drawing.delegate prepareDrawing:drawing];
+            [drawing.drawingDelegate prepareDrawing:drawing inRect:realRect];
         }
     }
 }
@@ -76,7 +57,7 @@
 
 - (void)addDrawing:(id<DZHDrawing>)drawing atVirtualRect:(CGRect)rect
 {
-    DZHDrawingWrapper *wrapper          = [[DZHDrawingWrapper alloc] initWithDrawing:drawing virtualRect:rect];
+    DZHDrawingWrapper *wrapper          = [[DZHDrawingWrapper alloc] initWithDrawing:drawing virtualFrame:rect];
     drawing.virtualFrame                = rect;
     [_drawings addObject:wrapper];
     [wrapper release];
@@ -89,7 +70,7 @@
 
 - (CGRect)realRectForVirtualRect:(CGRect)virtualRect currentRect:(CGRect)currentRect;
 {
-    return virtualRect;
+    return CGRectMake(currentRect.origin.x + virtualRect.origin.x, currentRect.origin.y + virtualRect.origin.y, virtualRect.size.width, virtualRect.size.height);
 }
 
 @end

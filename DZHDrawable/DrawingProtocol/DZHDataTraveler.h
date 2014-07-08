@@ -10,10 +10,10 @@
 
 @optional
 
-- (void)travelerBeginAtIndex:(int)index;
+- (void)travelerBeginAtIndex:(NSInteger)index;
 
-- (void)travelerWithLastData:(id)last currentData:(id)currentData index:(int)index;
+- (void)travelerWithLastData:(id)last currentData:(id)currentData index:(NSInteger)index;
 
-- (void)travelerEndAtIndex:(int)index;
+- (void)travelerEndAtIndex:(NSInteger)index;
 
 @end

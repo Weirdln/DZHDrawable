@@ -16,9 +16,9 @@
     NSParameterAssert(self.lineColor != nil);
     NSParameterAssert(self.labelColor != nil);
     NSParameterAssert(self.labelFont != nil);
-    NSParameterAssert(self.dataSource != nil);
+    NSParameterAssert(self.drawingDataSource != nil);
     
-    NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
+    NSArray *datas                  = [self.drawingDataSource datasForDrawing:self inRect:rect];
     if ([datas count] == 0)
         return;
     

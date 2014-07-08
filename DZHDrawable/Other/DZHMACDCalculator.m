@@ -28,7 +28,7 @@
     return self;
 }
 
-- (void)travelerBeginAtIndex:(int)index
+- (void)travelerBeginAtIndex:(NSInteger)index
 {
     EMAFast             = 0;
     EMASlow             = 0;
@@ -39,7 +39,7 @@
 //26日EMA的计算：EMA26 = 前一日EMA26 X 25/27 + 今日收盘 X 2/27
 //差离值（DIF）的计算： DIF = EMA12 - EMA26 。
 //今日DEA = （前一日DEA X 8/10 + 今日DIF X 2/10）
-- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(int)index
+- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(NSInteger)index
 {
     int close           = currentData.close;
     int DIF             = 0;

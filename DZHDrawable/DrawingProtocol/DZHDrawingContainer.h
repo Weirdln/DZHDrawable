@@ -8,14 +8,10 @@
 
 #import "DZHDrawing.h"
 
-@protocol DZHDrawingContainerDelegate;
-
 /**
  * 绘制容器，用于管理绘制对象绘制位置
  */
-@protocol DZHDrawingContainer <NSObject>
-
-@property (nonatomic, assign)id<DZHDrawingContainerDelegate> containerDelegate;
+@protocol DZHDrawingContainer <DZHDrawing>
 
 /**
  * 在指定位置添加一个绘制对象
@@ -37,15 +33,5 @@
  * @returns 图像绘制对象需要进行绘制的区域
  */
 - (CGRect)realRectForVirtualRect:(CGRect)virtualRect currentRect:(CGRect)currentRect;
-
-@end
-
-@protocol DZHDrawingContainerDelegate <NSObject>
-
-@optional
-
-- (void)prepareContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect;
-
-- (void)completeContainerDrawing:(id<DZHDrawingContainer>)drawing rect:(CGRect)rect;
 
 @end

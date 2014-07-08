@@ -16,7 +16,7 @@
 
 @end
 
-@protocol DZHKLineContainerDelegate <DZHDrawingContainerDelegate>
+@protocol DZHKLineContainerDelegate <NSObject>
 
 - (CGFloat)scaledOfkLineContainer:(DZHKLineContainer *)container;
 

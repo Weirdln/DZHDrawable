@@ -13,9 +13,9 @@
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(self.dataSource);
+    NSParameterAssert(self.drawingDataSource);
     
-    NSArray *datas              = [self.dataSource datasForDrawing:self inRect:rect];
+    NSArray *datas              = [self.drawingDataSource datasForDrawing:self inRect:rect];
     if ([datas count] == 0)
         return;
     

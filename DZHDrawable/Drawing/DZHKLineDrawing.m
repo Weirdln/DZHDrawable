@@ -13,12 +13,12 @@
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    NSParameterAssert(self.dataSource);
+    NSParameterAssert(self.drawingDataSource);
     
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
     
-    NSArray *datas                  = [self.dataSource datasForDrawing:self inRect:rect];
+    NSArray *datas                  = [self.drawingDataSource datasForDrawing:self inRect:rect];
 
     for (id<DZHCandleStick> entity in datas)
     {

@@ -16,15 +16,13 @@
 
 @property (nonatomic) CGRect virtualFrame;
 
-@property (nonatomic) NSInteger tag;
+@property (nonatomic) NSInteger drawingTag;
 
-@property (nonatomic, assign) id<DZHDrawingDataSource> dataSource;
+@property (nonatomic, assign) id<DZHDrawingDataSource> drawingDataSource;
 
-@property (nonatomic, assign) id<DZHDrawingDelegate> delegate;
+@property (nonatomic, assign) id<DZHDrawingDelegate> drawingDelegate;
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context;
-
-- (int)coordYWithValue:(float)v max:(float)max min:(float)min;
 
 @end
 
@@ -35,9 +33,9 @@
 
 @optional
 
-- (void)prepareDrawing:(id<DZHDrawing>)drawing;
+- (void)prepareDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
-- (void)completeDrawing:(id<DZHDrawing>)drawing;
+- (void)completeDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect;
 
 @end
 

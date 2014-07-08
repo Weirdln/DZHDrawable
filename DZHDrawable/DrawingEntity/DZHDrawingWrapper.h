@@ -13,8 +13,8 @@
 
 @property (nonatomic, retain) id<DZHDrawing> drawing;
 
-@property (nonatomic) CGRect virtualRect;
+@property (nonatomic) CGRect virtualFrame;
 
-- (instancetype)initWithDrawing:(id<DZHDrawing>)drawing virtualRect:(CGRect)rect;
+- (instancetype)initWithDrawing:(id<DZHDrawing>)drawing virtualFrame:(CGRect)rect;
 
 @end

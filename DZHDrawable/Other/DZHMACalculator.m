@@ -31,13 +31,13 @@
     [super dealloc];
 }
 
-- (void)travelerBeginAtIndex:(int)index
+- (void)travelerBeginAtIndex:(NSInteger)index
 {
     _total                  = 0;
     memset(_lastValues, 0, sizeof(int) * _cycle);
 }
 
-- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(int)index
+- (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(NSInteger)index
 {
     int close                   = currentData.close;
     int cycle                   = _cycle;

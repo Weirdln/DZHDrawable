@@ -10,12 +10,12 @@
 
 @implementation DZHDrawingWrapper
 
-- (instancetype)initWithDrawing:(id<DZHDrawing>)drawing virtualRect:(CGRect)rect
+- (instancetype)initWithDrawing:(id<DZHDrawing>)drawing virtualFrame:(CGRect)rect
 {
     if (self = [super init])
     {
         self.drawing                = drawing;
-        self.virtualRect            = rect;
+        self.virtualFrame           = rect;
     }
     return self;
 }

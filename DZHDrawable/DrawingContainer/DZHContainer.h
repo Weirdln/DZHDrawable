@@ -6,10 +6,10 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "DZHDrawingContainer.h"
+#import "DZHDrawingBase.h"
 
-@interface DZHContainer : UIView<DZHDrawingContainer>
+@interface DZHContainer : DZHDrawingBase<DZHDrawingContainer>
 {
     NSMutableArray                      *_drawings;
 }

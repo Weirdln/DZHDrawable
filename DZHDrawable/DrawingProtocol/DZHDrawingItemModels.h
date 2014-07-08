@@ -45,18 +45,31 @@
 
 - (int)type;
 
+- (int)volume;
+
 @end
 
 /**
- * 成交量绘制项
+ * 柱状图绘制项
  */
-@protocol DZHVolumeBar <DZHDrawingItemProtocol>
+@protocol DZHBarItem <DZHDrawingItemProtocol>
 
-- (int)volume;
+@property (nonatomic, assign) CGRect barRect;/**柱*/
 
-@property (nonatomic, assign) CGRect volumeRect;/**柱*/
+@property (nonatomic, retain) UIColor *barFillColor;/**柱填充颜色*/
 
-@property (nonatomic, retain) UIColor *volumeColor;/**柱填充颜色*/
+@end
+
+/**
+ * 曲线绘制项
+ */
+@protocol DZHCurveItem <NSObject>
+
+@property (nonatomic, retain) UIColor *curveColor;
+
+@property (nonatomic) CGPoint *points;
+
+@property (nonatomic) NSInteger count;
 
 @end
 
@@ -69,10 +82,6 @@
 
 - (int)MAWithCycle:(int)cycle;
 
-- (void)setMAPoint:(CGPoint)point withCycle:(int)cycle;
-
-- (CGPoint)MAPointWithCycle:(int)cycle;
-
 @end
 
 /**
@@ -84,8 +93,19 @@
 
 - (int)volumeMAWithCycle:(int)cycle;
 
-- (void)setVolumeMAPoint:(CGPoint)point withCycle:(int)cycle;
+@end
 
-- (CGPoint)volumeMAPointWithCycle:(int)cycle;
+/**
+ * 指数平滑异同平均线绘制项
+ */
+@protocol DZHMACD <DZHDrawingItemProtocol>
+
+@property (nonatomic) int EMAFast;
+
+@property (nonatomic) int EMASlow;
+
+@property (nonatomic) int DIF;
+
+@property (nonatomic) int DEA;
 
 @end

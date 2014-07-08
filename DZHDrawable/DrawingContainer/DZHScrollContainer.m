@@ -11,21 +11,24 @@
 
 @implementation DZHScrollContainer
 
-@synthesize containerDelegate       = _containerDelegate;
+@synthesize virtualFrame        = _virtualFrame;
+@synthesize drawingTag          = _drawingTag;
+@synthesize drawingDelegate     = _drawingDelegate;
+@synthesize drawingDataSource   = _drawingDataSource;
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self)
+    if (self = [super initWithFrame:frame])
     {
-        _drawings               = [[NSMutableArray alloc] init];
+        _container              = [[DZHContainer alloc] init];
+        _container.virtualFrame = CGRectMake(.0, .0, frame.size.width, frame.size.height);
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [_drawings release];
+    [_container release];
     
     [super dealloc];
 }
@@ -34,62 +37,49 @@
 {
     CGContextRef context        = UIGraphicsGetCurrentContext();
 
-    if (_containerDelegate && [_containerDelegate respondsToSelector:@selector(prepareContainerDrawing:rect:)])
-    {
-        [_containerDelegate prepareContainerDrawing:self rect:rect];
-    }
-    
     [self drawRect:rect withContext:context];
-    
-    if (_containerDelegate && [_containerDelegate respondsToSelector:@selector(completeContainerDrawing:rect:)])
-    {
-        [_containerDelegate completeContainerDrawing:self rect:rect];
-    }
 }
 
 - (void)drawRect:(CGRect)rect withContext:(CGContextRef)context
 {
-    for (DZHDrawingWrapper *wrapper in _drawings)
+    if (self.drawingDelegate && [self.drawingDelegate respondsToSelector:@selector(prepareDrawing:inRect:)])
     {
-        id<DZHDrawing> drawing      = wrapper.drawing;
-        
-        if (CGRectIsEmpty(wrapper.virtualRect))
-            continue;
-        
-        CGRect realRect             = [self realRectForVirtualRect:wrapper.virtualRect currentRect:rect];
-        
-        if (drawing.delegate && [drawing.delegate respondsToSelector:@selector(prepareDrawing:)])
-        {
-            [drawing.delegate prepareDrawing:drawing];
-        }
-        
-        [drawing drawRect:realRect withContext:context];
-        
-        if (drawing.delegate && [drawing.delegate respondsToSelector:@selector(completeDrawing:)])
-        {
-            [drawing.delegate prepareDrawing:drawing];
-        }
+        [self.drawingDelegate prepareDrawing:self inRect:rect];
+    }
+    
+    [_container drawRect:rect withContext:context];
+    
+    if (self.drawingDelegate && [self.drawingDelegate respondsToSelector:@selector(completeDrawing:inRect:)])
+    {
+        [self.drawingDelegate completeDrawing:self inRect:rect];
     }
 }
 
 #pragma mark - DZHDrawingContainer
 
+- (void)setVirtualFrame:(CGRect)virtualFrame
+{
+    _container.virtualFrame     = virtualFrame;
+}
+
+- (CGRect)virtualFrame
+{
+    return _container.virtualFrame;
+}
+
 - (void)addDrawing:(id<DZHDrawing>)drawing atVirtualRect:(CGRect)rect
 {
-    DZHDrawingWrapper *wrapper          = [[DZHDrawingWrapper alloc] initWithDrawing:drawing virtualRect:rect];
-    drawing.virtualFrame                = rect;
-    [_drawings addObject:wrapper];
-    [wrapper release];
+    [_container addDrawing:drawing atVirtualRect:rect];
 }
 
 - (void)removeDrawing:(id<DZHDrawing>)drawing
 {
-    [_drawings removeObject:drawing];
+    [_container removeDrawing:drawing];
 }
 
 - (CGRect)realRectForVirtualRect:(CGRect)virtualRect currentRect:(CGRect)currentRect;
 {
-    return CGRectMake(currentRect.origin.x + virtualRect.origin.x, virtualRect.origin.y, virtualRect.size.width, virtualRect.size.height);
+    return [_container realRectForVirtualRect:virtualRect currentRect:currentRect];
 }
 
 @end
