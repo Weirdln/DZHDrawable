@@ -15,11 +15,13 @@
 {
     NSParameterAssert(self.drawingDataSource);
     
+    NSArray *datas                  = [self.drawingDataSource datasForDrawing:self inRect:rect];
+    if ([datas count] == 0)
+        return;
+    
     CGContextSaveGState(context);
     CGContextSetLineWidth(context, 1.);
     
-    NSArray *datas                  = [self.drawingDataSource datasForDrawing:self inRect:rect];
-
     for (id<DZHCandleStick> entity in datas)
     {
         CGContextSetFillColorWithColor(context, entity.stickColor.CGColor);

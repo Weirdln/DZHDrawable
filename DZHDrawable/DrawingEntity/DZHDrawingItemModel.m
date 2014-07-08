@@ -18,6 +18,9 @@
 @synthesize DIF;
 @synthesize DEA;
 @synthesize MACD;
+@synthesize K;
+@synthesize D;
+@synthesize J;
 
 - (instancetype)initWithOriginData:(DZHKLineEntity *)originData
 {

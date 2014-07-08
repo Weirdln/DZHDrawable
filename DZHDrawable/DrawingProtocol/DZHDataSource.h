@@ -48,6 +48,9 @@
 
 - (UIColor *)colorForMACDType:(MACDType)type;
 
+
+- (UIColor *)colorForKDJType:(KDJLineType)KDJType;
+
 @end
 
 @protocol DZHDataProviderProtocol <NSObject>

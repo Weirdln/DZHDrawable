@@ -40,8 +40,22 @@
         CGFloat y                   = entity.location.y;
         NSString *labelText         = entity.labelText;
         
-        if (drawLine)
+        if (drawLine && !entity.notDrawLine)
         {
+            if (entity.dashLengths)
+            {
+                NSInteger count = [entity.dashLengths count];
+                CGFloat lenghts[count];
+                for (int z = 0; z < count; z ++)
+                {
+                    lenghts[z]  = [[entity.dashLengths objectAtIndex:z] doubleValue];
+                }
+                
+                CGContextSetLineDash(context, 0, lenghts, count);
+            }
+            else
+                CGContextSetLineDash (context, 0, 0, 0);
+            
             CGContextAddLines(context, (CGPoint[]){CGPointMake(rect.origin.x + self.labelSpace, y),CGPointMake(CGRectGetMaxX(rect), y)}, 2);
             CGContextStrokePath(context);
         }

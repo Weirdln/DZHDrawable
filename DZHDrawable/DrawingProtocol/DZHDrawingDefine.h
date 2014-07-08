@@ -42,4 +42,11 @@ typedef enum
     MACDTypeNegative,
 }MACDType;
 
+typedef enum
+{
+    KDJLineTypeK,
+    KDJLineTypeD,
+    KDJLineTypeJ,
+}KDJLineType;
+
 #endif

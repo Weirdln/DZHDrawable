@@ -127,12 +127,14 @@
     DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, bottom);
     entity.labelText            = @"万手";
+    entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, top);
     entity.labelText            = [NSString stringWithFormat:@"%.1f",(float)self.maxVolume/10000];
+    entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
     

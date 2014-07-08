@@ -98,3 +98,15 @@
 @property (nonatomic) int MACD;
 
 @end
+
+@protocol DZHKDJ <DZHDrawingItemProtocol>
+
+@property (nonatomic) int K;
+
+@property (nonatomic) int D;
+
+@property (nonatomic) int J;
+
+@end
+
+

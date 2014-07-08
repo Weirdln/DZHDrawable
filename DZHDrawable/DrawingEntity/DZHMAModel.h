@@ -18,6 +18,8 @@
 
 @property (nonatomic) NSInteger count;
 
+@property (nonatomic) BOOL notBezier;
+
 - (instancetype)initWithMACycle:(int)cyle;
 
 - (void)setPoints:(CGPoint *)points withCount:(NSInteger)count;

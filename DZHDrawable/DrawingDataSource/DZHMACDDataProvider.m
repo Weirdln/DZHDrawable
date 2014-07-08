@@ -90,18 +90,21 @@
     DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, bottom);
     entity.labelText            = [_valueFormatter stringForObjectValue:@(_min)];
+    entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, round(bottom - (bottom - top) * .5));
     entity.labelText            = [_valueFormatter stringForObjectValue:@(roundf((_max + _min) * .5))];
+    entity.dashLengths          = @[@3.f,@2.f];
     [datas addObject:entity];
     [entity release];
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, top);
     entity.labelText            = [_valueFormatter stringForObjectValue:@(_max)];
+    entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
     

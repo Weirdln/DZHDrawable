@@ -126,4 +126,19 @@
     }
 }
 
+- (UIColor *)colorForKDJType:(KDJLineType)KDJType
+{
+    switch (KDJType)
+    {
+        case KDJLineTypeK:
+            return _cycleFiveColor;
+        case KDJLineTypeD:
+            return _cycleTenColor;
+        case KDJLineTypeJ:
+            return _cycleTwentyColor;
+        default:
+            return nil;
+    }
+}
+
 @end

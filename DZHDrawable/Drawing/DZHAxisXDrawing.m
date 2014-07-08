@@ -41,8 +41,22 @@
         if (tickRect.origin.x - lastX < size.width)
             continue;
         
-        if (x > rect.origin.x && x < maxX) //只有在范围内的才绘制
+        if (!entity.notDrawLine && x > rect.origin.x && x < maxX) //只有在范围内的才绘制
         {
+            if (entity.dashLengths)
+            {
+                NSInteger count = [entity.dashLengths count];
+                CGFloat lenghts[count];
+                for (int z = 0; z < count; z ++)
+                {
+                    lenghts[z]  = [[entity.dashLengths objectAtIndex:z] doubleValue];
+                }
+                
+                CGContextSetLineDash(context, 0, lenghts, count);
+            }
+            else
+                CGContextSetLineDash (context, 0, 0, 0);
+            
             CGContextAddLines(context, (CGPoint[]){CGPointMake(x, rect.origin.y), CGPointMake(x, y)}, 2);
             CGContextStrokePath(context);
         }
