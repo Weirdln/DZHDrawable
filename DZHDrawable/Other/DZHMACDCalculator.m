@@ -57,10 +57,9 @@
         DEA             = DEA * (_difDay - 1) / (_difDay + 1) + DIF * 2 / (_difDay + 1);
     }
     
-    currentData.EMAFast = EMAFast;
-    currentData.EMASlow = EMASlow;
     currentData.DIF     = DIF;
     currentData.DEA     = DEA;
+    currentData.MACD    = DIF - DEA;
 }
 
 @end

@@ -32,7 +32,28 @@
 
 @end
 
+@protocol DZHColorDataProviderProtocol <NSObject>
+
+- (UIColor *)colorForKLineType:(KLineType)kType;
+
+- (UIColor *)colorForMACycle:(KLineCycle)cycle;
+
+
+- (UIColor *)colorForVolumeType:(VolumeType)volumeType;
+
+- (UIColor *)colorForVolumeMACycle:(KLineCycle)cycle;
+
+
+- (UIColor *)colorForMACDLineType:(MACDLineType)type;
+
+- (UIColor *)colorForMACDType:(MACDType)type;
+
+@end
+
 @protocol DZHDataProviderProtocol <NSObject>
+
+@property (nonatomic, retain) id<DZHDataProviderContextProtocol> context;
+@property (nonatomic, retain) id<DZHColorDataProviderProtocol> colorProvider;
 
 /**
  * 初始化或者更改数据的时候，计算、设置关键值，如MA数据源，计算各个周期MA的值
@@ -47,28 +68,23 @@
 @optional
 
 /**
- * 计算绘制起始结束索引
- */
-- (void)setupStartAndEndIndexInRect:(CGRect)rect withParameter:(id<DZHDataProviderContextProtocol>)param;
-
-/**
  * 横坐标数据
  */
-- (NSArray *)axisXDatasWithParameter:(id<DZHDataProviderContextProtocol>)param top:(CGFloat)top bottom:(CGFloat)bottom;
+- (NSArray *)axisXDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom;
 
 /**
  * 纵坐标数据
  */
-- (NSArray *)axisYDatasWithParameter:(id<DZHDataProviderContextProtocol>)param top:(CGFloat)top bottom:(CGFloat)bottom;
+- (NSArray *)axisYDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom;
 
 /**
  * 绘制项数据
  */
-- (NSArray *)itemDatasWithParameter:(id<DZHDataProviderContextProtocol>)param top:(CGFloat)top bottom:(CGFloat)bottom;
+- (NSArray *)itemDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom;
 
 /**
  * 额外数据，如k线、量线的平均线。
  */
-- (NSArray *)extendDatasWithParameter:(id<DZHDataProviderContextProtocol>)param top:(CGFloat)top bottom:(CGFloat)bottom;
+- (NSArray *)extendDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom;
 
 @end

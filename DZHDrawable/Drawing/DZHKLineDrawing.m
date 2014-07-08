@@ -7,7 +7,7 @@
 //
 
 #import "DZHKLineDrawing.h"
-#import "DZHDrawingItemModels.h"
+#import "DZHDrawingItems.h"
 
 @implementation DZHKLineDrawing
 

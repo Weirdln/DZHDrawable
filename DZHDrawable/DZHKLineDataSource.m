@@ -8,10 +8,12 @@
 
 #import "DZHKLineDataSource.h"
 #import "DZHKLineDataProvider.h"
-#import "DZHVolumeDataprovider.h"
+#import "DZHVolumeDataProvider.h"
 #import "DZHDrawingItemModel.h"
 #import "DZHDataProviderContext.h"
 #import "DZHDrawing.h"
+#import "DZHColorDataProvider.h"
+#import "DZHMACDDataProvider.h"
 
 @interface DZHKLineDataSource ()
 
@@ -24,26 +26,29 @@
 {
     if (self = [super init])
     {
-        _kLineDataProvider          = [[DZHKLineDataProvider alloc] init];
-        _indexDataProvider          = [[DZHVolumeDataProvider alloc] init];
+        self.maxScale                   = 5.;
+        self.minScale                   = .5;
         
-        self.maxScale               = 5.;
-        self.minScale               = .5;
+        _context                        = [[DZHDataProviderContext alloc] init];
+        _context.startLocation          = 20.;
         
-        _context                    = [[DZHDataProviderContext alloc] init];
-        _context.startLocation      = 20.;
+        DZHColorDataProvider *provider  = [[DZHColorDataProvider alloc] init];
         
-        self.kLineWidth             = _context.itemWidth    = 2.;
-        self.kLinePadding           = _context.itemPadding  = 1.;
-        self.scale                  = _context.scale        = 1.;
+        _kLineDataProvider              = [[DZHKLineDataProvider alloc] init];
+        _kLineDataProvider.context      = _context;
+        _kLineDataProvider.colorProvider= provider;
+        
+        _indexDataProvider              = [[DZHVolumeDataProvider alloc] init];
+        _indexDataProvider.context      = _context;
+        _indexDataProvider.colorProvider= provider;
+        
+        [provider release];
+        
+        self.kLineWidth                 = _context.itemWidth    = 2.;
+        self.kLinePadding               = _context.itemPadding  = 1.;
+        self.scale                      = _context.scale        = 1.;
     }
     return self;
-}
-
-- (void)setMAConfigs:(NSDictionary *)MAConfigs
-{
-    [((DZHKLineDataProvider *)_kLineDataProvider) setMAConfigs:MAConfigs];
-    [((DZHVolumeDataProvider *)_indexDataProvider) setMAConfigs:MAConfigs];
 }
 
 - (void)setKlines:(NSArray *)klines
@@ -93,13 +98,7 @@
 
 - (void)prepareDrawing:(id<DZHDrawing>)drawing inRect:(CGRect)rect
 {
-    
-    if ([_kLineDataProvider respondsToSelector:@selector(setupStartAndEndIndexInRect:withParameter:)])
-        [_kLineDataProvider setupStartAndEndIndexInRect:rect withParameter:_context];
-    
-    if ([_indexDataProvider respondsToSelector:@selector(setupStartAndEndIndexInRect:withParameter:)])
-        [_indexDataProvider setupStartAndEndIndexInRect:rect withParameter:_context];
-    
+    [_context calculateFromAndToIndexWithRect:rect];
     NSInteger from                      = _context.fromIndex;
     NSInteger to                        = _context.toIndex;
     DZHDrawingItemModel *lastModel      = nil;
@@ -125,21 +124,21 @@
     switch (drawing.drawingTag)
     {
         case DrawingTagsKLineX:
-            return [_kLineDataProvider axisXDatasWithParameter:_context top:top bottom:bottom];
+            return [_kLineDataProvider axisXDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsKLineY:
-            return [_kLineDataProvider axisYDatasWithParameter:_context top:top bottom:bottom];
+            return [_kLineDataProvider axisYDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsKLineItem:
-            return [_kLineDataProvider itemDatasWithParameter:_context top:top bottom:bottom];
+            return [_kLineDataProvider itemDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsVolumeX:
-            return [_kLineDataProvider axisXDatasWithParameter:_context top:top bottom:bottom];
+            return [_kLineDataProvider axisXDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsVolumeY:
-            return [_indexDataProvider axisYDatasWithParameter:_context top:top bottom:bottom];
+            return [_indexDataProvider axisYDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsVolumeItem:
-            return [_indexDataProvider itemDatasWithParameter:_context top:top bottom:bottom];
+            return [_indexDataProvider itemDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsMa:
-            return [_kLineDataProvider extendDatasWithParameter:_context top:top bottom:bottom];
+            return [_kLineDataProvider extendDatasWithContext:_context top:top bottom:bottom];
         case DrawingTagsVolumeMa:
-            return [_indexDataProvider extendDatasWithParameter:_context top:top bottom:bottom];
+            return [_indexDataProvider extendDatasWithContext:_context top:top bottom:bottom];
         default:
             return nil;
     }

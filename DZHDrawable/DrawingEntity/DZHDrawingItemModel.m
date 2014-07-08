@@ -15,10 +15,9 @@
 @synthesize stickColor;
 @synthesize barRect;
 @synthesize barFillColor;
-@synthesize EMAFast;
-@synthesize EMASlow;
 @synthesize DIF;
 @synthesize DEA;
+@synthesize MACD;
 
 - (instancetype)initWithOriginData:(DZHKLineEntity *)originData
 {
@@ -65,40 +64,6 @@
 - (int)volume
 {
     return _originData.vol;
-}
-
-//- (float)positionForValue:(float)value max:(float)max min:(float)min
-//{
-//    float y;
-//	
-//	if (max == min)
-//		y = .0;
-//	else if (value <= max && value >= min)
-//		y = (value - min)/(max - min);
-//	else
-//		y = (value < min) ? .0 : 1.;
-//	
-//	return y;
-//}
-//
-//- (CGFloat)locationInRect:(CGRect)rect withPosition:(float)position
-//{
-//    CGFloat bottom          = CGRectGetMaxY(rect);
-//    return bottom - position * (bottom - CGRectGetMinY(rect));
-//}
-
-- (CGFloat)locationYForValue:(float)v withMax:(float)max min:(float)min top:(CGFloat)top bottom:(CGFloat)bottom
-{
-	CGFloat y;
-	
-	if (max == min)
-		y = bottom;
-	else if (v <= max && v >= min)
-		y = bottom - (v - min)/(max - min)*(bottom - top);
-	else
-		y = (v < min) ? bottom : top;
-	
-	return y;
 }
 
 @end

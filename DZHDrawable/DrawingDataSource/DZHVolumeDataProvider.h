@@ -10,6 +10,4 @@
 
 @interface DZHVolumeDataProvider : NSObject<DZHDataProviderProtocol>
 
-@property (nonatomic, retain) NSDictionary *MAConfigs;/**k线、量线移动平均线配置 {周期:颜色}*/
-
 @end

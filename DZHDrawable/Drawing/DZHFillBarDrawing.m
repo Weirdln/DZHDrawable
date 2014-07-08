@@ -7,7 +7,7 @@
 //
 
 #import "DZHFillBarDrawing.h"
-#import "DZHDrawingItemModels.h"
+#import "DZHDrawingItems.h"
 
 @implementation DZHFillBarDrawing
 

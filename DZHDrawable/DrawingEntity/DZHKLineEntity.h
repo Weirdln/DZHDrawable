@@ -8,13 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum
-{
-    KLineTypePositive   = 0, //阳线
-    KLineTypeNegative   = 1, //阴线
-    KLineTypeCross      = 2, //十字线
-}KLineType;
-
 @interface DZHKLineEntity : NSObject<NSCoding>
 
 @property (nonatomic) int date; // K线时间

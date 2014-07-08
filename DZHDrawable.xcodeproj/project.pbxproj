@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4F07D487196632A30024A2C8 /* DZHMAModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F07D486196632A30024A2C8 /* DZHMAModel.m */; };
 		4F07D48A196641560024A2C8 /* DZHVolumeMACalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F07D489196641560024A2C8 /* DZHVolumeMACalculator.m */; };
+		4F1B643C196B885400BB5B8A /* DZHMACDDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B643B196B885400BB5B8A /* DZHMACDDataProvider.m */; };
+		4F1B6443196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B6442196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m */; };
+		4F1B6446196BC43B00BB5B8A /* DZHColorDataprovider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B6445196BC43B00BB5B8A /* DZHColorDataprovider.m */; };
 		4F26CC97195CF22C0078FA86 /* DZHKLineContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F26CC96195CF22C0078FA86 /* DZHKLineContainer.m */; };
 		4F27A0C8196A25AB00679426 /* DZHKLineDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F27A0C7196A25AB00679426 /* DZHKLineDataProvider.m */; };
 		4F27A0CC196A738100679426 /* DZHDataProviderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F27A0CB196A738100679426 /* DZHDataProviderContext.m */; };
@@ -68,6 +71,13 @@
 		4F07D486196632A30024A2C8 /* DZHMAModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMAModel.m; sourceTree = "<group>"; };
 		4F07D488196641560024A2C8 /* DZHVolumeMACalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHVolumeMACalculator.h; sourceTree = "<group>"; };
 		4F07D489196641560024A2C8 /* DZHVolumeMACalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHVolumeMACalculator.m; sourceTree = "<group>"; };
+		4F1B643A196B885400BB5B8A /* DZHMACDDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHMACDDataProvider.h; sourceTree = "<group>"; };
+		4F1B643B196B885400BB5B8A /* DZHMACDDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMACDDataProvider.m; sourceTree = "<group>"; };
+		4F1B6440196B9C0C00BB5B8A /* DZHDrawingDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DZHDrawingDefine.h; path = ../DrawingProtocol/DZHDrawingDefine.h; sourceTree = "<group>"; };
+		4F1B6441196BBF4100BB5B8A /* DZHVolumeTypeStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHVolumeTypeStrategy.h; sourceTree = "<group>"; };
+		4F1B6442196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHVolumeTypeStrategy.m; sourceTree = "<group>"; };
+		4F1B6444196BC43B00BB5B8A /* DZHColorDataprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHColorDataprovider.h; sourceTree = "<group>"; };
+		4F1B6445196BC43B00BB5B8A /* DZHColorDataprovider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHColorDataprovider.m; sourceTree = "<group>"; };
 		4F26CC95195CF22C0078FA86 /* DZHKLineContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineContainer.h; sourceTree = "<group>"; };
 		4F26CC96195CF22C0078FA86 /* DZHKLineContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKLineContainer.m; sourceTree = "<group>"; };
 		4F27A0C6196A25AB00679426 /* DZHKLineDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineDataProvider.h; sourceTree = "<group>"; };
@@ -89,7 +99,7 @@
 		4F3A0D9219629F25005233D3 /* DZHMACurveDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMACurveDrawing.m; sourceTree = "<group>"; };
 		4F48DA6B19638B7A00AB4A22 /* DZHDrawingItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDrawingItemModel.h; sourceTree = "<group>"; };
 		4F48DA6C19638B7A00AB4A22 /* DZHDrawingItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDrawingItemModel.m; sourceTree = "<group>"; };
-		4F48DA6F19638D1600AB4A22 /* DZHDrawingItemModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingItemModels.h; sourceTree = "<group>"; };
+		4F48DA6F19638D1600AB4A22 /* DZHDrawingItems.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingItems.h; sourceTree = "<group>"; };
 		4F48DA711963B12700AB4A22 /* DZHMACalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHMACalculator.h; sourceTree = "<group>"; };
 		4F48DA721963B12700AB4A22 /* DZHMACalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMACalculator.m; sourceTree = "<group>"; };
 		4F572E4219667FAA00D35C8C /* DZHKLineTypeStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineTypeStrategy.h; sourceTree = "<group>"; };
@@ -184,6 +194,10 @@
 				4F27A0C7196A25AB00679426 /* DZHKLineDataProvider.m */,
 				4F27A0CD196A7FCB00679426 /* DZHVolumeDataProvider.h */,
 				4F27A0CE196A7FCB00679426 /* DZHVolumeDataProvider.m */,
+				4F1B643A196B885400BB5B8A /* DZHMACDDataProvider.h */,
+				4F1B643B196B885400BB5B8A /* DZHMACDDataProvider.m */,
+				4F1B6444196BC43B00BB5B8A /* DZHColorDataprovider.h */,
+				4F1B6445196BC43B00BB5B8A /* DZHColorDataprovider.m */,
 			);
 			path = DrawingDataSource;
 			sourceTree = "<group>";
@@ -199,6 +213,8 @@
 				4F572E461966915F00D35C8C /* DZHMACDCalculator.m */,
 				4F572E4219667FAA00D35C8C /* DZHKLineTypeStrategy.h */,
 				4F572E4319667FAA00D35C8C /* DZHKLineTypeStrategy.m */,
+				4F1B6441196BBF4100BB5B8A /* DZHVolumeTypeStrategy.h */,
+				4F1B6442196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -206,6 +222,7 @@
 		4F48DA7019638F8200AB4A22 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				4F1B6440196B9C0C00BB5B8A /* DZHDrawingDefine.h */,
 				4F5FC7C719653EB7006168E0 /* DZHDrawingUtil.h */,
 				4F5FC7C819653EB7006168E0 /* DZHDrawingUtil.m */,
 			);
@@ -304,7 +321,7 @@
 				4F97488A195BBBC00067EF19 /* DZHDrawingContainer.h */,
 				4F97488D195BE0E80067EF19 /* DZHAxisDrawing.h */,
 				4FAD71B9195D66DF0023929A /* DZHDataTraveler.h */,
-				4F48DA6F19638D1600AB4A22 /* DZHDrawingItemModels.h */,
+				4F48DA6F19638D1600AB4A22 /* DZHDrawingItems.h */,
 				4F27A0C9196A25C200679426 /* DZHDataSource.h */,
 			);
 			path = DrawingProtocol;
@@ -515,13 +532,16 @@
 				4F572E471966915F00D35C8C /* DZHMACDCalculator.m in Sources */,
 				4F3A0D9019625E7C005233D3 /* DZHFillBarDrawing.m in Sources */,
 				4F3A0D9319629F25005233D3 /* DZHMACurveDrawing.m in Sources */,
+				4F1B643C196B885400BB5B8A /* DZHMACDDataProvider.m in Sources */,
 				4F319F7E1960FA4B0033D322 /* DZHCandleEntity.m in Sources */,
 				4FD46EA5195BAB19006BD33D /* DZHRectangleDrawing.m in Sources */,
+				4F1B6446196BC43B00BB5B8A /* DZHColorDataprovider.m in Sources */,
 				4FF972B4195BA1B100FB0940 /* AppDelegate.m in Sources */,
 				4F27A0CF196A7FCB00679426 /* DZHVolumeDataProvider.m in Sources */,
 				4F48DA6D19638B7A00AB4A22 /* DZHDrawingItemModel.m in Sources */,
 				4F572E4419667FAA00D35C8C /* DZHKLineTypeStrategy.m in Sources */,
 				4FF972B0195BA1B100FB0940 /* main.m in Sources */,
+				4F1B6443196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m in Sources */,
 				4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */,
 				4FD46EA3195BAB19006BD33D /* DZHAxisYDrawing.m in Sources */,
 			);

@@ -11,15 +11,6 @@
  */
 @protocol DZHDrawingItemProtocol <NSObject>
 
-@property (nonatomic) CGFloat locationX;
-
-@property (nonatomic) CGFloat itemWidth;
-
-/**
- * 计算值的y坐标
- */
-- (CGFloat)locationYForValue:(float)v withMax:(float)max min:(float)min top:(CGFloat)top bottom:(CGFloat)bottom;
-
 @end
 
 /**
@@ -100,12 +91,10 @@
  */
 @protocol DZHMACD <DZHDrawingItemProtocol>
 
-@property (nonatomic) int EMAFast;
-
-@property (nonatomic) int EMASlow;
-
 @property (nonatomic) int DIF;
 
 @property (nonatomic) int DEA;
+
+@property (nonatomic) int MACD;
 
 @end

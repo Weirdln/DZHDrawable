@@ -12,7 +12,7 @@
 #import "DZHDrawingItemModel.h"
 #import "DZHAxisEntity.h"
 #import "DZHDrawingUtil.h"
-#import "UIColor+RGB.h"
+#import "DZHVolumeTypeStrategy.h"
 
 @interface DZHVolumeDataProvider ()
 
@@ -28,18 +28,19 @@
 
 @implementation DZHVolumeDataProvider
 {
-    UIColor                         *_positiveColor;
-    UIColor                         *_negativeColor;
-    UIColor                         *_crossColor;
+    DZHVolumeTypeStrategy            *_volTypeStrategy;
 }
 
-- (instancetype)init
+@synthesize context         = _context;
+@synthesize colorProvider   = _colorProvider;
+
+- (id)init
 {
     if (self = [super init])
     {
-        _positiveColor                  = [[UIColor colorFromRGB:0xf92a27] retain];
-        _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
-        _crossColor                     = [[UIColor grayColor] retain];
+        _volTypeStrategy        = [[DZHVolumeTypeStrategy alloc] init];
+        
+        self.MACycle            = @[@(KLineCycleFive),@(KLineCycleTen),@(KLineCycleTwenty),@(KLineCycleThirty)];
     }
     return self;
 }
@@ -50,62 +51,37 @@
     [_volumeMACalculators release];
     [_MACycle release];
     
-    [_positiveColor release];
-    [_negativeColor release];
-    [_crossColor release];
     [super dealloc];
 }
 
-
-- (void)setMAConfigs:(NSDictionary *)config
+- (void)setMACycle:(NSArray *)MACycle
 {
-    if (_MAConfigs != config)
+    if (_MACycle != MACycle)
     {
-        [_MAConfigs release];
-        _MAConfigs                  = [config retain];
+        [_MACycle release];
+        _MACycle                            = [MACycle retain];
         
-        NSMutableArray *volCals     = [NSMutableArray array];
-        NSMutableArray *volModels   = [NSMutableArray array];
-        NSMutableArray *cycle       = [NSMutableArray array];
-        
-        [config enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, UIColor *color, BOOL *stop) {
-            
-            [cycle addObject:key];
-            
-            int cycle                       = [key intValue];
-            DZHVolumeMACalculator *volCal   = [[DZHVolumeMACalculator alloc] initWithMACycle:cycle];
-            DZHMAModel *volModel            = [[DZHMAModel alloc] initWithMACycle:cycle];
-            volModel.color                  = color;
-            
+        NSMutableArray *volCals             = [NSMutableArray array];
+        NSMutableArray *volModels           = [NSMutableArray array];
+        for (NSNumber *cycle in MACycle)
+        {
+            int v                           = [cycle intValue];
+            DZHVolumeMACalculator *volCal   = [[DZHVolumeMACalculator alloc] initWithMACycle:v];
             [volCals addObject:volCal];
-            [volModels addObject:volModel];
             [volCal release];
-            [volModel release];
-        }];
-        
-        self.volumeMACalculators    = volCals;
-        self.volumeMAModels         = volModels;
-        self.MACycle                = cycle;
+            
+            DZHMAModel *model               = [[DZHMAModel alloc] initWithMACycle:v];
+            [volModels addObject:model];
+            [model release];
+        }
+        self.volumeMACalculators            = volCals;
+        self.volumeMAModels                 = volModels;
     }
 }
 
 - (NSInteger)MAStartIndexWithIndex:(NSInteger)index cycle:(int)cycle
 {
     return index < cycle - 1 ? cycle - 1 : index;
-}
-
-- (UIColor *)corlorForType:(KLineType)type
-{
-    switch (type) {
-        case KLineTypePositive:
-            return _positiveColor;
-        case KLineTypeNegative:
-            return _negativeColor;
-        case KLineTypeCross:
-            return _crossColor;
-        default:
-            return nil;
-    }
 }
 
 #pragma mark - DZHDataProviderProtocol
@@ -124,6 +100,8 @@
     {
         [calculator travelerWithLastData:lastData currentData:curData index:index];
     }
+    
+    [_volTypeStrategy travelerWithLastData:lastData currentData:curData index:index];
 }
 
 - (void)setupMaxAndMinWhenTravelLastData:(DZHDrawingItemModel *)lastData currentData:(DZHDrawingItemModel *)data index:(NSInteger)index
@@ -142,7 +120,7 @@
     }
 }
 
-- (NSArray *)axisYDatasWithParameter:(id<DZHDataProviderContextProtocol>)param top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)axisYDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSMutableArray *datas       = [NSMutableArray array];
     
@@ -161,7 +139,7 @@
     return datas;
 }
 
-- (NSArray *)itemDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)itemDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSUInteger startIndex       = context.fromIndex;
     NSUInteger endIndex         = context.toIndex;
@@ -178,13 +156,13 @@
         x                       = [context locationForIndex:i];
         
         entity.barRect          = CGRectMake(x, vol, context.itemWidth, MAX(ABS(bottom - vol), 1.));
-        entity.barFillColor     = [self corlorForType:entity.type];
+        entity.barFillColor     = [_colorProvider colorForVolumeType:entity.volumeType];
         [datas addObject:entity];
     }
     return datas;
 }
 
-- (NSArray *)extendDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)extendDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSUInteger startIndex       = context.fromIndex;
     NSUInteger endIndex         = context.toIndex;
@@ -195,6 +173,8 @@
     
     for (DZHMAModel *model in _volumeMAModels)
     {
+        model.color             = [_colorProvider colorForVolumeMACycle:model.cycle];
+        
         NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
         NSInteger count         = endIndex - begin + 1;
         

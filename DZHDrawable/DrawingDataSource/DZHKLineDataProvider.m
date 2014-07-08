@@ -16,7 +16,6 @@
 #import "DZHAxisEntity.h"
 #import "DZHDataProviderContext.h"
 #import "DZHDrawingUtil.h"
-#import "UIColor+RGB.h"
 
 @interface DZHKLineDataProvider ()
 
@@ -43,11 +42,10 @@
     DZHKLineDateFormatter           *_dateFormatter;
     DZHKLineValueFormatter          *_valueFormatter;
     DZHKLineTypeStrategy            *_kTypeStrategy;
-    
-    UIColor                         *_positiveColor;
-    UIColor                         *_negativeColor;
-    UIColor                         *_crossColor;
 }
+
+@synthesize context         = _context;
+@synthesize colorProvider   = _colorProvider;
 
 - (instancetype)init
 {
@@ -61,9 +59,7 @@
         self.grouping                   = [NSMutableArray array];
         _kTypeStrategy                  = [[DZHKLineTypeStrategy alloc] init];
         
-        _positiveColor                  = [[UIColor colorFromRGB:0xf92a27] retain];
-        _negativeColor                  = [[UIColor colorFromRGB:0x2b9826] retain];
-        _crossColor                     = [[UIColor grayColor] retain];
+        self.MACycle                    = @[@(KLineCycleFive),@(KLineCycleTen),@(KLineCycleTwenty),@(KLineCycleThirty)];
     }
     return self;
 }
@@ -79,43 +75,31 @@
     [_valueFormatter release];
     [_kTypeStrategy release];
     
-    [_positiveColor release];
-    [_negativeColor release];
-    [_crossColor release];
     [super dealloc];
 }
 
-- (void)setMAConfigs:(NSDictionary *)config
+- (void)setMACycle:(NSArray *)MACycle
 {
-    if (_MAConfigs != config)
+    if (_MACycle != MACycle)
     {
-        [_MAConfigs release];
-        _MAConfigs                  = [config retain];
+        [_MACycle release];
+        _MACycle                    = [MACycle retain];
         
         NSMutableArray *maCals      = [NSMutableArray array];
         NSMutableArray *models      = [NSMutableArray array];
-        NSMutableArray *cycle       = [NSMutableArray array];
-        
-        [config enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, UIColor *color, BOOL *stop) {
-            
-            [cycle addObject:key];
-            
-            int cycle                       = [key intValue];
-            DZHMACalculator *cal            = [[DZHMACalculator alloc] initWithMACycle:cycle];
-            DZHMAModel *model               = [[DZHMAModel alloc] initWithMACycle:cycle];
-            model.color                     = color;
-            
+        for (NSNumber *cycle in MACycle)
+        {
+            int v                   = [cycle intValue];
+            DZHMACalculator *cal    = [[DZHMACalculator alloc] initWithMACycle:v];
             [maCals addObject:cal];
-            [models addObject:model];
-            
-            
             [cal release];
+            
+            DZHMAModel *model       = [[DZHMAModel alloc] initWithMACycle:v];
+            [models addObject:model];
             [model release];
-        }];
-        
+        }
         self.MACalculators          = maCals;
         self.MAModels               = models;
-        self.MACycle                = cycle;
     }
 }
 
@@ -215,20 +199,6 @@
     return index < cycle - 1 ? cycle - 1 : index;
 }
 
-- (UIColor *)corlorForType:(KLineType)type
-{
-    switch (type) {
-        case KLineTypePositive:
-            return _positiveColor;
-        case KLineTypeNegative:
-            return _negativeColor;
-        case KLineTypeCross:
-            return _crossColor;
-        default:
-            return nil;
-    }
-}
-
 #pragma mark - DZHDataProviderProtocol
 
 - (void)setupPropertyWhenTravelLastData:(DZHDrawingItemModel *)lastData currentData:(DZHDrawingItemModel *)curData index:(NSInteger)index
@@ -250,12 +220,6 @@
     }
     
     [_kTypeStrategy travelerWithLastData:lastData currentData:curData index:index];
-}
-
-- (void)setupStartAndEndIndexInRect:(CGRect)rect withParameter:(id<DZHDataProviderContextProtocol>)context
-{
-    self.context                = context;
-    [context calculateFromAndToIndexWithRect:rect];
 }
 
 - (void)setupMaxAndMinBegin:(DZHDrawingItemModel *)data
@@ -332,13 +296,13 @@
     }
 }
 
-- (NSArray *)axisXDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)axisXDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     int interval        = MAX(1, roundf(1.4f / _context.scale));
     return [self groupsFromIndex:context.fromIndex toIndex:context.toIndex monthInterval:interval];
 }
 
-- (NSArray *)axisYDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)axisYDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSInteger tickCount,strip;
     
@@ -363,7 +327,7 @@
     return datas;
 }
 
-- (NSArray *)itemDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)itemDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSInteger max               = self.maxPrice;
     NSInteger min               = self.minPrice;
@@ -389,13 +353,13 @@
         center                  = floorf(CGRectGetMidX(barRect));
         entity.solidRect        = barRect;
         entity.stickRect        = CGRectMake(center, high, 1., low - high);
-        entity.stickColor       = [self corlorForType:entity.type];
+        entity.stickColor       = [_colorProvider colorForKLineType:entity.type];
         [datas addObject:entity];
     }
     return datas;
 }
 
-- (NSArray *)extendDatasWithParameter:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
+- (NSArray *)extendDatasWithContext:(id<DZHDataProviderContextProtocol>)context top:(CGFloat)top bottom:(CGFloat)bottom
 {
     NSUInteger startIndex       = context.fromIndex;   //绘制起始点
     NSUInteger endIndex         = context.toIndex;     //绘制结束点
@@ -406,6 +370,8 @@
     
     for (DZHMAModel *model in _MAModels)
     {
+        model.color             = [_colorProvider colorForMACycle:model.cycle];
+        
         NSInteger begin         = [self MAStartIndexWithIndex:startIndex cycle:model.cycle];
         NSInteger count         = endIndex - begin + 1;
         

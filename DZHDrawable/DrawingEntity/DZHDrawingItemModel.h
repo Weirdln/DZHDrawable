@@ -7,17 +7,15 @@
 //
 
 #import "DZHKLineEntity.h"
-#import "DZHDrawingItemModels.h"
+#import "DZHDrawingItems.h"
 
 @interface DZHDrawingItemModel : NSObject<DZHCandleStick,DZHBarItem,DZHMACD>
 
 @property (nonatomic, retain) DZHKLineEntity *originData;
 
-@property (nonatomic) CGFloat locationX;
-
-@property (nonatomic) CGFloat itemWidth;
-
 @property (nonatomic) KLineType type;
+
+@property (nonatomic) VolumeType volumeType;
 
 @property (nonatomic, retain, readonly) NSMutableDictionary *extendData;
 

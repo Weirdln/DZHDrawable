@@ -21,13 +21,6 @@ typedef enum
     DrawingTagsVolumeMa,
 }DrawingTags;
 
-typedef enum
-{
-    KLineCycleFive          = 5,
-    KLineCycleTen           = 10,
-    KLineCycleTwenty        = 20,
-}KLineCycle;
-
 @interface DZHKLineDataSource : NSObject<DZHDrawingDataSource,DZHDrawingDelegate>
 {
     
@@ -51,7 +44,6 @@ typedef enum
 
 @property (nonatomic, assign) id<DZHDataProviderProtocol> indexDataProvider;
 
-@property (nonatomic, assign, readonly)id<DZHDataProviderContextProtocol> context;
-
+@property (nonatomic, retain)id<DZHDataProviderContextProtocol> context;
 
 @end
