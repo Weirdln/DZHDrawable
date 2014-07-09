@@ -11,9 +11,9 @@
 
 @implementation DZHMACDCalculator
 {
-    int                 EMAFast;
-    int                 EMASlow;
-    int                 DEA;
+    float                 EMAFast;
+    float                 EMASlow;
+    float                 DEA;
 }
 
 - (instancetype)initWithEMAFastDay:(int)fast slowDay:(int)slow difDay:(int)difDay
@@ -30,9 +30,9 @@
 
 - (void)travelerBeginAtIndex:(NSInteger)index
 {
-    EMAFast             = 0;
-    EMASlow             = 0;
-    DEA                 = 0;
+    EMAFast             = 0.;
+    EMASlow             = 0.;
+    DEA                 = 0.;
 }
 
 //12日EMA的计算：EMA12 = 前一日EMA12 X 11/13 + 今日收盘 X 2/13
@@ -41,8 +41,8 @@
 //今日DEA = （前一日DEA X 8/10 + 今日DIF X 2/10）
 - (void)travelerWithLastData:(DZHDrawingItemModel *)last currentData:(DZHDrawingItemModel *)currentData index:(NSInteger)index
 {
-    int close           = currentData.close;
-    int DIF             = 0;
+    float close         = currentData.close * .01;
+    float DIF           = 0.;
     
     if (index == 0)
     {
@@ -59,7 +59,7 @@
     
     currentData.DIF     = DIF;
     currentData.DEA     = DEA;
-    currentData.MACD    = DIF - DEA;
+    currentData.MACD    = 2 * (DIF - DEA);
 }
 
 @end

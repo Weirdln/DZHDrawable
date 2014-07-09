@@ -91,11 +91,11 @@
  */
 @protocol DZHMACD <DZHDrawingItemProtocol>
 
-@property (nonatomic) int DIF;
+@property (nonatomic) float DIF;
 
-@property (nonatomic) int DEA;
+@property (nonatomic) float DEA;
 
-@property (nonatomic) int MACD;
+@property (nonatomic) float MACD;
 
 @end
 

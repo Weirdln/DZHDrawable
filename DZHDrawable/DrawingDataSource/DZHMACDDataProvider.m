@@ -16,8 +16,8 @@
 
 @interface DZHMACDDataProvider ()
 
-@property (nonatomic) int max;
-@property (nonatomic) int min;
+@property (nonatomic) float max;
+@property (nonatomic) float min;
 
 @end
 
@@ -64,8 +64,8 @@
 
 - (void)setupMaxAndMinWhenTravelLastData:(DZHDrawingItemModel *)lastData currentData:(DZHDrawingItemModel *)data index:(NSInteger)index
 {
-    int max                     = MAX(MAX(data.DIF, data.DEA), data.MACD);
-    int min                     = MIN(MIN(data.DIF, data.DEA), data.MACD);
+    float max                   = MAX(MAX(data.DIF, data.DEA), data.MACD);
+    float min                   = MIN(MIN(data.DIF, data.DEA), data.MACD);
     if (lastData == nil)
     {
         self.max                = max;
@@ -89,21 +89,21 @@
     
     DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, bottom);
-    entity.labelText            = [_valueFormatter stringForObjectValue:@(_min)];
+    entity.labelText            = [NSString stringWithFormat:@"%.2f",_min];
     entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, round(bottom - (bottom - top) * .5));
-    entity.labelText            = [_valueFormatter stringForObjectValue:@(roundf((_max + _min) * .5))];
+    entity.labelText            = [NSString stringWithFormat:@"%.2f",(_max + _min) * .5];
     entity.dashLengths          = @[@3.f,@2.f];
     [datas addObject:entity];
     [entity release];
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, top);
-    entity.labelText            = [_valueFormatter stringForObjectValue:@(_max)];
+    entity.labelText            = [NSString stringWithFormat:@"%.2f",_max];
     entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
@@ -130,7 +130,7 @@
         macd                    = [DZHDrawingUtil locationYForValue:entity.MACD withMax:_max min:_min top:top bottom:bottom];
         
         x                       = [context centerLocationForIndex:i];
-        entity.barRect          = CGRectMake(x, macd, 1., y0 - macd);
+        entity.barRect          = CGRectMake(x, macd, 1., y0 - macd == 0 ? 1. : y0 - macd);//最小高度为1
         entity.barFillColor     = [_colorProvider colorForMACDType:type];
         [datas addObject:entity];
     }
