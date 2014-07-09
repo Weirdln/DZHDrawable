@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHDataSource.h"
+#import "DZHDataProviderBase.h"
 
 @class DZHMACDCalculator;
 
-@interface DZHMACDDataProvider : NSObject<DZHDataProviderProtocol>
+@interface DZHMACDDataProvider : DZHDataProviderBase<DZHDataProviderProtocol>
 {
     DZHMACDCalculator                   *_macdCal;
 }

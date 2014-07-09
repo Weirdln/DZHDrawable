@@ -15,6 +15,7 @@
 #import "DZHColorDataProvider.h"
 #import "DZHMACDDataProvider.h"
 #import "DZHKDJDataProvider.h"
+#import "DZHRSIDataProvider.h"
 
 @interface DZHKLineDataSource ()
 
@@ -39,7 +40,7 @@
         _kLineDataProvider.context      = _context;
         _kLineDataProvider.colorProvider= provider;
         
-        _indexDataProvider              = [[DZHKDJDataProvider alloc] init];
+        _indexDataProvider              = [[DZHRSIDataProvider alloc] init];
         _indexDataProvider.context      = _context;
         _indexDataProvider.colorProvider= provider;
         

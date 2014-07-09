@@ -9,7 +9,6 @@
 #import "DZHKDJDataProvider.h"
 #import "DZHKDJCalculator.h"
 #import "DZHDrawingItemModel.h"
-#import "DZHKLineValueFormatter.h"
 #import "DZHAxisEntity.h"
 #import "DZHDrawingUtil.h"
 #import "DZHMAModel.h"
@@ -23,7 +22,6 @@
 
 @implementation DZHKDJDataProvider
 {
-    DZHKLineValueFormatter              *_valueFormatter;
     DZHMAModel                          *_kModel;
     DZHMAModel                          *_dModel;
     DZHMAModel                          *_jModel;
@@ -37,7 +35,6 @@
     if (self = [super init])
     {
         _kdjCal                         = [[DZHKDJCalculator alloc] initWithKDay:3 DDay:3 rsvDay:9];
-        _valueFormatter                 = [[DZHKLineValueFormatter alloc] init];
         
         _kModel                         = [[DZHMAModel alloc] initWithMACycle:3];
         _kModel.notBezier               = YES;
@@ -54,7 +51,6 @@
 - (void)dealloc
 {
     [_kdjCal release];
-    [_valueFormatter release];
     
     [_kModel release];
     [_dModel release];

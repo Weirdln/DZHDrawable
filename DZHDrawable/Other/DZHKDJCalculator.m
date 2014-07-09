@@ -26,8 +26,8 @@
         self.dDay           = dDay;
         self.rsvDay         = rsvDay;
         
-        _low                = malloc(sizeof(int) * _rsvDay);
-        _high               = malloc(sizeof(int) * _rsvDay);
+        _low                = malloc(sizeof(int) * rsvDay);
+        _high               = malloc(sizeof(int) * rsvDay);
     }
     return self;
 }

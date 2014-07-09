@@ -21,6 +21,9 @@
 @synthesize K;
 @synthesize D;
 @synthesize J;
+@synthesize RSI1;
+@synthesize RSI2;
+@synthesize RSI3;
 
 - (instancetype)initWithOriginData:(DZHKLineEntity *)originData
 {

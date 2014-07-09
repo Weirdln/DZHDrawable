@@ -49,4 +49,11 @@ typedef enum
     KDJLineTypeJ,
 }KDJLineType;
 
+typedef enum
+{
+    RSILineType1,
+    RSILineType2,
+    RSILineType3,
+}RSILineType;
+
 #endif

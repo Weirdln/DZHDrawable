@@ -109,4 +109,14 @@
 
 @end
 
+@protocol DZHRSI <DZHDrawingItemProtocol>
+
+@property (nonatomic) int RSI1;
+
+@property (nonatomic) int RSI2;
+
+@property (nonatomic) int RSI3;
+
+@end
+
 

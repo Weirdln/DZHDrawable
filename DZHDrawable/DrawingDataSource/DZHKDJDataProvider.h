@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHDataSource.h"
+#import "DZHDataProviderBase.h"
 
 @class DZHKDJCalculator;
 
-@interface DZHKDJDataProvider : NSObject<DZHDataProviderProtocol>
+@interface DZHKDJDataProvider : DZHDataProviderBase<DZHDataProviderProtocol>
 {
     DZHKDJCalculator                *_kdjCal;
 }

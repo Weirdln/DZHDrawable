@@ -110,7 +110,7 @@
     
     if (preMonth != curMonth)//如果当前数据跟上一个数据不在一个月，则进行分组
     {
-        [self.grouping addObject:[NSString stringWithFormat:@"%d%ld",curDate,index]];
+        [self.grouping addObject:[NSString stringWithFormat:@"%d%d",curDate,index]];
     }
 }
 

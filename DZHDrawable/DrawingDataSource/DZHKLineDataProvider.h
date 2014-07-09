@@ -6,8 +6,8 @@
 //  Copyright (c) 2014年 Duanwwu. All rights reserved.
 //
 
-#import "DZHDataSource.h"
+#import "DZHDataProviderBase.h"
 
-@interface DZHKLineDataProvider : NSObject<DZHDataProviderProtocol>
+@interface DZHKLineDataProvider : DZHDataProviderBase<DZHDataProviderProtocol>
 
 @end

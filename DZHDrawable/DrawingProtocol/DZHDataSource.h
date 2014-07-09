@@ -51,12 +51,20 @@
 
 - (UIColor *)colorForKDJType:(KDJLineType)KDJType;
 
+
+- (UIColor *)colorForRSIType:(RSILineType)KDJType;
+
 @end
 
 @protocol DZHDataProviderProtocol <NSObject>
 
 @property (nonatomic, retain) id<DZHDataProviderContextProtocol> context;
 @property (nonatomic, retain) id<DZHColorDataProviderProtocol> colorProvider;
+
+/**
+ * 获取指标绘制开始位置，如果索引小于指标周期，返回该指标绘制的第一个点;否则返回当前索引
+ */
+- (NSInteger)beginOfIndex:(NSInteger)idx indexCycle:(int)cycle;
 
 /**
  * 初始化或者更改数据的时候，计算、设置关键值，如MA数据源，计算各个周期MA的值

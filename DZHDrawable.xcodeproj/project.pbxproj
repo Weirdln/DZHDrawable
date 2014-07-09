@@ -14,6 +14,7 @@
 		4F1B6446196BC43B00BB5B8A /* DZHColorDataprovider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B6445196BC43B00BB5B8A /* DZHColorDataprovider.m */; };
 		4F1B6449196BD14C00BB5B8A /* DZHKDJCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B6448196BD14C00BB5B8A /* DZHKDJCalculator.m */; };
 		4F1B644C196BDC2300BB5B8A /* DZHKDJDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B644B196BDC2300BB5B8A /* DZHKDJDataProvider.m */; };
+		4F1B644F196BF15700BB5B8A /* DZHRSICalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1B644E196BF15700BB5B8A /* DZHRSICalculator.m */; };
 		4F26CC97195CF22C0078FA86 /* DZHKLineContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F26CC96195CF22C0078FA86 /* DZHKLineContainer.m */; };
 		4F27A0C8196A25AB00679426 /* DZHKLineDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F27A0C7196A25AB00679426 /* DZHKLineDataProvider.m */; };
 		4F27A0CC196A738100679426 /* DZHDataProviderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F27A0CB196A738100679426 /* DZHDataProviderContext.m */; };
@@ -21,6 +22,8 @@
 		4F27A0D2196A8AB200679426 /* DZHKLineDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F27A0D1196A8AB200679426 /* DZHKLineDataSource.m */; };
 		4F3A0D9019625E7C005233D3 /* DZHFillBarDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D8F19625E7C005233D3 /* DZHFillBarDrawing.m */; };
 		4F3A0D9319629F25005233D3 /* DZHMACurveDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A0D9219629F25005233D3 /* DZHMACurveDrawing.m */; };
+		4F412BA6196CD7D4008984CB /* DZHRSIDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F412BA5196CD7D4008984CB /* DZHRSIDataProvider.m */; };
+		4F412BA9196CDCD7008984CB /* DZHDataProviderBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F412BA8196CDCD7008984CB /* DZHDataProviderBase.m */; };
 		4F48DA6D19638B7A00AB4A22 /* DZHDrawingItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA6C19638B7A00AB4A22 /* DZHDrawingItemModel.m */; };
 		4F48DA731963B12700AB4A22 /* DZHMACalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F48DA721963B12700AB4A22 /* DZHMACalculator.m */; };
 		4F572E4419667FAA00D35C8C /* DZHKLineTypeStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F572E4319667FAA00D35C8C /* DZHKLineTypeStrategy.m */; };
@@ -82,6 +85,8 @@
 		4F1B6448196BD14C00BB5B8A /* DZHKDJCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKDJCalculator.m; sourceTree = "<group>"; };
 		4F1B644A196BDC2300BB5B8A /* DZHKDJDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKDJDataProvider.h; sourceTree = "<group>"; };
 		4F1B644B196BDC2300BB5B8A /* DZHKDJDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKDJDataProvider.m; sourceTree = "<group>"; };
+		4F1B644D196BF15700BB5B8A /* DZHRSICalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHRSICalculator.h; sourceTree = "<group>"; };
+		4F1B644E196BF15700BB5B8A /* DZHRSICalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHRSICalculator.m; sourceTree = "<group>"; };
 		4F26CC95195CF22C0078FA86 /* DZHKLineContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineContainer.h; sourceTree = "<group>"; };
 		4F26CC96195CF22C0078FA86 /* DZHKLineContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHKLineContainer.m; sourceTree = "<group>"; };
 		4F27A0C6196A25AB00679426 /* DZHKLineDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHKLineDataProvider.h; sourceTree = "<group>"; };
@@ -97,6 +102,10 @@
 		4F3A0D8F19625E7C005233D3 /* DZHFillBarDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHFillBarDrawing.m; sourceTree = "<group>"; };
 		4F3A0D9119629F25005233D3 /* DZHMACurveDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHMACurveDrawing.h; sourceTree = "<group>"; };
 		4F3A0D9219629F25005233D3 /* DZHMACurveDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHMACurveDrawing.m; sourceTree = "<group>"; };
+		4F412BA4196CD7D4008984CB /* DZHRSIDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHRSIDataProvider.h; sourceTree = "<group>"; };
+		4F412BA5196CD7D4008984CB /* DZHRSIDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHRSIDataProvider.m; sourceTree = "<group>"; };
+		4F412BA7196CDCD7008984CB /* DZHDataProviderBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDataProviderBase.h; sourceTree = "<group>"; };
+		4F412BA8196CDCD7008984CB /* DZHDataProviderBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDataProviderBase.m; sourceTree = "<group>"; };
 		4F48DA6B19638B7A00AB4A22 /* DZHDrawingItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DZHDrawingItemModel.h; sourceTree = "<group>"; };
 		4F48DA6C19638B7A00AB4A22 /* DZHDrawingItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DZHDrawingItemModel.m; sourceTree = "<group>"; };
 		4F48DA6F19638D1600AB4A22 /* DZHDrawingItems.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DZHDrawingItems.h; sourceTree = "<group>"; };
@@ -188,6 +197,8 @@
 		4F27A0C5196A253C00679426 /* DrawingDataSource */ = {
 			isa = PBXGroup;
 			children = (
+				4F412BA7196CDCD7008984CB /* DZHDataProviderBase.h */,
+				4F412BA8196CDCD7008984CB /* DZHDataProviderBase.m */,
 				4F27A0CA196A738100679426 /* DZHDataProviderContext.h */,
 				4F27A0CB196A738100679426 /* DZHDataProviderContext.m */,
 				4F27A0C6196A25AB00679426 /* DZHKLineDataProvider.h */,
@@ -198,6 +209,8 @@
 				4F1B643B196B885400BB5B8A /* DZHMACDDataProvider.m */,
 				4F1B644A196BDC2300BB5B8A /* DZHKDJDataProvider.h */,
 				4F1B644B196BDC2300BB5B8A /* DZHKDJDataProvider.m */,
+				4F412BA4196CD7D4008984CB /* DZHRSIDataProvider.h */,
+				4F412BA5196CD7D4008984CB /* DZHRSIDataProvider.m */,
 				4F1B6444196BC43B00BB5B8A /* DZHColorDataprovider.h */,
 				4F1B6445196BC43B00BB5B8A /* DZHColorDataprovider.m */,
 			);
@@ -215,6 +228,8 @@
 				4F572E461966915F00D35C8C /* DZHMACDCalculator.m */,
 				4F1B6447196BD14C00BB5B8A /* DZHKDJCalculator.h */,
 				4F1B6448196BD14C00BB5B8A /* DZHKDJCalculator.m */,
+				4F1B644D196BF15700BB5B8A /* DZHRSICalculator.h */,
+				4F1B644E196BF15700BB5B8A /* DZHRSICalculator.m */,
 				4F572E4219667FAA00D35C8C /* DZHKLineTypeStrategy.h */,
 				4F572E4319667FAA00D35C8C /* DZHKLineTypeStrategy.m */,
 				4F1B6441196BBF4100BB5B8A /* DZHVolumeTypeStrategy.h */,
@@ -533,6 +548,7 @@
 				4F572E471966915F00D35C8C /* DZHMACDCalculator.m in Sources */,
 				4F3A0D9019625E7C005233D3 /* DZHFillBarDrawing.m in Sources */,
 				4F3A0D9319629F25005233D3 /* DZHMACurveDrawing.m in Sources */,
+				4F412BA9196CDCD7008984CB /* DZHDataProviderBase.m in Sources */,
 				4F1B643C196B885400BB5B8A /* DZHMACDDataProvider.m in Sources */,
 				4FD46EA5195BAB19006BD33D /* DZHRectangleDrawing.m in Sources */,
 				4F1B6446196BC43B00BB5B8A /* DZHColorDataprovider.m in Sources */,
@@ -541,8 +557,10 @@
 				4F48DA6D19638B7A00AB4A22 /* DZHDrawingItemModel.m in Sources */,
 				4F572E4419667FAA00D35C8C /* DZHKLineTypeStrategy.m in Sources */,
 				4FF972B0195BA1B100FB0940 /* main.m in Sources */,
+				4F1B644F196BF15700BB5B8A /* DZHRSICalculator.m in Sources */,
 				4F1B6443196BBF4100BB5B8A /* DZHVolumeTypeStrategy.m in Sources */,
 				4F974890195BF4650067EF19 /* DZHDrawingWrapper.m in Sources */,
+				4F412BA6196CD7D4008984CB /* DZHRSIDataProvider.m in Sources */,
 				4FD46EA3195BAB19006BD33D /* DZHAxisYDrawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
