@@ -15,8 +15,8 @@
 
 @interface DZHKDJDataProvider ()
 
-@property (nonatomic) int max;
-@property (nonatomic) int min;
+@property (nonatomic) float max;
+@property (nonatomic) float min;
 
 @end
 
@@ -72,8 +72,8 @@
 
 - (void)setupMaxAndMinWhenTravelLastData:(DZHDrawingItemModel *)lastData currentData:(DZHDrawingItemModel *)data index:(NSInteger)index
 {
-    int max                     = MAX(MAX(data.K, data.D), data.J);
-    int min                     = MIN(MIN(data.K, data.D), data.J);
+    float max                   = MAX(MAX(data.K, data.D), data.J);
+    float min                   = MIN(MIN(data.K, data.D), data.J);
     if (lastData == nil)
     {
         self.max                = max;
@@ -97,7 +97,7 @@
     
     DZHAxisEntity *entity       = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, bottom);
-    entity.labelText            = [NSString stringWithFormat:@"%d",_min];
+    entity.labelText            = [NSString stringWithFormat:@"%.2f",_min];
     entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];
@@ -111,7 +111,7 @@
     
     entity                      = [[DZHAxisEntity alloc] init];
     entity.location             = CGPointMake(.0, top);
-    entity.labelText            = [NSString stringWithFormat:@"%d",_max];
+    entity.labelText            = [NSString stringWithFormat:@"%.2f",_max];
     entity.notDrawLine          = YES;
     [datas addObject:entity];
     [entity release];

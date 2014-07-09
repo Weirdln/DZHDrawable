@@ -101,11 +101,11 @@
 
 @protocol DZHKDJ <DZHDrawingItemProtocol>
 
-@property (nonatomic) int K;
+@property (nonatomic) float K;
 
-@property (nonatomic) int D;
+@property (nonatomic) float D;
 
-@property (nonatomic) int J;
+@property (nonatomic) float J;
 
 @end
 

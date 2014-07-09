@@ -40,7 +40,7 @@
         _kLineDataProvider.context      = _context;
         _kLineDataProvider.colorProvider= provider;
         
-        _indexDataProvider              = [[DZHRSIDataProvider alloc] init];
+        _indexDataProvider              = [[DZHKDJDataProvider alloc] init];
         _indexDataProvider.context      = _context;
         _indexDataProvider.colorProvider= provider;
         

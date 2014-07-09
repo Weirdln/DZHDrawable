@@ -13,9 +13,9 @@
 {
     int                     *_low;//rsvDay天内最低价
     int                     *_high;//rsvDay天内高价
-    int                     K;
-    int                     D;
-    int                     J;
+    float                   K;
+    float                   D;
+    float                   J;
 }
 
 - (instancetype)initWithKDay:(int)kDay DDay:(int)dDay rsvDay:(int)rsvDay
@@ -88,7 +88,7 @@
     int ndayMax,ndayMin;
     [self calculateWithCycle:_rsvDay index:index max:&ndayMax min:&ndayMin];
     
-    int rsv                     = (currentData.close - ndayMin) * 1. / (ndayMax - ndayMin) * 100.;
+    float rsv                   = (currentData.close - ndayMin) * 1. / (ndayMax - ndayMin) * 100.;
     
     K	= (_kDay - 1) * K / _kDay + rsv / _kDay;
     D	= (_dDay - 1) * D / _dDay +  K /_dDay;
