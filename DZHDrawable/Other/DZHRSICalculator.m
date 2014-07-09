@@ -9,6 +9,8 @@
 #import "DZHRSICalculator.h"
 #import "DZHDrawingItemModel.h"
 
+#define kDefault
+
 @implementation DZHRSICalculator
 {
     int                 RSI1;
@@ -119,14 +121,6 @@
         else
             dd              += lastClose - close;
     }
-    
-    for (int i = 0; i <= cycle; i++)
-    {
-        printf("%d,",closes[i]);
-    }
-    
-    printf("   du:%d dd:%d  RSI:%d \n",du,dd,(int)roundf(10000. * du / (du + dd)));
-
     return du + dd == 0 ? 0 : roundf(10000. * du / (du + dd));
 }
 
@@ -153,78 +147,7 @@
         
         closes[i - 1]       = curClose;
     }
-    
-    for (int i = 0; i <= cycle; i++)
-    {
-        printf("%d,",closes[i]);
-    }
-    
-    printf("   du:%d dd:%d  RSI:%d \n",du,dd,(int)roundf(10000. * du / (du + dd)));
-
     return du + dd == 0 ? 0 : roundf(10000. * du / (du + dd));
 }
-
-///**
-// * 计算RSI值
-// *
-// */
-//- (int)calculateRSIWithCloses:(int *)closes cyle:(int)cycle
-//{
-//    int du                  = 0; //总上涨点数
-//    int dd                  = 0; //总下跌点数
-//    for (int i = 1; i < cycle; i ++)
-//    {
-//        int lastClose       = closes[i - 1];
-//        int close           = closes[i];
-//        
-//        if (close > lastClose)
-//            du              += close - lastClose;
-//        else
-//            dd              += lastClose - close;
-//    }
-//    
-//    for (int i = 0; i < cycle; i++)
-//    {
-//        printf("%d,",closes[i]);
-//    }
-//    
-//    printf("   du:%d dd:%d  RSI:%d \n",du,dd,(int)roundf(10000. * du / (du + dd)));
-//    
-//    return du + dd == 0 ? 0 : roundf(10000. * du / (du + dd));
-//}
-//
-///**
-// * 计算RSI值，并将最新的收盘价push进栈，最后一个收盘价出栈
-// *
-// */
-//- (int)calculateRSIWithCloses:(int *)closes cyle:(int)cycle close:(int)close;
-//{
-//    int du                  = 0; //总上涨点数
-//    int dd                  = 0; //总下跌点数
-//    for (int i = 2; i <= cycle; i ++)
-//    {
-//        int lastClose       = closes[i - 1];
-//        int curClose        = i == cycle ? close : closes[i];
-//        
-//        if (curClose > lastClose)
-//            du              += curClose - lastClose;
-//        else
-//            dd              += lastClose - curClose;
-//        
-//        if (i == 2)
-//            closes[i - 2]    = lastClose;
-//        
-//        closes[i - 1]       = curClose;
-//    }
-//    
-//    for (int i = 0; i < cycle; i++)
-//    {
-//        printf("%d,",closes[i]);
-//    }
-//    
-//    printf("   du:%d dd:%d  RSI:%d \n",du,dd,(int)roundf(10000. * du / (du + dd)));
-//
-//    return du + dd == 0 ? 0 : roundf(10000. * du / (du + dd));
-//}
 
 @end

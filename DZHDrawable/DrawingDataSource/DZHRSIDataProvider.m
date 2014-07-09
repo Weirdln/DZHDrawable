@@ -124,7 +124,7 @@
     int idx                 = 0;
     for (DZHMAModel *model in _rsiModels)
     {
-        NSInteger begin     = [self beginOfIndex:startIndex indexCycle:model.cycle];
+        NSInteger begin     = [self beginOfIndex:startIndex indexCycle:model.cycle + 1];//RSI周期需要＋1
         NSInteger count     = endIndex - begin + 1;
         
         if (count <= 0)
